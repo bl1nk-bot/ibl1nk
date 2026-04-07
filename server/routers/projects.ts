@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { TRPCError } from '@trpc/server';
 import { protectedProcedure, router } from '../_core/trpc';
 import {
   getUserProjects,
@@ -14,9 +15,14 @@ export const projectsRouter = router({
 
   get: protectedProcedure
     .input(z.object({ id: z.number() }))
-    .query(async ({ input }) => {
-      const project = await getProjectById(input.id);
-      if (!project) throw new Error('Project not found');
+    .query(async ({ ctx, input }) => {
+      const project = await getProjectById(input.id, ctx.user.id);
+      if (!project) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'ไม่พบโปรเจกต์นี้ (30001)',
+        });
+      }
       return project;
     }),
 
@@ -46,8 +52,8 @@ export const projectsRouter = router({
         status: z.enum(['active', 'completed', 'archived']).optional(),
       })
     )
-    .mutation(async ({ input }) => {
-      return updateProject(input.id, {
+    .mutation(async ({ ctx, input }) => {
+      return updateProject(input.id, ctx.user.id, {
         name: input.name,
         description: input.description,
         status: input.status,

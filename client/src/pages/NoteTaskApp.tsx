@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { trpc } from '../lib/trpc';
+import { trpc } from '@/lib/trpc';
 import { 
   Home, StickyNote, CheckSquare, GitFork, GitMerge, Zap, 
   BookOpen, BookText, UserCog, Plus, Search, Filter 
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { ScrollArea } from '../components/ui/scroll-area';
-import { Badge } from '../components/ui/badge';
-import { Separator } from '../components/ui/separator';
-import { Skeleton } from '../components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function NoteTaskApp() {
   const [activeTab, setActiveTab] = useState('dashboard');

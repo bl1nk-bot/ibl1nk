@@ -10,8 +10,8 @@ import {
 export const loreRouter = router({
   listByProject: protectedProcedure
     .input(z.object({ projectId: z.number() }))
-    .query(async ({ input }) => {
-      return getLoreByProject(input.projectId);
+    .query(async ({ ctx, input }) => {
+      return getLoreByProject(input.projectId, ctx.user.id);
     }),
 
   create: protectedProcedure
@@ -48,8 +48,8 @@ export const loreRouter = router({
         relatedLoreIds: z.string().optional(),
       })
     )
-    .mutation(async ({ input }) => {
-      return updateLoreEntry(input.id, {
+    .mutation(async ({ ctx, input }) => {
+      return updateLoreEntry(input.id, ctx.user.id, {
         title: input.title,
         content: input.content,
         category: input.category,
@@ -60,7 +60,7 @@ export const loreRouter = router({
 
   delete: protectedProcedure
     .input(z.object({ id: z.number() }))
-    .mutation(async ({ input }) => {
-      return deleteLoreEntry(input.id);
+    .mutation(async ({ ctx, input }) => {
+      return deleteLoreEntry(input.id, ctx.user.id);
     }),
 });

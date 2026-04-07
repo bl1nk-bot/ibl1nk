@@ -11,14 +11,14 @@ import {
 export const notesRouter = router({
   listByProject: protectedProcedure
     .input(z.object({ projectId: z.number() }))
-    .query(async ({ input }) => {
-      return getNotesByProject(input.projectId);
+    .query(async ({ ctx, input }) => {
+      return getNotesByProject(input.projectId, ctx.user.id);
     }),
 
   listByOutline: protectedProcedure
     .input(z.object({ outlineId: z.number() }))
-    .query(async ({ input }) => {
-      return getNotesByOutline(input.outlineId);
+    .query(async ({ ctx, input }) => {
+      return getNotesByOutline(input.outlineId, ctx.user.id);
     }),
 
   create: protectedProcedure
@@ -54,8 +54,8 @@ export const notesRouter = router({
         isPinned: z.boolean().optional(),
       })
     )
-    .mutation(async ({ input }) => {
-      return updateNote(input.id, {
+    .mutation(async ({ ctx, input }) => {
+      return updateNote(input.id, ctx.user.id, {
         title: input.title,
         content: input.content,
         tags: input.tags,
@@ -65,7 +65,7 @@ export const notesRouter = router({
 
   delete: protectedProcedure
     .input(z.object({ id: z.number() }))
-    .mutation(async ({ input }) => {
-      return deleteNote(input.id);
+    .mutation(async ({ ctx, input }) => {
+      return deleteNote(input.id, ctx.user.id);
     }),
 });

@@ -11,14 +11,14 @@ import {
 export const tasksRouter = router({
   listByProject: protectedProcedure
     .input(z.object({ projectId: z.number() }))
-    .query(async ({ input }) => {
-      return getTasksByProject(input.projectId);
+    .query(async ({ ctx, input }) => {
+      return getTasksByProject(input.projectId, ctx.user.id);
     }),
 
   listByOutline: protectedProcedure
     .input(z.object({ outlineId: z.number() }))
-    .query(async ({ input }) => {
-      return getTasksByOutline(input.outlineId);
+    .query(async ({ ctx, input }) => {
+      return getTasksByOutline(input.outlineId, ctx.user.id);
     }),
 
   create: protectedProcedure
@@ -62,8 +62,8 @@ export const tasksRouter = router({
         order: z.number().optional(),
       })
     )
-    .mutation(async ({ input }) => {
-      return updateTask(input.id, {
+    .mutation(async ({ ctx, input }) => {
+      return updateTask(input.id, ctx.user.id, {
         title: input.title,
         description: input.description,
         status: input.status,
@@ -75,7 +75,7 @@ export const tasksRouter = router({
 
   delete: protectedProcedure
     .input(z.object({ id: z.number() }))
-    .mutation(async ({ input }) => {
-      return deleteTask(input.id);
+    .mutation(async ({ ctx, input }) => {
+      return deleteTask(input.id, ctx.user.id);
     }),
 });
