@@ -1,9 +1,9 @@
 ---
-name: claude-writer-plugin
+name: ibl1nk-plugin
 description: Comprehensive writing assistant plugin for novelists and creative writers. Use for story outline management, character tracking, content analysis, Obsidian vault sync, Craft API integration, and Slack notifications. Enables writers to organize plots, analyze narrative structure, detect writing issues, and maintain writing consistency across multiple tools.
 ---
 
-# Claude Writer Plugin
+# ibl1nk Plugin
 
 A complete writing management system that integrates Craft, Obsidian, AI analysis, and Slack to help novelists organize stories, track characters, analyze content, and maintain writing productivity.
 
@@ -94,7 +94,7 @@ Real-time notifications and commands for writing workflow:
 
 **Slack features:**
 - Daily writing progress notifications
-- Slash commands: `/claude-writer analyze`, `/claude-writer character`, `/claude-writer dashboard`
+- Slash commands: `/ibl1nk analyze`, `/ibl1nk character`, `/ibl1nk dashboard`
 - Incoming webhooks for custom notifications
 - Slack Events API for interactive workflows
 - Optional Slack Workflow Canvas integration for advanced automation
@@ -139,7 +139,7 @@ Interactive HTML dashboard with multiple views:
 ```
 Obsidian (writing)
     ↓ (sync)
-Claude Writer Dashboard (organize)
+ibl1nk Dashboard (organize)
     ↓ (extract)
 Craft Collections (backup)
     ↓ (analyze)

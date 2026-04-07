@@ -74,7 +74,7 @@ Claude Writer Dashboard - แพลตฟอร์มจัดการงาน
 ### 7. External Integrations (pending)
 - **Craft.io:** ซิงค์โครงเรื่องและเนื้อหาไปยัง Craft Collections/Documents
 - **Obsidian:** อ่านและซิงค์ Markdown files จาก Obsidian vault แบบ bidirectional
-- **Slack:** แจ้งเตือนความคืบหน้า, slash commands (`/claude-writer analyze`, `/dashboard`)
+- **Slack:** แจ้งเตือนความคืบหน้า, slash commands (`/ibl1nk analyze`, `/dashboard`)
 - **S3 Storage:** backup อัตโนมัติ, export dashboard/story เป็น HTML/PDF
 
 ### 8. Visual Dashboard (มีอยู่แล้ว + เพิ่ม)

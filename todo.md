@@ -75,7 +75,7 @@
 
 - [ ] Create Slack App configuration
 - [ ] Implement Slack Incoming Webhooks for notifications
-- [ ] Implement Slack Slash Commands (/claude-writer analyze, /character, /dashboard)
+- [ ] Implement Slack Slash Commands (/ibl1nk analyze, /character, /dashboard)
 - [ ] Implement Slack Events API for interactive workflows
 - [ ] Create Slack Workflow Canvas integration (optional)
 - [ ] Add daily writing progress notifications
@@ -194,7 +194,7 @@ Each migration file should:
 
 ### Built-in Skills Integration
 - [ ] Integrate visual-explainer for dashboard generation
-- [ ] Use claude-writer-plugin skill for content analysis
+- [ ] Use ibl1nk-plugin skill for content analysis
 - [ ] Leverage built-in LLM for AI features
 
 ### External Service Integrations
