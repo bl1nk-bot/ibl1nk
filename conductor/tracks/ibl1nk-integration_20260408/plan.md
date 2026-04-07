@@ -44,3 +44,6 @@
     - [ ] Audit all new and migrated pages for mobile responsiveness
     - [ ] Refine layouts, touch targets, and navigation for small screens
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Frontend Integration & NoteTaskApp Migration' (Protocol in workflow.md)
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions a753a2e
