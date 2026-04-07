@@ -5,9 +5,9 @@
     - [x] Update `package.json` and `pnpm-lock.yaml`
     - [x] Update `vite.config.ts` and `vitest.config.ts`
     - [x] Search and replace `claude-writer` with `ibl1nk` in imports, comments, and strings
-- [ ] Task: Remove Firebase Dependencies
-    - [ ] Uninstall `firebase`, `firebase-admin`, and related packages
-    - [ ] Remove all Firebase configuration files and imports from the codebase
+- [x] Task: Remove Firebase Dependencies
+    - [x] Uninstall `firebase`, `firebase-admin`, and related packages
+    - [x] Remove all Firebase configuration files and imports from the codebase
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Rename & Cleanup' (Protocol in workflow.md)
 
 ## Phase 2: Database Schema & Backend Routers
