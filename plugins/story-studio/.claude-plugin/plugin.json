@@ -1,0 +1,8 @@
+{
+  "name": "story-studio",
+  "description": "Professional short film screenplay adaptation and marketing plugin with context management, featuring 4 specialized skills and 4 collaborative agents.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Manus"
+  }
+}

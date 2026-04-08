@@ -1,0 +1,23 @@
+{
+  "skill_name": "command-creator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to create a command that generates unit tests for Python functions. It should analyze the current file and create comprehensive tests.",
+      "expected_output": "A command template with proper structure, using @{file} to inject the source file, !{python -c} to analyze functions, and {{args}} for custom test parameters",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Create a command for reviewing pull requests. It should fetch the PR diff and check against our coding standards.",
+      "expected_output": "A command that uses !{git diff} to get changes, @{standards.md} for reference, and provides structured review output",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I need a command to refactor code into pure functions. It should take the file path as input and output refactored code.",
+      "expected_output": "A command with @{file_path} injection, clear refactoring guidelines, and {{args}} for specific requirements",
+      "files": []
+    }
+  ]
+}
