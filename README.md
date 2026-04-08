@@ -48,6 +48,8 @@
 ## 📂 Project Resources
 
 - [System Settings & Permission Schema](./resources/bl1nk-setting.jsonc) - แหล่งอ้างอิงความจริง (Source of Truth) ของฟีเจอร์และสิทธิ์ในระบบ
+- [Security Policy](./SECURITY.md) - นโยบายความปลอดภัยและมาตรฐานการพัฒนา
+- [License](./LICENSE) - MIT License
 
 ---
 

@@ -168,6 +168,9 @@
 ### 14. Documentation & Deployment
 
 - [x] Write API documentation (v1)
+- [x] Create project LICENSE (MIT)
+- [x] Create SECURITY.md policy
+- [x] Create project cleanup script (`scripts/clean-project.sh`)
 - [ ] Create user guide for dashboard
 - [ ] Create admin guide for plugin configuration
 - [ ] Document Craft/Obsidian/Slack setup instructions
