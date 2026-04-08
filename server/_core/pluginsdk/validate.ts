@@ -57,12 +57,14 @@ const schema = {
 
 const ajv = new Ajv({ allErrors: true });
 
+// Compile schema once for performance
+const validateSchema = ajv.compile(schema);
+
 export function validateConfig(config: Bl1nkConfig): ValidationResult {
-  const validate = ajv.compile(schema);
-  const valid = validate(config);
+  const valid = validateSchema(config);
 
   if (!valid) {
-    const errors = (validate.errors || []).map((err) => ({
+    const errors = (validateSchema.errors || []).map((err) => ({
       field: err.instancePath || 'root',
       message: err.message || 'unknown error',
     }));

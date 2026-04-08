@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { loadPlugin, listPlugins, loadAllPlugins } from '../src/config.js';
-import { PluginConfigError } from '../src/errors.js';
+import { loadPlugin, listPlugins, loadAllPlugins } from '../../server/_core/pluginsdk/config.js';
+import { PluginConfigError } from '../../server/_core/pluginsdk/errors.js';
 
 describe('config integration', () => {
   let testDir: string;

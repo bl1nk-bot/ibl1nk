@@ -12,14 +12,15 @@ export function substituteEnv(
   // Merge system env vars with extraVars (extraVars take precedence)
   const vars: Record<string, string> = { ...process.env, ...extraVars };
 
-  // Replace ${VAR_NAME} syntax
+  // Replace ${VAR_NAME} syntax first (more specific)
   str = str.replace(/\$\{([^}]+)\}/g, (_match, varName) => {
-    return vars[varName] || _match;
+    return vars[varName] ?? _match;
   });
 
   // Replace $VAR_NAME syntax (word characters only)
-  str = str.replace(/\$([A-Za-z_][A-Za-z0-9_]*)/g, (_match, varName) => {
-    return vars[varName] || _match;
+  // Use negative lookahead to avoid matching ${VAR} again
+  str = str.replace(/\$([A-Za-z_][A-Za-z0-9_]*)(?!\})/g, (_match, varName) => {
+    return vars[varName] ?? _match;
   });
 
   return str;

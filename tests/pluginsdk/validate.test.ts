@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { validateConfig } from '../src/validate.js';
-import type { Bl1nkConfig } from '../src/types.js';
+import { validateConfig } from '../../server/_core/pluginsdk/validate.js';
+import type { Bl1nkConfig } from '../../server/_core/pluginsdk/types.js';
 
 describe('validateConfig', () => {
   it('should validate a correct config', () => {

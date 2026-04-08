@@ -34,7 +34,10 @@ export function resolvePaths(
       const matches = fg.sync(absolutePattern, { onlyFiles: false });
 
       if (matches.length === 0) {
-        // Warn but don't throw - components may be optional
+        // Log warning for debugging - components may be optional
+        console.warn(
+          `[plugin-sdk] Pattern "${pattern}" in ${config.name} matched no files`
+        );
         continue;
       }
 

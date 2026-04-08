@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { resolvePaths, resolveContextPath } from '../src/paths.js';
-import { PathResolutionError } from '../src/errors.js';
-import type { Bl1nkConfig } from '../src/types.js';
+import { resolvePaths, resolveContextPath } from '../../server/_core/pluginsdk/paths.js';
+import { PathResolutionError } from '../../server/_core/pluginsdk/errors.js';
+import type { Bl1nkConfig } from '../../server/_core/pluginsdk/types.js';
 
 describe('paths', () => {
   let testDir: string;

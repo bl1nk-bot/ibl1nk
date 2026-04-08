@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { substituteEnv, checkEnv } from '../src/env.js';
-import type { Bl1nkConfig } from '../src/types.js';
+import { substituteEnv, checkEnv } from '../../server/_core/pluginsdk/env.js';
+import type { Bl1nkConfig } from '../../server/_core/pluginsdk/types.js';
 
 describe('substituteEnv', () => {
   it('should substitute ${VAR_NAME} syntax', () => {
