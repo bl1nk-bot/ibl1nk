@@ -1,0 +1,101 @@
+/**
+ * ibl1nk Application Settings & Permission Schema (v1.0.0)
+ * นี้คือไฟล์อ้างอิงสถานะ "ความจริง" ของระบบ (System Reality Reference)
+ * ไม่ใช่ไฟล์คอนฟิกฐานข้อมูล แต่เป็นแผนผังฟีเจอร์และสิทธิ์ที่มีอยู่จริง
+ */
+{
+  "app_identity": {
+    "name": "ibl1nk Dashboard",
+    "version": "1.0.0",
+    "legacy_name": "claude-writer-dashboard",
+    "locales": ["th-TH", "en-US"],
+    "default_theme": "light"
+  },
+
+  /* ฟีเจอร์ที่ Implement และใช้งานได้จริงในปัจจุบัน */
+  "active_features": {
+    "workspace_management": {
+      "projects": true, // ระบบแยก Project Isolation
+      "notes": true,    // บันทึกพร้อมระบบ Tagging
+      "tasks": true,    // งานพร้อม Priority และ Status
+      "lore": true      // คลังข้อมูลโลก (World Building)
+    },
+    "story_structure": {
+      "outlines": true,
+      "chapters": true,
+      "scenes": true,
+      "plot_nodes": true // แผนผังลำดับเหตุการณ์
+    },
+    "character_engine": {
+      "database": true,
+      "relationship_mapping": true,
+      "visual_graph": true // Mermaid Graph View
+    },
+    "ai_integration": {
+      "chat_assistant": true, // AI Chat พร้อม Project Context
+      "content_analysis": false // (Pending) อยู่ในแผนพัฒนา
+    }
+  },
+
+  /* ระบบสิทธิ์การเข้าถึงข้อมูล (Identity & Access Management) */
+  "access_control": {
+    "roles": {
+      "admin": {
+        "description": "ผู้ดูแลระบบสูงสุด",
+        "capabilities": ["manage_users", "view_all_data", "system_settings", "bypass_idor"]
+      },
+      "user": {
+        "description": "นักเขียนทั่วไป",
+        "capabilities": ["create_projects", "manage_own_content"],
+        "security_rule": "Strict userId scoping (IDOR Protection)" // ความจริง: ทุก Query ต้องมี userId
+      }
+    },
+    "auth_provider": "Manus OAuth (OpenID Connect)"
+  },
+
+  /* การตั้งค่าระดับผู้ใช้ (User Preferences) ที่รองรับแล้ว */
+  "user_settings_schema": {
+    "appearance": {
+      "theme": ["light", "dark", "system"],
+      "font_family": "Thai-compatible (Sarabun, Noto Sans Thai)",
+      "sidebar_width": "200px - 480px (Resizable)"
+    },
+    "editor": {
+      "distraction_free": false, // (UI Ready, Logic Pending)
+      "auto_save": true
+    }
+  },
+
+  /* สถานะการเชื่อมต่อบริการภายนอก (Integration Status) */
+  "integrations": {
+    "craft_io": {
+      "status": "UI_READY", 
+      "auth_method": "OAuth2",
+      "sync_type": "Collections & Documents"
+    },
+    "obsidian": {
+      "status": "SCHEMA_READY",
+      "auth_method": "File System / Local Path",
+      "sync_type": "Markdown Metadata"
+    },
+    "slack": {
+      "status": "SCHEMA_READY",
+      "auth_method": "Webhook / App Token",
+      "features": ["notifications", "slash_commands"]
+    },
+    "aws_s3": {
+      "status": "INFRA_READY",
+      "purpose": ["backups", "exports"]
+    }
+  },
+
+  /* มาตรฐานความปลอดภัยของข้อมูล (Data Security Reality) */
+  "data_governance": {
+    "isolation_level": "User-Level Isolation", // ข้อมูลแยกตาม userId
+    "context_level": "Project-Level Isolation", // Notes/Tasks/Lore แยกตาม projectId
+    "deletion_policy": {
+      "project": "Cascade delete related notes/tasks",
+      "user": "Strict primary key constraints"
+    }
+  }
+}

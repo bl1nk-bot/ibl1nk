@@ -277,13 +277,20 @@ const overview = await trpc.outlines.storyOverview.query({
 
 ## Best Practices
 
-1. **Regular Syncing:** Sync Obsidian vault daily to keep content up-to-date
-2. **Consistent Naming:** Use consistent character and chapter naming across tools
-3. **Analysis Frequency:** Run content analysis after completing each chapter
-4. **Progress Tracking:** Log daily writing sessions for accurate productivity metrics
-5. **Backup Strategy:** Regularly export to Craft Collections for backup
-6. **Character Development:** Update character traits as they evolve in the story
-7. **Relationship Mapping:** Keep character relationships current for consistency
+### 1. Engineering Standards
+- **IDOR Protection:** Every database query and tRPC procedure MUST verify data ownership using `userId`.
+- **Standardized Errors:** Use `TRPCError` with bilingual messages (Thai/English) and specific numeric codes.
+- **TDD Workflow:** Write tests for database logic and routers before implementation. Aim for >80% coverage.
+- **Modular UI:** Split large components into smaller, single-purpose components and custom hooks.
+
+### 2. General Usage
+- **Regular Syncing:** Sync Obsidian vault daily to keep content up-to-date
+- **Consistent Naming:** Use consistent character and chapter naming across tools
+- **Analysis Frequency:** Run content analysis after completing each chapter
+- **Progress Tracking:** Log daily writing sessions for accurate productivity metrics
+- **Backup Strategy:** Regularly export to Craft Collections for backup
+- **Character Development:** Update character traits as they evolve in the story
+- **Relationship Mapping:** Keep character relationships current for consistency
 
 ## Future Enhancements
 
