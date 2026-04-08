@@ -8,13 +8,20 @@
             "name": "increment-iteration",
             "type": "command",
             "command": "python ${extensionPath}/scripts/dispatch_hook.py increment-iteration",
-            "description": "Increments the iteration"
+            "description": "Increments the iteration",
+            "lane": "P0",
+            "timeout": 30,
+            "requiresConfirmation": true,
+            "disabledInWorkerSessions": true,
+            "idempotencyKey": "iteration-${sessionId}"
           },
           {
             "name": "reinforce-pickle-persona",
             "type": "command",
             "command": "python ${extensionPath}/scripts/dispatch_hook.py reinforce-persona",
-            "description": "Injects persona directives to ensure the agent explains its steps"
+            "description": "Injects persona directives to ensure the agent explains its steps",
+            "lane": "P0",
+            "timeout": 30
           }
         ]
       }
@@ -27,7 +34,9 @@
             "name": "check-limit",
             "type": "command",
             "command": "python ${extensionPath}/scripts/dispatch_hook.py check-limit",
-            "description": "Checks if the iteration or time limit has been reached"
+            "description": "Checks if the iteration or time limit has been reached",
+            "lane": "P0",
+            "timeout": 30
           }
         ]
       }
@@ -40,7 +49,11 @@
             "name": "pickle-rick-loop",
             "type": "command",
             "command": "python ${extensionPath}/scripts/dispatch_hook.py stop-hook",
-            "description": "The Pickle Rick infinite loop mechanism"
+            "description": "The Pickle Rick infinite loop mechanism",
+            "lane": "P0",
+            "timeout": 30,
+            "requiresConfirmation": true,
+            "disabledInWorkerSessions": true
           }
         ]
       }
