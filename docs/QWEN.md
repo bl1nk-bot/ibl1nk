@@ -179,3 +179,60 @@ function unfinishedFunction() {
 | plan-then-confirm | บอกแผน → รอ confirm → ทำ — ไม่เริ่มเอง |
 | no-duplicate-structure | ห้ามสร้าง structure ซ้ำ — tests ซ้ำ, package ไม่มี src |
 | thai-output-technical-unchanged | ตอบไทย — technical artifacts คงเดิม |
+
+---
+
+## 📊 Work-Log CSV — วิธีติดตามงาน
+
+### ไฟล์
+- **ตำแหน่ง:** `docs/work-log.csv`
+- **Format:** CSV with header
+
+### Header Columns
+| Column | คำอธิบาย |
+|--------|----------|
+| `Task ID` | รหัสงาน เช่น `TASK-001` (เพิ่มทีละ 1) |
+| `Created At` | วันที่-เวลาที่สร้าง (YYYY-MM-DD HH:MM) |
+| `Source Command` | คำสั่งหรือ request ที่ทำให้งานนี้เกิด |
+| `Description` | อธิบายสั้นๆ ว่าทำอะไร |
+| `Files Created/Modified` | รายชื่อไฟล์ที่แตะ (คั่นด้วย ` + `) |
+| `Status` | Emoji status (ดูตารางด้านล่าง) |
+| `Notes` | หมายเหตุ — ถ้าไม่มีใช้ `-` |
+
+### Emoji Status Codes
+
+| Emoji | สี | ความหมาย | ใช้เมื่อ |
+|-------|-----|----------|----------|
+| ⬜ | เทา | ค้าง | ยังไม่เริ่มทำ |
+| 🟡 | เหลือง | ต้องแก้ไข | ทำแล้วแต่ต้องแก้/กลับมาทำใหม่ |
+| 🔴 | แดง | ปัญหา | เจอ error, tool ขัดข้อง, blocker |
+| 🟢 | เขียว | รอดูรีวิว | เสร็จแล้ว รอ user ตรวจสอบ |
+| 🔵 | ฟ้า | รีวิวแล้ว | user ตรวจสอบแล้ว (user ใส่เอง) |
+| 🟠 | ส้ม | Tool error | ปัญหาการใช้ tool/permission/environment |
+
+### กฎการเขียน Work-Log
+
+1. **จบ task → เพิ่มแถวทันที** — ไม่รอจบวัน
+2. **ทุกแถวต้องมี Notes** — ถ้าไม่มีอะไรจะเขียน → ใช้ `-`
+3. **Status ต้องตรงตามความเป็นจริง** — อย่าใส่ 🟢 ถ้ายังไม่ได้เทส
+4. **Task ID เรียงลำดับ** — `TASK-001`, `TASK-002`, ... ไม่กระโดด
+5. **Files ต้องระบุชัด** — บอกทุกไฟล์ที่ create/edit/delete
+6. **Source Command ต้องมี** — บอกว่างานนี้เกิดจากคำสั่งอะไร
+
+### Workflow
+
+```
+รับงาน → เพิ่มแถว ⬜ ค้าง
+↓
+ทำ → เปลี่ยนเป็น 🟢 รอดูรีวิว
+↓
+user รีวิว → เปลี่ยนเป็น 🔵 รีวิวแล้ว (user เปลี่ยนเอง)
+↓
+ถ้ามีปัญหา → เปลี่ยนเป็น 🔴 หรือ 🟡 พร้อม Notes อธิบาย
+```
+
+### ไฟล์ที่เกี่ยวข้อง
+
+- `docs/work-log.csv` — ตารางติดตามงาน
+- `docs/WORK-LOG.md` — บันทึกสรุปงานที่ทำ (markdown, อ่านง่าย)
+- `.omg/MEMORY.md` — memory + rules index
