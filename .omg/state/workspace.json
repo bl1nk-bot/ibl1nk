@@ -13,7 +13,7 @@
         "trusted": "trusted",
         "handoff": "needs-review"
       },
-      "notes": "2 untracked files: .omg/state/taskboard.md, QWEN.md"
+      "notes": "2 modified files, 2 untracked learned rules — pending T008a/b cleanup"
     },
     {
       "id": "docs",
@@ -37,7 +37,7 @@
         "trusted": "trusted",
         "handoff": "needs-review"
       },
-      "notes": "taskboard.md untracked — audit found: no workspace.json, no learn.json"
+      "notes": "workspace.json exists (validated), taskboard.md untracked — pending T012b commit"
     },
     {
       "id": "omg-rules",
@@ -45,11 +45,11 @@
       "owner": "agent",
       "purpose": "learned behavioral rules",
       "health": {
-        "cleanliness": "clean",
+        "cleanliness": "dirty",
         "trusted": "trusted",
-        "handoff": "ready"
+        "handoff": "needs-review"
       },
-      "notes": "6 rules committed — missing learn.json index"
+      "notes": "6 rules committed, 2 untracked — pending T013a (learn.json) + T008b (tracked rules)"
     },
     {
       "id": "plugin-sdk",
@@ -61,7 +61,7 @@
         "trusted": "untrusted",
         "handoff": "blocked"
       },
-      "notes": "tests exist but no src/ — duplicate of tests/pluginsdk/ — needs decision: delete or create src/"
+      "notes": "tests exist but no src/ — duplicate of tests/pluginsdk/ — T002-decision pending"
     },
     {
       "id": "server-pluginsdk",
@@ -80,17 +80,17 @@
     {
       "lanes": ["plugin-sdk", "server-pluginsdk", "tests/pluginsdk"],
       "risk": "high",
-      "detail": "3 locations with overlapping plugin-sdk content — tests duplicated, src missing in packages"
+      "detail": "3 locations with overlapping plugin-sdk content — tests duplicated, src missing in packages — T002-decision required"
     },
     {
       "lanes": ["omg-state"],
-      "risk": "medium",
-      "detail": "taskboard.md created but not committed — workspace.json missing"
+      "risk": "low",
+      "detail": "taskboard.md untracked — T012b will commit and resolve"
     },
     {
       "lanes": ["main"],
       "risk": "low",
-      "detail": "QWEN.md untracked — should be committed or gitignored"
+      "detail": "2 untracked learned rules files — T008b will move to .omg/rules/learned/"
     }
   ],
   "cross_lane_policy": "explicit-handoff",
