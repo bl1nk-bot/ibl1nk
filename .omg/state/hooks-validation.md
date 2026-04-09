@@ -1,19 +1,20 @@
 # OmG Hook Validation Report
 
-**Date**: 2026-04-08
+**Date**: 2026-04-09
 **Project**: ibl1nk
-**Hooks Scanned**: 2 files (pickle-rick-extension, story-studio)
+**Hooks Scanned**: 1 file (`.omg/hooks.json`)
+**Profile**: `workflow-lifecycle` (session_start → task_received → task_complete → jsdoc_standards)
 
 ---
 
 ## Validation Result
 
 - **overall**: fail
-- **profile**: `default` (no custom profile detected)
-- **lifecycle**: mixed — Pickle Rick: symmetrical ✅ | Story Studio: post-only ⚠️
+- **profile**: `workflow-lifecycle`
+- **lifecycle**: sequential (no event-driven hooks) — ✅ deterministic
 - **critical**: 0
 - **major**: 3
-- **minor**: 4
+- **minor**: 2
 
 ---
 
@@ -21,89 +22,93 @@
 
 | Severity | Finding | Evidence | Fix |
 | --- | --- | --- | --- |
-| **major** | Missing timeout budgets per lane | Neither `hooks.json` specifies timeout or debounce configs. Long-running hooks (e.g., `dispatch_hook.py`) could block agent execution indefinitely. | Add `"timeout": 30` and `"debounce": 5` to each hook entry. |
-| **major** | No team-safety policy | Side-effect hooks (`increment-iteration`, `pickle-rick-loop`) have no `requiresConfirmation` or `workerSession` guards. Could execute in delegated sessions without user context. | Add `"requiresConfirmation": true` for state-mutating hooks; add `"disabledInWorkerSessions": true` where appropriate. |
-| **major** | No explicit lane (P0/P1/P2) mappings | Hooks are not tagged with priority lanes. BeforeAgent hooks should be P0, PostToolUse notifications should be P2. | Add `"lane": "P0"` or `"lane": "P1/P2"` to each hook entry. |
-| **minor** | Missing idempotency keys | `increment-iteration` and `check-limit` fire on every agent/model call with no dedup. Rapid successive calls could double-increment. | Add `"idempotencyKey": "iteration-${sessionId}"` to prevent double-fires. |
-| **minor** | Story Studio lifecycle asymmetry | Only `PostToolUse` hooks defined. No `PreToolUse` for validation or rollback. Acceptable for notifications but limits future extensibility. | Add `PreToolUse` hooks if validation/rollback becomes needed. |
-| **minor** | Wildcard matcher over-broad in Pickle Rick | `matcher: "*"` fires on every agent invocation. Could be narrowed to specific command patterns. | Consider `"matcher": "/pickle*"` or similar scope restriction. |
-| **minor** | Inline Python in Story Studio hooks | `PostToolUse` uses inline `python3 -c "..."` which is hard to maintain and test. Should be extracted to a script file. | Extract inline code to `scripts/post-tool-check.py` and reference by path. |
+| **major** | Missing lane tags for all hooks | No `lane` (P0/P1/P2) defined in any hook entry. Cannot determine priority scheduling. | Add `"lane": "P0"` to `on_session_start` and `on_task_received`, `"lane": "P1"` to `on_task_complete` steps 1-2, `"lane": "P2"` to steps 3-6. |
+| **major** | No timeout or debounce budgets | `on_task_complete` has 6 sequential steps with no timeout. Long-running steps (lint, test, build) could block indefinitely. | Add `"timeout": 30` to each step; add `"timeout": 10` to `on_session_start` and `on_task_received`. |
+| **major** | No team-safety policy | Side-effect hooks (`update_todo`, `lint_and_fix`, `test`, `build`) have no `requiresConfirmation` or `disabledInWorkerSessions` guards. Could execute in delegated sessions without user context. | Add `"requiresConfirmation": false` for read-only steps, `"requiresConfirmation": true` for `build`; add `"disabledInWorkerSessions": true` for `lint_and_fix` and `build`. |
+| **minor** | No idempotency keys | `on_task_received` appends to `todo.md` with no dedup. Rapid successive task assignments could create duplicate entries. | Add `"idempotencyKey": "task-${sessionId}-${taskHash}"` to `on_task_received`. |
+| **minor** | `jsdoc_standards` is not a lifecycle hook | This entry has no event trigger — it's a coding convention, not a hook. Belongs in rules, not hooks config. | Move to `.omg/rules/jsdoc-standards.md` or remove from hooks.json. |
 
 ---
 
 ## Hook Lifecycle Analysis
 
-### Pickle Rick Extension — Symmetrical ✅
-
 ```
-BeforeAgent (P0)
-  ├── increment-iteration      [state mutation]
-  └── reinforce-pickle-persona [context injection]
+Session Start (P0 — proposed)
+  ├── read .omg/MEMORY.md    [context load]
+  └── read todo.md            [task load]
         ↓
-Agent executes
+Task Received (P0 — proposed)
+  └── append todo.md          [state mutation — idempotent by task content]
         ↓
-BeforeModel (P0)
-  └── check-limit              [guard: may stop execution]
+Agent executes task
         ↓
-Model responds
+Task Complete (P1/P2 — proposed)
+  ├── Step 1: update_todo     [P1 — state mutation]
+  ├── Step 2: verify          [P1 — validation]
+  ├── Step 3: lint_and_fix    [P2 — tool execution]
+  ├── Step 4: test            [P2 — tool execution]
+  ├── Step 5: build           [P2 — tool execution, may block]
+  └── Step 6: write_work_log  [P2 — documentation]
         ↓
-AfterAgent (P0)
-  └── pickle-rick-loop         [terminal: completed/blocked/stopped]
-```
-
-**Lifecycle symmetry**: Each agent-entry path has one terminal outcome via `AfterAgent`. ✅
-**Cyclic chains**: None detected. Linear progression: BeforeAgent → BeforeModel → AfterAgent. ✅
-
-### Story Studio — Post-Only ⚠️
-
-```
-PostToolUse (P2)
-  └── matcher: Write|Edit → context check notification
-
-PostToolUse:notion_sync (P2)
-  └── matcher: mcp__notion → echo notification
-
-PostToolUse:miro_update (P2)
-  └── matcher: mcp__miro → echo notification
+Terminal outcome: completed (all 6 steps pass) or blocked (step failure)
 ```
 
-**Lifecycle symmetry**: No PreToolUse defined. Post-only is acceptable for notifications. ⚠️
-**Cyclic chains**: None detected. Fire-and-forget notifications. ✅
-**Terminal outcomes**: All hooks are informational (no terminal state management).
+**Lifecycle symmetry**: Sequential pipeline — each task triggers exactly one completion pipeline. ✅
+**Cyclic chains**: None detected. Linear progression: session_start → task_received → task_complete. ✅
+**Terminal outcomes**: Single terminal path. No double-fire risk. ✅
 
 ---
 
 ## Ordering Determinism
 
-| Hook Set | Order Deterministic? | Idempotency Key? |
-| --- | --- | --- |
-| Pickle Rick BeforeAgent (2 hooks) | ✅ Yes (defined order in array) | ❌ No |
-| Pickle Rick BeforeModel (1 hook) | ✅ Yes (single hook) | N/A |
-| Pickle Rick AfterAgent (1 hook) | ✅ Yes (single hook) | ❌ No |
-| Story Studio PostToolUse (3 events) | ✅ Yes (different matchers, no overlap) | ❌ No |
+| Hook Set | Order Deterministic? | Idempotency Key? | Timeout? |
+| --- | --- | --- | --- |
+| `on_session_start` (2 actions) | ✅ Yes | N/A (read-only) | ❌ No |
+| `on_task_received` (1 action) | ✅ Yes | ❌ No | ❌ No |
+| `on_task_complete` (6 steps) | ✅ Yes (explicit step order) | ❌ No | ❌ No |
+| `jsdoc_standards` (convention) | N/A | N/A | N/A |
 
 ---
 
 ## Safe-to-Run Decision
 
-- **yes**: Hooks are structurally sound with no critical issues.
-- **rationale**: 
-  - No cyclic trigger chains detected.
-  - Lifecycle symmetry is acceptable (Pickle Rick: full; Story Studio: post-only notifications).
-  - Major issues (timeouts, team-safety, lane mappings) are configuration gaps, not runtime hazards.
-  - All hooks use `"type": "command"` with deterministic execution paths.
-  - **Caveat**: Running without timeout guards means a stuck hook could block agent execution. Monitor first execution carefully.
+- **no** (with caveats)
+- **rationale**:
+  - No cyclic trigger chains detected. ✅
+  - Lifecycle symmetry is correct (linear sequential pipeline). ✅
+  - **Blocking issues**: Missing lane tags mean the agent cannot schedule hooks correctly under the priority system.
+  - **Blocking issues**: No timeout guards on `on_task_complete` — a stuck lint/test/build step could block agent execution indefinitely.
+  - **Blocking issues**: No team-safety policy — state-mutating hooks (`update_todo`, `lint_and_fix`, `build`) could run in delegated sessions without user context.
+  - **Caveat**: `jsdoc_standards` is not a lifecycle hook — it's a coding convention that belongs in rules, not hooks config.
 
 ---
 
 ## Next Command
 
-- **Recommended**: Update `hooks.json` files to address major findings before production use:
-  1. Add `"lane"` tags (P0 for Pickle Rick, P2 for Story Studio)
-  2. Add `"timeout": 30` to all hooks
-  3. Add `"requiresConfirmation": true` for state-mutating hooks
-  4. Extract inline Python to script files
-- **If proceeding without fixes**: Monitor execution logs for timeouts or double-fires during first run.
+Update `.omg/hooks.json` to address major findings:
+
+1. Add `"lane"` tags:
+   - `on_session_start`: `"lane": "P0"`
+   - `on_task_received`: `"lane": "P0"`
+   - `on_task_complete` steps 1-2: `"lane": "P1"`
+   - `on_task_complete` steps 3-6: `"lane": "P2"`
+
+2. Add timeouts:
+   - `on_session_start`: `"timeout": 10`
+   - `on_task_received`: `"timeout": 10`
+   - `on_task_complete` each step: `"timeout": 30`
+
+3. Add team-safety:
+   - `"requiresConfirmation": true` for `build` step
+   - `"disabledInWorkerSessions": true` for `lint_and_fix` and `build`
+
+4. Add idempotency:
+   - `"idempotencyKey": "task-${sessionId}-${taskHash}"` for `on_task_received`
+
+5. Move `jsdoc_standards` to `.omg/rules/jsdoc-standards.md` (optional cleanup)
+
+- **Recommended**: Apply fixes 1-3 before production use.
+- **If proceeding without fixes**: Monitor execution logs for timeouts or unexpected behavior during first runs.
 
 ---
 

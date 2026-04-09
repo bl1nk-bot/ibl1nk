@@ -1,0 +1,18 @@
+{
+  "rules": [
+    "glob-before-create",
+    "jsdoc-evidence",
+    "work-log-on-complete",
+    "plan-then-confirm",
+    "no-duplicate-structure",
+    "thai-output-technical-unchanged"
+  ],
+  "severity": {
+    "glob-before-create": "critical",
+    "jsdoc-evidence": "critical",
+    "work-log-on-complete": "critical",
+    "plan-then-confirm": "critical",
+    "no-duplicate-structure": "critical",
+    "thai-output-technical-unchanged": "standard"
+  }
+}

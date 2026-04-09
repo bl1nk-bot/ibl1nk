@@ -1,5 +1,7 @@
 {
   "on_session_start": {
+    "lane": "P0",
+    "timeout": 10,
     "description": "อ่าน memory และ todo.md ทุกครั้งที่เริ่ม session",
     "actions": [
       {
@@ -15,6 +17,9 @@
     ]
   },
   "on_task_received": {
+    "lane": "P0",
+    "timeout": 10,
+    "idempotencyKey": "task-${sessionId}-${taskHash}",
     "description": "สร้างหรืออัพเดต todo.md เมื่อได้รับคำสั่งงาน",
     "actions": [
       {
@@ -30,51 +35,159 @@
     "steps": [
       {
         "step": 1,
+        "lane": "P1",
+        "timeout": 30,
         "action": "update_todo",
         "description": "อัพเดต status task ใน todo.md เป็น [x] เสร็จ"
       },
       {
         "step": 2,
+        "lane": "P1",
+        "timeout": 30,
         "action": "verify",
         "description": "ตรวจสอบซ้ำว่าสิ่งที่ทำถูกต้อง ครบถ้วน"
       },
       {
         "step": 3,
+        "lane": "P2",
+        "timeout": 30,
         "action": "lint_and_fix",
         "tool": "biome",
+        "disabledInWorkerSessions": true,
         "description": "รัน biome lint + biome check --apply ถ้าแก้ได้ ให้ biome แก้ ถ้าแก้ไม่ได้ → แก้ด้วยตัวเอง"
       },
       {
         "step": 4,
+        "lane": "P2",
+        "timeout": 60,
         "action": "test",
         "priority": ["vitest", "playwright"],
         "description": "รัน vitest เป็นอันดับแรก ถ้าเป็น UI test → ใช้ playwright ถ้าไม่มี playwright → รายงาน user + เสนอทางออก"
       },
       {
         "step": 5,
+        "lane": "P2",
+        "timeout": 60,
+        "requiresConfirmation": true,
+        "disabledInWorkerSessions": true,
         "action": "build",
         "description": "ถ้าโปรเจคต้อง build → รัน build ถ้ารันได้เลย → ข้ามไป test"
       },
       {
         "step": 6,
+        "lane": "P2",
+        "timeout": 15,
         "action": "write_work_log",
         "file": "docs/WORK-LOG.md",
         "description": "เขียนบันทึกสิ่งที่ทำ Evidence ผลการทดสอบ"
       }
     ]
   },
-  "jsdoc_standards": {
-    "description": "มาตรฐาน JSDoc ที่ต้องเขียนในโค้ด",
-    "rule": "ใช้ TODO: <รายละเอียด> สำหรับงานที่ทำยังไม่เสร็จ",
-    "completed_format": "มาตรฐาน JSDoc — อธิบาย module, function, @param, @returns, @throws, logic, API contract",
-    "must_include": [
-      "@module — ชื่อ module",
-      "@description — อธิบายว่าไฟล์นี้ทำอะไร",
-      "@param — พารามิเตอร์แต่ละตัว (ถ้ามี)",
-      "@returns — ค่าที่ส่งกลับ (ถ้ามี)",
-      "@throws — error ที่โยน (ถ้ามี)",
-      "TODO: — งานค้าง (ถ้ายังไม่ได้ทำ)",
-      "@done — วันที่ + สรุปสิ่งที่ทำ (ถ้าเสร็จ)"
+  "on_agent_blocked": {
+    "lane": "P0",
+    "timeout": 15,
+    "requiresConfirmation": false,
+    "description": "เมื่อ agent ติด blocker ที่แก้เองไม่ได้ → แจ้ง user + เสนอทางออก",
+    "trigger": "agent reports blocked state or repeated failure",
+    "actions": [
+      {
+        "type": "notify",
+        "description": "แจ้ง user ว่า agent ติด blocker — แสดงสาเหตุ + ทางเลือก"
+      },
+      {
+        "type": "update_taskboard",
+        "description": "เปลี่ยน task status เป็น 'blocked' ใน taskboard.md พร้อมระบุเหตุผล"
+      },
+      {
+        "type": "escalate",
+        "description": "รอ user ตัดสินใจ — ไม่พยายามทำงานต่อจนกว่าจะได้รับคำสั่งใหม่"
+      }
+    ]
+  },
+  "on_agent_finished_early": {
+    "lane": "P1",
+    "timeout": 20,
+    "requiresConfirmation": false,
+    "disabledInWorkerSessions": true,
+    "description": "เมื่อ agent จบงานก่อนบรรลุ goal → ตรวจสอบ incomplete state + รายงาน",
+    "trigger": "agent returns terminal state without completing all goals",
+    "actions": [
+      {
+        "type": "validate_goals",
+        "description": "เปรียบเทียบ goal ที่ตั้งไว้กับสิ่งที่ทำเสร็จ — ระบุสิ่งที่ขาด"
+      },
+      {
+        "type": "report_gaps",
+        "description": "รายงาน user ว่างานยังไม่ครบ — list สิ่งที่ขาด + เสนอแผนทำต่อ"
+      },
+      {
+        "type": "update_taskboard",
+        "description": "เปลี่ยน task status เป็น 'incomplete' ใน taskboard.md พร้อมระบุ gap"
+      }
+    ]
+  },
+  "on_context_drift": {
+    "lane": "P2",
+    "timeout": 10,
+    "requiresConfirmation": false,
+    "description": "เมื่อ agent summary เปลี่ยนไปจาก intent เดิมมากเกิน threshold → เตือน + reload memory",
+    "trigger": "summary entropy increases — agent偏离 original intent across 3+ turns",
+    "actions": [
+      {
+        "type": "detect_drift",
+        "description": "เปรียบเทียบ current summary กับ task intent — คำนวณ semantic distance"
+      },
+      {
+        "type": "reload_memory",
+        "description": "อ่าน .omg/MEMORY.md + taskboard.md ใหม่ — refresh context"
+      },
+      {
+        "type": "warn_user",
+        "description": "แจ้งเตือนว่า agent อาจ偏离 intent — แสดง drift score"
+      }
+    ]
+  },
+  "on_loop_stall": {
+    "lane": "P1",
+    "timeout": 10,
+    "requiresConfirmation": false,
+    "description": "เมื่อ blocker เดิมซ้ำ 2+ ครั้งโดยไม่มีความคืบหน้า → หยุด loop + เสนอ escalation",
+    "trigger": "same blocker or error pattern repeats 2+ consecutive turns",
+    "actions": [
+      {
+        "type": "detect_loop",
+        "description": "ตรวจสอบ conversation history — หา repeated blocker/error pattern"
+      },
+      {
+        "type": "break_loop",
+        "description": "หยุดทำงานปัจจุบัน — ไม่พยายามซ้ำวิธีเดิม"
+      },
+      {
+        "type": "propose_alternative",
+        "description": "เสนอแนวทางใหม่ หรือ escalate ไป user — แสดง loop count + สิ่งที่ลองแล้ว"
+      }
+    ]
+  },
+  "on_risk_spike": {
+    "lane": "P1",
+    "timeout": 10,
+    "requiresConfirmation": false,
+    "disabledInWorkerSessions": true,
+    "description": "เมื่อ failure density เพิ่มสูงขึ้น (>3 failures ใน 5 tasks ล่าสุด) → เตือน + suggest review",
+    "trigger": "failure density > 60% in last 5 completed tasks",
+    "actions": [
+      {
+        "type": "calculate_failure_rate",
+        "description": "นับ tasks ที่ fail/blocked/incomplete ใน 5 tasks ล่าสุด"
+      },
+      {
+        "type": "warn_user",
+        "description": "แจ้งเตือนว่ามีความเสี่ยงสูง — แสดง failure rate + tasks ที่เกี่ยวข้อง"
+      },
+      {
+        "type": "suggest_review",
+        "description": "แนะนำให้ user review workflow — เสนอ pause automation จนกว่าจะแก้ไข"
+      }
     ]
   }
 }
