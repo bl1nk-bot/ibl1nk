@@ -1,0 +1,80 @@
+{
+  "on_session_start": {
+    "description": "อ่าน memory และ todo.md ทุกครั้งที่เริ่ม session",
+    "actions": [
+      {
+        "type": "read",
+        "file": ".omg/MEMORY.md",
+        "required": false
+      },
+      {
+        "type": "read",
+        "file": "todo.md",
+        "required": false
+      }
+    ]
+  },
+  "on_task_received": {
+    "description": "สร้างหรืออัพเดต todo.md เมื่อได้รับคำสั่งงาน",
+    "actions": [
+      {
+        "type": "append",
+        "file": "todo.md",
+        "format": "## {date} - {task_description}\n- [ ] {task_details}\n",
+        "never_overwrite": true
+      }
+    ]
+  },
+  "on_task_complete": {
+    "description": "ขั้นตอนก่อนบอกว่าเสร็จ",
+    "steps": [
+      {
+        "step": 1,
+        "action": "update_todo",
+        "description": "อัพเดต status task ใน todo.md เป็น [x] เสร็จ"
+      },
+      {
+        "step": 2,
+        "action": "verify",
+        "description": "ตรวจสอบซ้ำว่าสิ่งที่ทำถูกต้อง ครบถ้วน"
+      },
+      {
+        "step": 3,
+        "action": "lint_and_fix",
+        "tool": "biome",
+        "description": "รัน biome lint + biome check --apply ถ้าแก้ได้ ให้ biome แก้ ถ้าแก้ไม่ได้ → แก้ด้วยตัวเอง"
+      },
+      {
+        "step": 4,
+        "action": "test",
+        "priority": ["vitest", "playwright"],
+        "description": "รัน vitest เป็นอันดับแรก ถ้าเป็น UI test → ใช้ playwright ถ้าไม่มี playwright → รายงาน user + เสนอทางออก"
+      },
+      {
+        "step": 5,
+        "action": "build",
+        "description": "ถ้าโปรเจคต้อง build → รัน build ถ้ารันได้เลย → ข้ามไป test"
+      },
+      {
+        "step": 6,
+        "action": "write_work_log",
+        "file": "docs/WORK-LOG.md",
+        "description": "เขียนบันทึกสิ่งที่ทำ Evidence ผลการทดสอบ"
+      }
+    ]
+  },
+  "jsdoc_standards": {
+    "description": "มาตรฐาน JSDoc ที่ต้องเขียนในโค้ด",
+    "rule": "ใช้ TODO: <รายละเอียด> สำหรับงานที่ทำยังไม่เสร็จ",
+    "completed_format": "มาตรฐาน JSDoc — อธิบาย module, function, @param, @returns, @throws, logic, API contract",
+    "must_include": [
+      "@module — ชื่อ module",
+      "@description — อธิบายว่าไฟล์นี้ทำอะไร",
+      "@param — พารามิเตอร์แต่ละตัว (ถ้ามี)",
+      "@returns — ค่าที่ส่งกลับ (ถ้ามี)",
+      "@throws — error ที่โยน (ถ้ามี)",
+      "TODO: — งานค้าง (ถ้ายังไม่ได้ทำ)",
+      "@done — วันที่ + สรุปสิ่งที่ทำ (ถ้าเสร็จ)"
+    ]
+  }
+}
