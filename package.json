@@ -1,8 +1,27 @@
 {
   "name": "ibl1nk",
   "version": "1.0.0",
-  "type": "module",
+  "description": "แพลตฟอร์มจัดการงานเขียน all-in-one สำหรับนักเขียนนิยาย ที่รวมการจัดการโครงเรื่อง ตัวละคร การวิเคราะห์เนื้อหาด้วย AI และการซิงค์กับเครื่องมือภายนอก (Craft, Obsidian, Slack) ไว้ในที่เดียว",
+  "keywords": [
+    "ai",
+    "monorepo"
+  ],
+  "homepage": "https://github.com/billlzzz26/ibl1nk#readme",
+  "bugs": {
+    "url": "https://github.com/billlzzz26/ibl1nk/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/billlzzz26/ibl1nk.git"
+  },
   "license": "MIT",
+  "author": "billlzzz26",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
     "build": "vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",

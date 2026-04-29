@@ -12,6 +12,8 @@
 | [plan-then-confirm](./rules/learned/plan-then-confirm.md) | critical | บอกแผน → รอ confirm → ทำ — ไม่เริ่มเอง ไม่เกิน scope |
 | [no-duplicate-structure](./rules/learned/no-duplicate-structure.md) | critical | ห้ามสร้าง structure ซ้ำ — tests ซ้ำ, package ไม่มี src |
 | [thai-output-technical-unchanged](./rules/learned/thai-output-technical-unchanged.md) | standard | ตอบไทย — technical artifacts คงเดิม |
+| [research-must-document](./rules/learned/research-must-document.md) | critical | ทุก research ต้องบันทึกผลเป็นเอกสาร — ไม่เช่นนั้น session ต่อไปไม่มีหลักฐาน |
+| [file-deletion-authority](./rules/learned/file-deletion-authority.md) | critical | Agent ห้ามลบเอกสาร/ข้อมูล/Context — ลบได้เฉพาะ build artifacts + junk + ไฟล์ผิดพลาด (ต้องอธิบายก่อน) |
 
 ## Architecture Notes
 
