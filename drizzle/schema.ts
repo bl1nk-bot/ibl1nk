@@ -1,4 +1,11 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import {
+  int,
+  mysqlEnum,
+  mysqlTable,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -29,12 +36,19 @@ export type InsertUser = typeof users.$inferInsert;
 
 export const outlines = mysqlTable("outlines", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id),
+  userId: int("userId")
+    .notNull()
+    .references(() => users.id),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
   craftDocumentId: varchar("craftDocumentId", { length: 255 }),
   craftCollectionId: varchar("craftCollectionId", { length: 255 }),
-  status: mysqlEnum("status", ["draft", "in_progress", "completed", "archived"]).default("draft"),
+  status: mysqlEnum("status", [
+    "draft",
+    "in_progress",
+    "completed",
+    "archived",
+  ]).default("draft"),
   wordCount: int("wordCount").default(0),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -47,12 +61,19 @@ export type InsertOutline = typeof outlines.$inferInsert;
 
 export const chapters = mysqlTable("chapters", {
   id: int("id").autoincrement().primaryKey(),
-  outlineId: int("outlineId").notNull().references(() => outlines.id, { onDelete: "cascade" }),
+  outlineId: int("outlineId")
+    .notNull()
+    .references(() => outlines.id, { onDelete: "cascade" }),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
   chapterNumber: int("chapterNumber"),
   craftBlockId: varchar("craftBlockId", { length: 255 }),
-  status: mysqlEnum("status", ["planning", "writing", "reviewing", "completed"]).default("planning"),
+  status: mysqlEnum("status", [
+    "planning",
+    "writing",
+    "reviewing",
+    "completed",
+  ]).default("planning"),
   wordCount: int("wordCount").default(0),
   order: int("order").default(0),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -64,12 +85,19 @@ export type InsertChapter = typeof chapters.$inferInsert;
 
 export const scenes = mysqlTable("scenes", {
   id: int("id").autoincrement().primaryKey(),
-  chapterId: int("chapterId").notNull().references(() => chapters.id, { onDelete: "cascade" }),
+  chapterId: int("chapterId")
+    .notNull()
+    .references(() => chapters.id, { onDelete: "cascade" }),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
   sceneNumber: int("sceneNumber"),
   craftBlockId: varchar("craftBlockId", { length: 255 }),
-  status: mysqlEnum("status", ["planning", "writing", "reviewing", "completed"]).default("planning"),
+  status: mysqlEnum("status", [
+    "planning",
+    "writing",
+    "reviewing",
+    "completed",
+  ]).default("planning"),
   wordCount: int("wordCount").default(0),
   order: int("order").default(0),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -83,8 +111,12 @@ export type InsertScene = typeof scenes.$inferInsert;
 
 export const characters = mysqlTable("characters", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id),
-  outlineId: int("outlineId").references(() => outlines.id, { onDelete: "cascade" }),
+  userId: int("userId")
+    .notNull()
+    .references(() => users.id),
+  outlineId: int("outlineId").references(() => outlines.id, {
+    onDelete: "cascade",
+  }),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   traits: text("traits"), // JSON array of traits
@@ -99,23 +131,34 @@ export type InsertCharacter = typeof characters.$inferInsert;
 
 export const characterRelationships = mysqlTable("characterRelationships", {
   id: int("id").autoincrement().primaryKey(),
-  character1Id: int("character1Id").notNull().references(() => characters.id, { onDelete: "cascade" }),
-  character2Id: int("character2Id").notNull().references(() => characters.id, { onDelete: "cascade" }),
+  character1Id: int("character1Id")
+    .notNull()
+    .references(() => characters.id, { onDelete: "cascade" }),
+  character2Id: int("character2Id")
+    .notNull()
+    .references(() => characters.id, { onDelete: "cascade" }),
   relationshipType: varchar("relationshipType", { length: 100 }), // friend, enemy, family, romantic, etc.
   description: text("description"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
 export type CharacterRelationship = typeof characterRelationships.$inferSelect;
-export type InsertCharacterRelationship = typeof characterRelationships.$inferInsert;
+export type InsertCharacterRelationship =
+  typeof characterRelationships.$inferInsert;
 
 // ── Content Analysis ────────────────────────────────────────────
 
 export const contentAnalysis = mysqlTable("contentAnalysis", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id),
-  outlineId: int("outlineId").references(() => outlines.id, { onDelete: "cascade" }),
-  chapterId: int("chapterId").references(() => chapters.id, { onDelete: "cascade" }),
+  userId: int("userId")
+    .notNull()
+    .references(() => users.id),
+  outlineId: int("outlineId").references(() => outlines.id, {
+    onDelete: "cascade",
+  }),
+  chapterId: int("chapterId").references(() => chapters.id, {
+    onDelete: "cascade",
+  }),
   sceneId: int("sceneId").references(() => scenes.id, { onDelete: "cascade" }),
   analysisType: varchar("analysisType", { length: 100 }), // themes, conflicts, significance, sentiment, etc.
   content: text("content"), // JSON result of analysis
@@ -134,13 +177,20 @@ export type InsertContentAnalysis = typeof contentAnalysis.$inferInsert;
 
 export const obsidianSync = mysqlTable("obsidianSync", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id),
+  userId: int("userId")
+    .notNull()
+    .references(() => users.id),
   vaultPath: varchar("vaultPath", { length: 512 }).notNull(),
   filePath: varchar("filePath", { length: 512 }).notNull(),
   craftDocumentId: varchar("craftDocumentId", { length: 255 }),
   lastSyncedAt: timestamp("lastSyncedAt"),
   fileHash: varchar("fileHash", { length: 64 }), // SHA256 hash for change detection
-  syncStatus: mysqlEnum("syncStatus", ["pending", "synced", "failed", "conflict"]).default("pending"),
+  syncStatus: mysqlEnum("syncStatus", [
+    "pending",
+    "synced",
+    "failed",
+    "conflict",
+  ]).default("pending"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -152,8 +202,12 @@ export type InsertObsidianSync = typeof obsidianSync.$inferInsert;
 
 export const writingProgress = mysqlTable("writingProgress", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id),
-  outlineId: int("outlineId").references(() => outlines.id, { onDelete: "cascade" }),
+  userId: int("userId")
+    .notNull()
+    .references(() => users.id),
+  outlineId: int("outlineId").references(() => outlines.id, {
+    onDelete: "cascade",
+  }),
   date: varchar("date", { length: 10 }).notNull(), // YYYY-MM-DD
   wordsWritten: int("wordsWritten").default(0),
   sessionsCompleted: int("sessionsCompleted").default(0),
@@ -168,7 +222,9 @@ export type InsertWritingProgress = typeof writingProgress.$inferInsert;
 
 export const slackIntegration = mysqlTable("slackIntegration", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id),
+  userId: int("userId")
+    .notNull()
+    .references(() => users.id),
   slackUserId: varchar("slackUserId", { length: 255 }).notNull(),
   slackTeamId: varchar("slackTeamId", { length: 255 }).notNull(),
   accessToken: text("accessToken"), // Encrypted
@@ -186,7 +242,9 @@ export type InsertSlackIntegration = typeof slackIntegration.$inferInsert;
 
 export const craftCredentials = mysqlTable("craftCredentials", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().references(() => users.id),
+  userId: int("userId")
+    .notNull()
+    .references(() => users.id),
   accessToken: text("accessToken").notNull(), // Encrypted
   refreshToken: text("refreshToken"), // Encrypted
   tokenExpiresAt: timestamp("tokenExpiresAt"),

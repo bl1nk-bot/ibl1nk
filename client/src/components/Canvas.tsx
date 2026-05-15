@@ -1,5 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, Plus, Copy } from "lucide-react";
@@ -52,7 +58,7 @@ export function Canvas({
   const handleMouseDown = (e: React.MouseEvent, entryId: string) => {
     if ((e.target as HTMLElement).closest("button")) return;
 
-    const entry = entries.find((e) => e.id === entryId);
+    const entry = entries.find(e => e.id === entryId);
     if (!entry) return;
 
     setDraggedEntry(entryId);
@@ -67,11 +73,17 @@ export function Canvas({
       if (!draggedEntry || !canvasRef.current) return;
 
       const rect = canvasRef.current.getBoundingClientRect();
-      const newX = Math.max(0, Math.min(e.clientX - rect.left - offset.x, rect.width - 200));
-      const newY = Math.max(0, Math.min(e.clientY - rect.top - offset.y, rect.height - 100));
+      const newX = Math.max(
+        0,
+        Math.min(e.clientX - rect.left - offset.x, rect.width - 200)
+      );
+      const newY = Math.max(
+        0,
+        Math.min(e.clientY - rect.top - offset.y, rect.height - 100)
+      );
 
       onEntriesChange(
-        entries.map((entry) =>
+        entries.map(entry =>
           entry.id === draggedEntry ? { ...entry, x: newX, y: newY } : entry
         )
       );
@@ -93,11 +105,11 @@ export function Canvas({
   }, [draggedEntry, offset, entries, onEntriesChange]);
 
   const handleDelete = (id: string) => {
-    onEntriesChange(entries.filter((e) => e.id !== id));
+    onEntriesChange(entries.filter(e => e.id !== id));
   };
 
   const handleDuplicate = (id: string) => {
-    const entry = entries.find((e) => e.id === id);
+    const entry = entries.find(e => e.id === id);
     if (!entry) return;
 
     const newEntry: CanvasEntry = {
@@ -118,18 +130,20 @@ export function Canvas({
             <CardDescription>{description}</CardDescription>
           </div>
           <div className="flex gap-2">
-            {(["character", "scene", "plot", "theme", "note"] as const).map((type) => (
-              <Button
-                key={type}
-                size="sm"
-                variant="outline"
-                onClick={() => onAddEntry?.(type)}
-                className="text-xs"
-              >
-                <Plus className="w-3 h-3 mr-1" />
-                {typeLabels[type]}
-              </Button>
-            ))}
+            {(["character", "scene", "plot", "theme", "note"] as const).map(
+              type => (
+                <Button
+                  key={type}
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onAddEntry?.(type)}
+                  className="text-xs"
+                >
+                  <Plus className="w-3 h-3 mr-1" />
+                  {typeLabels[type]}
+                </Button>
+              )
+            )}
           </div>
         </div>
       </CardHeader>
@@ -142,13 +156,14 @@ export function Canvas({
           <svg
             className="absolute inset-0 w-full h-full opacity-10"
             style={{
-              backgroundImage: "linear-gradient(#ccc 1px, transparent 1px), linear-gradient(90deg, #ccc 1px, transparent 1px)",
+              backgroundImage:
+                "linear-gradient(#ccc 1px, transparent 1px), linear-gradient(90deg, #ccc 1px, transparent 1px)",
               backgroundSize: "20px 20px",
             }}
           />
 
           {/* Canvas entries */}
-          {entries.map((entry) => (
+          {entries.map(entry => (
             <div
               key={entry.id}
               className={`absolute w-48 p-3 rounded-lg border-2 cursor-move transition-shadow hover:shadow-lg ${typeColors[entry.type]} ${
@@ -159,7 +174,7 @@ export function Canvas({
                 top: `${entry.y}px`,
                 userSelect: "none",
               }}
-              onMouseDown={(e) => handleMouseDown(e, entry.id)}
+              onMouseDown={e => handleMouseDown(e, entry.id)}
             >
               <div className="flex items-start justify-between mb-2">
                 <Badge variant="secondary" className="text-xs">
@@ -183,11 +198,13 @@ export function Canvas({
                 </div>
               </div>
 
-              <h4 className="font-semibold text-sm mb-2 line-clamp-2">{entry.title}</h4>
+              <h4 className="font-semibold text-sm mb-2 line-clamp-2">
+                {entry.title}
+              </h4>
 
               {entry.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1">
-                  {entry.tags.map((tag) => (
+                  {entry.tags.map(tag => (
                     <Badge key={tag} variant="outline" className="text-xs">
                       {tag}
                     </Badge>
@@ -202,7 +219,9 @@ export function Canvas({
             <div className="absolute inset-0 flex items-center justify-center text-center pointer-events-none">
               <div className="text-gray-400">
                 <p className="text-lg font-semibold mb-2">Empty Canvas</p>
-                <p className="text-sm">Click the buttons above to add story elements</p>
+                <p className="text-sm">
+                  Click the buttons above to add story elements
+                </p>
               </div>
             </div>
           )}
@@ -210,7 +229,8 @@ export function Canvas({
 
         {/* Canvas info */}
         <div className="mt-3 text-xs text-muted-foreground">
-          {entries.length} element{entries.length !== 1 ? "s" : ""} • Drag to move • Right-click for options
+          {entries.length} element{entries.length !== 1 ? "s" : ""} • Drag to
+          move • Right-click for options
         </div>
       </CardContent>
     </Card>

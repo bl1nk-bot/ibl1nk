@@ -97,12 +97,8 @@
           "name": "chapters_outlineId_outlines_id_fk",
           "tableFrom": "chapters",
           "tableTo": "outlines",
-          "columnsFrom": [
-            "outlineId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["outlineId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -110,9 +106,7 @@
       "compositePrimaryKeys": {
         "chapters_id": {
           "name": "chapters_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -171,12 +165,8 @@
           "name": "characterRelationships_character1Id_characters_id_fk",
           "tableFrom": "characterRelationships",
           "tableTo": "characters",
-          "columnsFrom": [
-            "character1Id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["character1Id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -184,12 +174,8 @@
           "name": "characterRelationships_character2Id_characters_id_fk",
           "tableFrom": "characterRelationships",
           "tableTo": "characters",
-          "columnsFrom": [
-            "character2Id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["character2Id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -197,9 +183,7 @@
       "compositePrimaryKeys": {
         "characterRelationships_id": {
           "name": "characterRelationships_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -288,12 +272,8 @@
           "name": "characters_userId_users_id_fk",
           "tableFrom": "characters",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -301,12 +281,8 @@
           "name": "characters_outlineId_outlines_id_fk",
           "tableFrom": "characters",
           "tableTo": "outlines",
-          "columnsFrom": [
-            "outlineId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["outlineId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -314,9 +290,7 @@
       "compositePrimaryKeys": {
         "characters_id": {
           "name": "characters_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -426,12 +400,8 @@
           "name": "contentAnalysis_userId_users_id_fk",
           "tableFrom": "contentAnalysis",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -439,12 +409,8 @@
           "name": "contentAnalysis_outlineId_outlines_id_fk",
           "tableFrom": "contentAnalysis",
           "tableTo": "outlines",
-          "columnsFrom": [
-            "outlineId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["outlineId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -452,12 +418,8 @@
           "name": "contentAnalysis_chapterId_chapters_id_fk",
           "tableFrom": "contentAnalysis",
           "tableTo": "chapters",
-          "columnsFrom": [
-            "chapterId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["chapterId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -465,12 +427,8 @@
           "name": "contentAnalysis_sceneId_scenes_id_fk",
           "tableFrom": "contentAnalysis",
           "tableTo": "scenes",
-          "columnsFrom": [
-            "sceneId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sceneId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -478,9 +436,7 @@
       "compositePrimaryKeys": {
         "contentAnalysis_id": {
           "name": "contentAnalysis_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -563,12 +519,8 @@
           "name": "craftCredentials_userId_users_id_fk",
           "tableFrom": "craftCredentials",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -576,9 +528,7 @@
       "compositePrimaryKeys": {
         "craftCredentials_id": {
           "name": "craftCredentials_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -668,12 +618,8 @@
           "name": "obsidianSync_userId_users_id_fk",
           "tableFrom": "obsidianSync",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -681,9 +627,7 @@
       "compositePrimaryKeys": {
         "obsidianSync_id": {
           "name": "obsidianSync_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -774,12 +718,8 @@
           "name": "outlines_userId_users_id_fk",
           "tableFrom": "outlines",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -787,9 +727,7 @@
       "compositePrimaryKeys": {
         "outlines_id": {
           "name": "outlines_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -888,12 +826,8 @@
           "name": "scenes_chapterId_chapters_id_fk",
           "tableFrom": "scenes",
           "tableTo": "chapters",
-          "columnsFrom": [
-            "chapterId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["chapterId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -901,9 +835,7 @@
       "compositePrimaryKeys": {
         "scenes_id": {
           "name": "scenes_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -993,12 +925,8 @@
           "name": "slackIntegration_userId_users_id_fk",
           "tableFrom": "slackIntegration",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1006,9 +934,7 @@
       "compositePrimaryKeys": {
         "slackIntegration_id": {
           "name": "slackIntegration_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -1091,17 +1017,13 @@
       "compositePrimaryKeys": {
         "users_id": {
           "name": "users_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "users_openId_unique": {
           "name": "users_openId_unique",
-          "columns": [
-            "openId"
-          ]
+          "columns": ["openId"]
         }
       },
       "checkConstraint": {}
@@ -1175,12 +1097,8 @@
           "name": "writingProgress_userId_users_id_fk",
           "tableFrom": "writingProgress",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1188,12 +1106,8 @@
           "name": "writingProgress_outlineId_outlines_id_fk",
           "tableFrom": "writingProgress",
           "tableTo": "outlines",
-          "columnsFrom": [
-            "outlineId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["outlineId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1201,9 +1115,7 @@
       "compositePrimaryKeys": {
         "writingProgress_id": {
           "name": "writingProgress_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},

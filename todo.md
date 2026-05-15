@@ -169,6 +169,7 @@
 ## SQL Migration Files (Meaningful Naming Convention)
 
 When creating SQL migrations, use this naming pattern:
+
 - `001_create_outlines_chapters_scenes.sql` - Initial schema for story structure
 - `002_create_characters_relationships.sql` - Character database and relationships
 - `003_create_analysis_results.sql` - Content analysis storage
@@ -177,6 +178,7 @@ When creating SQL migrations, use this naming pattern:
 - `006_create_writing_progress_tracking.sql` - Daily writing statistics
 
 Each migration file should:
+
 1. Have a sequential number (001, 002, etc.)
 2. Clearly describe what tables/columns it creates or modifies
 3. Include comments explaining the purpose of each table
@@ -187,17 +189,20 @@ Each migration file should:
 ## Plugin Integration Points
 
 ### Manus System Hooks
+
 - [ ] Register plugin with Manus plugin manager
 - [ ] Implement lifecycle hooks (init, activate, deactivate)
 - [ ] Add plugin to sidebar/menu
 - [ ] Create plugin settings panel
 
 ### Built-in Skills Integration
+
 - [ ] Integrate visual-explainer for dashboard generation
 - [ ] Use claude-writer-plugin skill for content analysis
 - [ ] Leverage built-in LLM for AI features
 
 ### External Service Integrations
+
 - [ ] Craft API OAuth setup
 - [ ] Obsidian vault configuration
 - [ ] Slack App OAuth setup
