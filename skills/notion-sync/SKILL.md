@@ -10,6 +10,7 @@ description: "ซิงค์ข้อมูล context.json กับ Notion da
 ## Prerequisites
 
 ก่อนใช้งาน ผู้ใช้ต้องเตรียม:
+
 1. **Notion Integration Token** — สร้างที่ https://www.notion.so/my-integrations
 2. **Database IDs** — 4 databases ตาม `notion-schema.json`:
    - Episodes Database ID
@@ -41,13 +42,13 @@ description: "ซิงค์ข้อมูล context.json กับ Notion da
 
 ## Sync Rules (จาก notion-schema.json)
 
-| Event                  | Databases ที่ sync                    |
-|------------------------|---------------------------------------|
-| `/sync-notion` (full)  | ทุก databases                         |
-| หลัง write-episodes    | episodes + plot_points                |
-| หลัง start-project     | characters + marketing_assets         |
-| หลัง marketing-assets  | marketing_assets                      |
-| หลัง update-context    | characters + plot_points              |
+| Event                 | Databases ที่ sync            |
+| --------------------- | ----------------------------- |
+| `/sync-notion` (full) | ทุก databases                 |
+| หลัง write-episodes   | episodes + plot_points        |
+| หลัง start-project    | characters + marketing_assets |
+| หลัง marketing-assets | marketing_assets              |
+| หลัง update-context   | characters + plot_points      |
 
 ## Output Format
 

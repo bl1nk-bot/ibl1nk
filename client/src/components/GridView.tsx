@@ -32,7 +32,7 @@ export function GridView({ items, columns = 3, onItemClick }: GridViewProps) {
 
   return (
     <div className={`grid ${gridColsClass[columns]} gap-4`}>
-      {items.map((item) => (
+      {items.map(item => (
         <Card
           key={item.id}
           className="cursor-pointer hover:shadow-lg transition-shadow"
@@ -55,7 +55,10 @@ export function GridView({ items, columns = 3, onItemClick }: GridViewProps) {
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold truncate">{item.title}</h3>
                 {item.badge && (
-                  <Badge variant={item.badgeVariant || "secondary"} className="mt-1 text-xs">
+                  <Badge
+                    variant={item.badgeVariant || "secondary"}
+                    className="mt-1 text-xs"
+                  >
                     {item.badge}
                   </Badge>
                 )}
@@ -64,7 +67,7 @@ export function GridView({ items, columns = 3, onItemClick }: GridViewProps) {
                 variant="ghost"
                 size="sm"
                 className="h-8 w-8 p-0"
-                onClick={(e) => e.stopPropagation()}
+                onClick={e => e.stopPropagation()}
               >
                 <MoreVertical className="w-4 h-4" />
               </Button>
@@ -72,13 +75,15 @@ export function GridView({ items, columns = 3, onItemClick }: GridViewProps) {
 
             {/* Description */}
             {item.description && (
-              <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                {item.description}
+              </p>
             )}
 
             {/* Tags */}
             {item.tags && item.tags.length > 0 && (
               <div className="flex flex-wrap gap-1">
-                {item.tags.slice(0, 3).map((tag) => (
+                {item.tags.slice(0, 3).map(tag => (
                   <Badge key={tag} variant="outline" className="text-xs">
                     {tag}
                   </Badge>
@@ -94,9 +99,11 @@ export function GridView({ items, columns = 3, onItemClick }: GridViewProps) {
             {/* Stats */}
             {item.stats && item.stats.length > 0 && (
               <div className="grid grid-cols-2 gap-2 pt-2 border-t">
-                {item.stats.map((stat) => (
+                {item.stats.map(stat => (
                   <div key={stat.label}>
-                    <p className="text-xs text-muted-foreground">{stat.label}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {stat.label}
+                    </p>
                     <p className="font-semibold text-sm">{stat.value}</p>
                   </div>
                 ))}
@@ -111,7 +118,7 @@ export function GridView({ items, columns = 3, onItemClick }: GridViewProps) {
                     variant="outline"
                     size="sm"
                     className="flex-1"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       item.onEdit?.();
                     }}
@@ -125,7 +132,7 @@ export function GridView({ items, columns = 3, onItemClick }: GridViewProps) {
                     variant="outline"
                     size="sm"
                     className="flex-1"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       item.onDelete?.();
                     }}
