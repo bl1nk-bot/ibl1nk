@@ -1,0 +1,3 @@
+## 2024-05-19 - Fast HTML to Plaintext Extraction
+**Learning:** Instantiating `document.createElement('div')` inside high-frequency loops (like search indexing and filtering with Fuse.js) causes significant GC pressure and slowdowns. The comma operator `(doc.innerHTML = html, doc.textContent)` creates a new doc instead of reusing it.
+**Action:** Instead of inline element creation or full regex matching, define a cached `const div = document.createElement('div')` outside the render loop and reuse it for `.innerHTML` assignment and `.textContent` extraction. Include a fallback regex for SSR environments.

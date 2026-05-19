@@ -1,8 +1,21 @@
 import { useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -70,7 +83,9 @@ const roleLabels = {
 export default function Characters() {
   const { isAuthenticated } = useAuth();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [selectedCharacter, setSelectedCharacter] = useState<typeof sampleCharacters[0] | null>(null);
+  const [selectedCharacter, setSelectedCharacter] = useState<
+    (typeof sampleCharacters)[0] | null
+  >(null);
   const [newCharacter, setNewCharacter] = useState({
     name: "",
     role: "supporting",
@@ -89,7 +104,12 @@ export default function Characters() {
   const handleCreateCharacter = () => {
     // TODO: Call tRPC mutation
     console.log("Creating character:", newCharacter);
-    setNewCharacter({ name: "", role: "supporting", description: "", traits: "" });
+    setNewCharacter({
+      name: "",
+      role: "supporting",
+      description: "",
+      traits: "",
+    });
     setIsCreateDialogOpen(false);
   };
 
@@ -99,7 +119,9 @@ export default function Characters() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold tracking-tight">Characters</h1>
-          <p className="text-muted-foreground mt-2">Manage your story characters and relationships</p>
+          <p className="text-muted-foreground mt-2">
+            Manage your story characters and relationships
+          </p>
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
@@ -111,7 +133,9 @@ export default function Characters() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Create New Character</DialogTitle>
-              <DialogDescription>Add a new character to your story</DialogDescription>
+              <DialogDescription>
+                Add a new character to your story
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
@@ -120,7 +144,9 @@ export default function Characters() {
                   id="name"
                   placeholder="Enter character name"
                   value={newCharacter.name}
-                  onChange={(e) => setNewCharacter({ ...newCharacter, name: e.target.value })}
+                  onChange={e =>
+                    setNewCharacter({ ...newCharacter, name: e.target.value })
+                  }
                 />
               </div>
               <div>
@@ -129,7 +155,9 @@ export default function Characters() {
                   id="role"
                   className="w-full px-3 py-2 border rounded-md"
                   value={newCharacter.role}
-                  onChange={(e) => setNewCharacter({ ...newCharacter, role: e.target.value })}
+                  onChange={e =>
+                    setNewCharacter({ ...newCharacter, role: e.target.value })
+                  }
                 >
                   <option value="protagonist">Protagonist</option>
                   <option value="antagonist">Antagonist</option>
@@ -144,7 +172,12 @@ export default function Characters() {
                   id="description"
                   placeholder="Describe the character"
                   value={newCharacter.description}
-                  onChange={(e) => setNewCharacter({ ...newCharacter, description: e.target.value })}
+                  onChange={e =>
+                    setNewCharacter({
+                      ...newCharacter,
+                      description: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div>
@@ -153,7 +186,9 @@ export default function Characters() {
                   id="traits"
                   placeholder="e.g., brave, intelligent, mysterious"
                   value={newCharacter.traits}
-                  onChange={(e) => setNewCharacter({ ...newCharacter, traits: e.target.value })}
+                  onChange={e =>
+                    setNewCharacter({ ...newCharacter, traits: e.target.value })
+                  }
                 />
               </div>
               <Button onClick={handleCreateCharacter} className="w-full">
@@ -166,9 +201,9 @@ export default function Characters() {
 
       {/* Characters Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {sampleCharacters.map((character) => (
-          <Card 
-            key={character.id} 
+        {sampleCharacters.map(character => (
+          <Card
+            key={character.id}
             className="cursor-pointer hover:shadow-lg transition-shadow"
             onClick={() => setSelectedCharacter(character)}
           >
@@ -176,7 +211,11 @@ export default function Characters() {
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h3 className="text-lg font-semibold">{character.name}</h3>
-                  <Badge className={roleColors[character.role as keyof typeof roleColors]}>
+                  <Badge
+                    className={
+                      roleColors[character.role as keyof typeof roleColors]
+                    }
+                  >
                     {roleLabels[character.role as keyof typeof roleLabels]}
                   </Badge>
                 </div>
@@ -190,14 +229,22 @@ export default function Characters() {
                 </div>
               </div>
 
-              <p className="text-sm text-muted-foreground mb-3">{character.description}</p>
+              <p className="text-sm text-muted-foreground mb-3">
+                {character.description}
+              </p>
 
               <div className="space-y-2">
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground mb-1">Traits</p>
+                  <p className="text-xs font-medium text-muted-foreground mb-1">
+                    Traits
+                  </p>
                   <div className="flex flex-wrap gap-1">
-                    {character.traits.map((trait) => (
-                      <Badge key={trait} variant="secondary" className="text-xs">
+                    {character.traits.map(trait => (
+                      <Badge
+                        key={trait}
+                        variant="secondary"
+                        className="text-xs"
+                      >
                         {trait}
                       </Badge>
                     ))}
@@ -206,12 +253,18 @@ export default function Characters() {
 
                 <div className="grid grid-cols-2 gap-2 pt-2 border-t">
                   <div>
-                    <p className="text-xs text-muted-foreground">Relationships</p>
-                    <p className="text-lg font-semibold">{character.relationships}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Relationships
+                    </p>
+                    <p className="text-lg font-semibold">
+                      {character.relationships}
+                    </p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Appearances</p>
-                    <p className="text-lg font-semibold">{character.appearances}</p>
+                    <p className="text-lg font-semibold">
+                      {character.appearances}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -226,7 +279,8 @@ export default function Characters() {
           <CardHeader>
             <CardTitle>{selectedCharacter.name}</CardTitle>
             <CardDescription>
-              {roleLabels[selectedCharacter.role as keyof typeof roleLabels]} • {selectedCharacter.appearances} appearances
+              {roleLabels[selectedCharacter.role as keyof typeof roleLabels]} •{" "}
+              {selectedCharacter.appearances} appearances
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -241,13 +295,15 @@ export default function Characters() {
               <TabsContent value="details" className="space-y-4">
                 <div>
                   <h4 className="font-semibold mb-2">Description</h4>
-                  <p className="text-muted-foreground">{selectedCharacter.description}</p>
+                  <p className="text-muted-foreground">
+                    {selectedCharacter.description}
+                  </p>
                 </div>
 
                 <div>
                   <h4 className="font-semibold mb-2">Traits</h4>
                   <div className="flex flex-wrap gap-2">
-                    {selectedCharacter.traits.map((trait) => (
+                    {selectedCharacter.traits.map(trait => (
                       <Badge key={trait}>{trait}</Badge>
                     ))}
                   </div>
@@ -271,11 +327,16 @@ export default function Characters() {
                     { name: "Marcus", type: "Mentor" },
                     { name: "Elena", type: "Rival" },
                     { name: "James", type: "Friend" },
-                  ].map((rel) => (
-                    <div key={rel.name} className="flex items-center justify-between p-3 border rounded-lg">
+                  ].map(rel => (
+                    <div
+                      key={rel.name}
+                      className="flex items-center justify-between p-3 border rounded-lg"
+                    >
                       <div>
                         <p className="font-medium">{rel.name}</p>
-                        <p className="text-sm text-muted-foreground">{rel.type}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {rel.type}
+                        </p>
                       </div>
                       <Button variant="ghost" size="sm">
                         <LinkIcon className="w-4 h-4" />
@@ -293,15 +354,29 @@ export default function Characters() {
               <TabsContent value="arc" className="space-y-3">
                 <div className="space-y-2">
                   {[
-                    { chapter: "Chapter 1", event: "Discovers the letter", emotion: "Curious" },
-                    { chapter: "Chapter 4", event: "Meets Marcus again", emotion: "Conflicted" },
-                    { chapter: "Chapter 8", event: "Confronts Elena", emotion: "Determined" },
+                    {
+                      chapter: "Chapter 1",
+                      event: "Discovers the letter",
+                      emotion: "Curious",
+                    },
+                    {
+                      chapter: "Chapter 4",
+                      event: "Meets Marcus again",
+                      emotion: "Conflicted",
+                    },
+                    {
+                      chapter: "Chapter 8",
+                      event: "Confronts Elena",
+                      emotion: "Determined",
+                    },
                   ].map((arc, i) => (
                     <div key={i} className="p-3 border rounded-lg">
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-medium">{arc.chapter}</p>
-                          <p className="text-sm text-muted-foreground">{arc.event}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {arc.event}
+                          </p>
                         </div>
                         <Badge variant="secondary">{arc.emotion}</Badge>
                       </div>
@@ -322,13 +397,17 @@ export default function Characters() {
       <Card>
         <CardHeader>
           <CardTitle>Character Relationship Map</CardTitle>
-          <CardDescription>Visual overview of character connections</CardDescription>
+          <CardDescription>
+            Visual overview of character connections
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="bg-muted p-8 rounded-lg text-center text-muted-foreground">
             <Users className="w-12 h-12 mx-auto mb-2 opacity-50" />
             <p>Mermaid diagram will render here</p>
-            <p className="text-sm">Showing relationships between all characters</p>
+            <p className="text-sm">
+              Showing relationships between all characters
+            </p>
           </div>
         </CardContent>
       </Card>

@@ -14,6 +14,7 @@ A complete writing management system that integrates Craft, Obsidian, AI analysi
 The plugin provides hierarchical story structure management with automatic synchronization to Craft Collections:
 
 **Create and organize story outlines:**
+
 - Create new outlines with title, description, and metadata
 - Organize outlines into chapters (with numbering and status tracking)
 - Break chapters into scenes (with scene numbers and word counts)
@@ -21,6 +22,7 @@ The plugin provides hierarchical story structure management with automatic synch
 - Automatic word count aggregation from scenes to chapters to outlines
 
 **API Usage:**
+
 ```
 trpc.outlines.create({ title, description, craftDocumentId?, craftCollectionId? })
 trpc.outlines.chapters({ outlineId })
@@ -34,6 +36,7 @@ trpc.outlines.storyOverview({ outlineId })
 Comprehensive character database with relationship mapping:
 
 **Character tracking features:**
+
 - Store character name, description, traits (as JSON array), and role (protagonist/antagonist/supporting)
 - Link characters to specific outlines or keep them global
 - Track character relationships with relationship type and description
@@ -41,6 +44,7 @@ Comprehensive character database with relationship mapping:
 - Support for character mentions detection in content
 
 **API Usage:**
+
 ```
 trpc.characters.create({ outlineId?, name, description, traits, role, craftCollectionItemId? })
 trpc.characters.listByOutline({ outlineId })
@@ -53,6 +57,7 @@ trpc.characters.addRelationship({ character1Id, character2Id, relationshipType, 
 AI-powered analysis of narrative content:
 
 **Analysis types supported:**
+
 - Sentiment analysis (positive/negative/neutral/mixed)
 - Keyword extraction and density analysis
 - Spell check and grammar correction
@@ -62,6 +67,7 @@ AI-powered analysis of narrative content:
 - Rewriting suggestions for improvement
 
 **Storage structure:**
+
 - Results stored with analysisType, sentimentScore, keywordDensity, highlights, suggestions
 - Can be scoped to outline, chapter, or scene level
 - Timestamped for version tracking
@@ -71,6 +77,7 @@ AI-powered analysis of narrative content:
 Seamless synchronization with Obsidian vaults:
 
 **Sync workflow:**
+
 1. Configure vault path and file patterns
 2. Extract outline from Markdown headings (H1→outline, H2→chapter, H3→scene)
 3. Detect file changes via SHA256 hash comparison
@@ -82,6 +89,7 @@ Seamless synchronization with Obsidian vaults:
 Direct integration with Craft for document and collection management:
 
 **Supported operations:**
+
 - Create/read/update Craft Collections for story structure
 - Manage Craft Documents for chapters and scenes
 - Store Craft API credentials securely (encrypted tokens)
@@ -93,6 +101,7 @@ Direct integration with Craft for document and collection management:
 Real-time notifications and commands for writing workflow:
 
 **Slack features:**
+
 - Daily writing progress notifications
 - Slash commands: `/claude-writer analyze`, `/claude-writer character`, `/claude-writer dashboard`
 - Incoming webhooks for custom notifications
@@ -104,6 +113,7 @@ Real-time notifications and commands for writing workflow:
 Granular tracking of writing productivity:
 
 **Daily tracking:**
+
 - Date-based entries (YYYY-MM-DD format)
 - Words written per session
 - Number of sessions completed
@@ -115,6 +125,7 @@ Granular tracking of writing productivity:
 Interactive HTML dashboard with multiple views:
 
 **Dashboard sections:**
+
 - Writing progress charts (Chart.js)
 - Story outline visualization (Mermaid flowchart)
 - Character relationship maps (Mermaid graph)
@@ -152,18 +163,18 @@ Slack (accountability)
 
 ### Core Tables
 
-| Table | Purpose | Key Fields |
-|-------|---------|-----------|
-| `outlines` | Story structure | userId, title, status, wordCount, craftDocumentId |
-| `chapters` | Chapters within outlines | outlineId, title, status, wordCount, order |
-| `scenes` | Scenes within chapters | chapterId, title, status, wordCount, order |
-| `characters` | Character database | userId, outlineId, name, traits, role |
-| `characterRelationships` | Character connections | character1Id, character2Id, relationshipType |
-| `contentAnalysis` | Analysis results | userId, outlineId/chapterId/sceneId, analysisType, sentimentScore |
-| `writingProgress` | Daily tracking | userId, outlineId, date, wordsWritten, sessionsCompleted |
-| `obsidianSync` | Sync metadata | userId, vaultPath, filePath, lastSyncedAt, fileHash, syncStatus |
-| `craftCredentials` | Craft API tokens | userId, accessToken, refreshToken, tokenExpiresAt |
-| `slackIntegration` | Slack OAuth tokens | userId, slackUserId, slackTeamId, accessToken |
+| Table                    | Purpose                  | Key Fields                                                        |
+| ------------------------ | ------------------------ | ----------------------------------------------------------------- |
+| `outlines`               | Story structure          | userId, title, status, wordCount, craftDocumentId                 |
+| `chapters`               | Chapters within outlines | outlineId, title, status, wordCount, order                        |
+| `scenes`                 | Scenes within chapters   | chapterId, title, status, wordCount, order                        |
+| `characters`             | Character database       | userId, outlineId, name, traits, role                             |
+| `characterRelationships` | Character connections    | character1Id, character2Id, relationshipType                      |
+| `contentAnalysis`        | Analysis results         | userId, outlineId/chapterId/sceneId, analysisType, sentimentScore |
+| `writingProgress`        | Daily tracking           | userId, outlineId, date, wordsWritten, sessionsCompleted          |
+| `obsidianSync`           | Sync metadata            | userId, vaultPath, filePath, lastSyncedAt, fileHash, syncStatus   |
+| `craftCredentials`       | Craft API tokens         | userId, accessToken, refreshToken, tokenExpiresAt                 |
+| `slackIntegration`       | Slack OAuth tokens       | userId, slackUserId, slackTeamId, accessToken                     |
 
 ## Configuration
 
@@ -193,10 +204,12 @@ DATABASE_URL=mysql://user:pass@host/db
 ## API Endpoints
 
 All endpoints are tRPC procedures accessible via:
+
 - Frontend: `trpc.outlines.*`, `trpc.characters.*`, etc.
 - Backend: `appRouter.outlines.*`, `appRouter.characters.*`, etc.
 
 ### Outlines Router
+
 - `outlines.list` - Get all outlines for user
 - `outlines.get` - Get specific outline
 - `outlines.create` - Create new outline
@@ -210,6 +223,7 @@ All endpoints are tRPC procedures accessible via:
 - `outlines.storyOverview` - Get complete story overview
 
 ### Characters Router
+
 - `characters.listByOutline` - Get characters in outline
 - `characters.listByUser` - Get all user characters
 - `characters.create` - Create character
@@ -225,7 +239,7 @@ All endpoints are tRPC procedures accessible via:
 // Create outline
 const outline = await trpc.outlines.create.mutate({
   title: "The Lost Kingdom",
-  description: "A fantasy epic about rediscovering a hidden realm"
+  description: "A fantasy epic about rediscovering a hidden realm",
 });
 
 // Add chapters
@@ -233,7 +247,7 @@ const chapter1 = await trpc.outlines.createChapter.mutate({
   outlineId: outline.id,
   title: "The Awakening",
   chapterNumber: 1,
-  order: 0
+  order: 0,
 });
 
 // Add scenes
@@ -241,7 +255,7 @@ const scene1 = await trpc.outlines.createScene.mutate({
   chapterId: chapter1.id,
   title: "The Dream",
   sceneNumber: 1,
-  order: 0
+  order: 0,
 });
 ```
 
@@ -253,7 +267,7 @@ const protagonist = await trpc.characters.create.mutate({
   outlineId: outline.id,
   name: "Aria",
   role: "protagonist",
-  traits: JSON.stringify(["brave", "curious", "determined"])
+  traits: JSON.stringify(["brave", "curious", "determined"]),
 });
 
 // Add relationship
@@ -261,7 +275,7 @@ await trpc.characters.addRelationship.mutate({
   character1Id: protagonist.id,
   character2Id: mentor.id,
   relationshipType: "mentor",
-  description: "Aria's guide and protector"
+  description: "Aria's guide and protector",
 });
 ```
 
@@ -269,7 +283,7 @@ await trpc.characters.addRelationship.mutate({
 
 ```javascript
 const overview = await trpc.outlines.storyOverview.query({
-  outlineId: outline.id
+  outlineId: outline.id,
 });
 
 // Returns: { outline, chapters, characters, stats }

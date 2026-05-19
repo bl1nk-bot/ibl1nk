@@ -1,11 +1,34 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { X, Plus, Copy, Undo2, Redo2, Save, Download, Upload, Share2 } from "lucide-react";
+import {
+  X,
+  Plus,
+  Copy,
+  Undo2,
+  Redo2,
+  Save,
+  Download,
+  Upload,
+  Share2,
+} from "lucide-react";
 import { useHistory } from "@/hooks/useHistory";
 import { Canvas, CanvasEntry } from "./Canvas";
 
@@ -20,7 +43,14 @@ export function CanvasWithTools({
   description = "Drag and arrange your story elements",
   onSaveToCraft,
 }: CanvasWithToolsProps) {
-  const { state: entries, setState: setEntries, undo, redo, canUndo, canRedo } = useHistory<CanvasEntry[]>([]);
+  const {
+    state: entries,
+    setState: setEntries,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  } = useHistory<CanvasEntry[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
@@ -72,7 +102,7 @@ export function CanvasWithTools({
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = event => {
       try {
         const imported = JSON.parse(event.target?.result as string);
         if (Array.isArray(imported)) {
@@ -147,11 +177,19 @@ export function CanvasWithTools({
                       <Download className="w-4 h-4 mr-2" />
                       Export as JSON
                     </Button>
-                    <Button variant="outline" className="w-full justify-start" disabled>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start"
+                      disabled
+                    >
                       <Download className="w-4 h-4 mr-2" />
                       Export as PDF (Coming Soon)
                     </Button>
-                    <Button variant="outline" className="w-full justify-start" disabled>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start"
+                      disabled
+                    >
                       <Download className="w-4 h-4 mr-2" />
                       Export as EPUB (Coming Soon)
                     </Button>
@@ -185,7 +223,8 @@ export function CanvasWithTools({
                       />
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Import a previously exported canvas file to restore your story elements
+                      Import a previously exported canvas file to restore your
+                      story elements
                     </p>
                   </div>
                 </DialogContent>
