@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, or, and, gte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser, users,
@@ -198,7 +198,7 @@ export async function updateCharacter(id: number, data: Partial<InsertCharacter>
 export async function getCharacterRelationships(characterId: number) {
   const db = await getDb();
   if (!db) return [];
-  const { or } = await import("drizzle-orm");
+
   return db.select().from(characterRelationships).where(
     or(
       eq(characterRelationships.character1Id, characterId),
@@ -236,7 +236,7 @@ export async function getWritingProgressForUser(userId: number, days: number = 3
   startDate.setDate(startDate.getDate() - days);
   const dateStr = startDate.toISOString().split('T')[0];
   
-  const { gte, and } = await import("drizzle-orm");
+
   return db.select().from(writingProgress).where(
     and(
       eq(writingProgress.userId, userId),
@@ -275,7 +275,7 @@ export async function saveCraftCredentials(data: InsertCraftCredentials) {
 export async function getObsidianSyncStatus(userId: number, filePath: string) {
   const db = await getDb();
   if (!db) return undefined;
-  const { and } = await import("drizzle-orm");
+
   const result = await db.select().from(obsidianSync).where(
     and(
       eq(obsidianSync.userId, userId),
