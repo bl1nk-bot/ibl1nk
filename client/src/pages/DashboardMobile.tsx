@@ -1,11 +1,36 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { BookOpen, Users, Zap, TrendingUp, Plus, Settings, ChevronRight } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
+import {
+  BookOpen,
+  Users,
+  Zap,
+  TrendingUp,
+  Plus,
+  Settings,
+  ChevronRight,
+} from "lucide-react";
 import { Link } from "wouter";
 
 // Sample data
@@ -37,7 +62,8 @@ export default function DashboardMobile() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
-              Manage your stories, characters, and writing progress in one place.
+              Manage your stories, characters, and writing progress in one
+              place.
             </p>
             <Button className="w-full">Log In</Button>
           </CardContent>
@@ -53,7 +79,9 @@ export default function DashboardMobile() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold">Welcome back!</h1>
-            <p className="text-xs text-muted-foreground">{user?.name || "Writer"}</p>
+            <p className="text-xs text-muted-foreground">
+              {user?.name || "Writer"}
+            </p>
           </div>
           <Link href="/settings">
             <Button variant="ghost" size="sm">
@@ -70,11 +98,17 @@ export default function DashboardMobile() {
           <Card>
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Total Words</p>
+                <p className="text-sm text-muted-foreground mb-1">
+                  Total Words
+                </p>
                 <p className="text-3xl font-bold">24,580</p>
-                <p className="text-xs text-muted-foreground mt-1">+2,580 this week</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  +2,580 this week
+                </p>
                 <Progress value={68} className="mt-3" />
-                <p className="text-xs text-muted-foreground mt-1">68% of 36,000 goal</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  68% of 36,000 goal
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -82,11 +116,19 @@ export default function DashboardMobile() {
           <Card>
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Active Stories</p>
+                <p className="text-sm text-muted-foreground mb-1">
+                  Active Stories
+                </p>
                 <p className="text-3xl font-bold">3</p>
-                <p className="text-xs text-muted-foreground mt-1">2 in progress</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  2 in progress
+                </p>
                 <Link href="/outlines" className="block mt-3">
-                  <Button variant="outline" size="sm" className="w-full text-xs">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-xs"
+                  >
                     View Stories <ChevronRight className="w-3 h-3 ml-1" />
                   </Button>
                 </Link>
@@ -99,9 +141,15 @@ export default function DashboardMobile() {
               <div className="text-center">
                 <p className="text-sm text-muted-foreground mb-1">Characters</p>
                 <p className="text-3xl font-bold">12</p>
-                <p className="text-xs text-muted-foreground mt-1">Across all stories</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Across all stories
+                </p>
                 <Link href="/characters" className="block mt-3">
-                  <Button variant="outline" size="sm" className="w-full text-xs">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-xs"
+                  >
                     Manage <ChevronRight className="w-3 h-3 ml-1" />
                   </Button>
                 </Link>
@@ -112,12 +160,19 @@ export default function DashboardMobile() {
           <Card>
             <CardContent className="pt-6">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Writing Streak</p>
+                <p className="text-sm text-muted-foreground mb-1">
+                  Writing Streak
+                </p>
                 <p className="text-3xl font-bold">7</p>
-                <p className="text-xs text-muted-foreground mt-1">days in a row</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  days in a row
+                </p>
                 <div className="flex gap-1 justify-center mt-3">
                   {[...Array(7)].map((_, i) => (
-                    <div key={i} className="w-2 h-2 rounded-full bg-accent-gold" />
+                    <div
+                      key={i}
+                      className="w-2 h-2 rounded-full bg-accent-gold"
+                    />
                   ))}
                 </div>
               </div>
@@ -201,11 +256,18 @@ export default function DashboardMobile() {
               { title: "Updated Aria's backstory", time: "5h ago" },
               { title: "Content analysis done", time: "1d ago" },
             ].map((activity, i) => (
-              <div key={i} className="flex items-start gap-2 pb-2 border-b last:border-0">
+              <div
+                key={i}
+                className="flex items-start gap-2 pb-2 border-b last:border-0"
+              >
                 <div className="w-2 h-2 rounded-full bg-accent-gold mt-1 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium truncate">{activity.title}</p>
-                  <p className="text-xs text-muted-foreground">{activity.time}</p>
+                  <p className="text-xs font-medium truncate">
+                    {activity.title}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {activity.time}
+                  </p>
                 </div>
               </div>
             ))}
@@ -230,7 +292,7 @@ export default function DashboardMobile() {
           </Link>
           <Button variant="default" size="sm" className="w-full text-xs">
             <Plus className="w-3 h-3 mr-1" />
-              New
+            New
           </Button>
         </div>
       </div>

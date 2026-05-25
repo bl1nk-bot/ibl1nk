@@ -12,7 +12,10 @@ export function useHistory<T>(initialState: T) {
 
   const setState = useCallback(
     (newState: T | ((prev: T) => T)) => {
-      const nextState = typeof newState === "function" ? (newState as (prev: T) => T)(state) : newState;
+      const nextState =
+        typeof newState === "function"
+          ? (newState as (prev: T) => T)(state)
+          : newState;
 
       // Remove any future history when making a new change
       const newHistory = history.slice(0, currentIndex + 1);

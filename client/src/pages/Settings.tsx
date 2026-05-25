@@ -1,12 +1,23 @@
 import { useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, CheckCircle2, Link as LinkIcon, Unlink } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Link as LinkIcon,
+  Unlink,
+} from "lucide-react";
 
 export default function Settings() {
   const { user, logout } = useAuth();
@@ -40,7 +51,9 @@ export default function Settings() {
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold">Settings</h1>
-          <p className="text-muted-foreground mt-1">Manage your integrations and preferences</p>
+          <p className="text-muted-foreground mt-1">
+            Manage your integrations and preferences
+          </p>
         </div>
 
         {/* Tabs */}
@@ -78,7 +91,11 @@ export default function Settings() {
                 </div>
                 <div>
                   <Label>User ID</Label>
-                  <Input value={user?.openId || ""} disabled className="font-mono text-xs" />
+                  <Input
+                    value={user?.openId || ""}
+                    disabled
+                    className="font-mono text-xs"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -88,7 +105,11 @@ export default function Settings() {
                 <CardTitle>Account</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="destructive" className="w-full" onClick={logout}>
+                <Button
+                  variant="destructive"
+                  className="w-full"
+                  onClick={logout}
+                >
                   Log Out
                 </Button>
               </CardContent>
@@ -100,7 +121,9 @@ export default function Settings() {
             <Card>
               <CardHeader>
                 <CardTitle>Craft Integration</CardTitle>
-                <CardDescription>Connect your Craft account to sync stories</CardDescription>
+                <CardDescription>
+                  Connect your Craft account to sync stories
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between p-3 border rounded-lg bg-muted">
@@ -129,7 +152,9 @@ export default function Settings() {
                 {craftConnected && (
                   <div className="space-y-3 p-3 bg-muted rounded-lg">
                     <div>
-                      <p className="text-sm font-medium mb-2">Connected Collections</p>
+                      <p className="text-sm font-medium mb-2">
+                        Connected Collections
+                      </p>
                       <div className="space-y-2">
                         <div className="text-sm text-muted-foreground">
                           • My Stories Collection
@@ -162,7 +187,8 @@ export default function Settings() {
 
                 <div className="text-xs text-muted-foreground space-y-1">
                   <p>
-                    • You'll need to authorize Claude Writer to access your Craft account
+                    • You'll need to authorize Claude Writer to access your
+                    Craft account
                   </p>
                   <p>• Your data will be synced automatically</p>
                   <p>• You can disconnect anytime</p>
@@ -176,7 +202,9 @@ export default function Settings() {
             <Card>
               <CardHeader>
                 <CardTitle>Obsidian Integration</CardTitle>
-                <CardDescription>Sync your Obsidian vault with Claude Writer</CardDescription>
+                <CardDescription>
+                  Sync your Obsidian vault with Claude Writer
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
@@ -185,7 +213,7 @@ export default function Settings() {
                     id="obsidian-path"
                     placeholder="/Users/yourname/Documents/ObsidianVault"
                     value={obsidianPath}
-                    onChange={(e) => setObsidianPath(e.target.value)}
+                    onChange={e => setObsidianPath(e.target.value)}
                     className="font-mono text-sm"
                   />
                   <p className="text-xs text-muted-foreground mt-2">
@@ -197,16 +225,28 @@ export default function Settings() {
                   <Label>Sync Options</Label>
                   <div className="space-y-2">
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" defaultChecked className="rounded" />
+                      <input
+                        type="checkbox"
+                        defaultChecked
+                        className="rounded"
+                      />
                       <span className="text-sm">Auto-sync on changes</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" defaultChecked className="rounded" />
-                      <span className="text-sm">Extract outlines from headings</span>
+                      <input
+                        type="checkbox"
+                        defaultChecked
+                        className="rounded"
+                      />
+                      <span className="text-sm">
+                        Extract outlines from headings
+                      </span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input type="checkbox" className="rounded" />
-                      <span className="text-sm">Push updates back to vault</span>
+                      <span className="text-sm">
+                        Push updates back to vault
+                      </span>
                     </label>
                   </div>
                 </div>
@@ -223,7 +263,9 @@ export default function Settings() {
             <Card>
               <CardHeader>
                 <CardTitle>Slack Integration</CardTitle>
-                <CardDescription>Get writing notifications on Slack</CardDescription>
+                <CardDescription>
+                  Get writing notifications on Slack
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between p-3 border rounded-lg bg-muted">
@@ -253,11 +295,19 @@ export default function Settings() {
                   <Label>Notification Settings</Label>
                   <div className="space-y-2">
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" defaultChecked disabled={!slackConnected} />
+                      <input
+                        type="checkbox"
+                        defaultChecked
+                        disabled={!slackConnected}
+                      />
                       <span className="text-sm">Daily writing summary</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" defaultChecked disabled={!slackConnected} />
+                      <input
+                        type="checkbox"
+                        defaultChecked
+                        disabled={!slackConnected}
+                      />
                       <span className="text-sm">Character updates</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">

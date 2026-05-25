@@ -1,10 +1,12 @@
 # Technology Stack
 
 ## Core Languages
+
 - **TypeScript 5.9** - Primary language (strict mode)
 - **JavaScript/ES2024** - Runtime
 
 ## Frontend
+
 - **React 19** - UI framework
 - **Vite 7** - Build tool + dev server
 - **Tailwind CSS 4** - Styling framework
@@ -19,6 +21,7 @@
 - **wouter** - Lightweight routing
 
 ## Backend
+
 - **Express.js 4** - HTTP server
 - **tRPC 11** - Type-safe API
 - **SuperJSON** - Serialization สำหรับ tRPC
@@ -30,6 +33,7 @@
 - **Dotenv** - Environment variables
 
 ## AI & Content Analysis
+
 - **Vercel AI SDK (ai package)** - AI abstraction layer
 - **Vercel AI Gateway** - Multi-provider routing
 - **Supported Providers:**
@@ -39,27 +43,33 @@
   - และอื่นๆผ่าน AI SDK
 
 ## Database
+
 - **MySQL 8** - Primary database
 - **Drizzle Kit** - Migration tool
 - **TiDB** (optional) - Cloud-native MySQL compatible
 
 ## Storage
+
 - **AWS S3** - File storage (backups, exports, assets)
 - **@aws-sdk/client-s3** - S3 client
 - **@aws-sdk/s3-request-presigner** - Presigned URLs
 
 ## Testing
+
 - **Vitest 2** - Test runner
 - **React Testing Library** - Component testing
 
 ## Code Quality
+
 - **Prettier 3** - Code formatting
 - **TypeScript tsc** - Type checking
 
 ## Package Manager
+
 - **pnpm 10** - Dependency management
 
 ## Deployment
+
 - **Vercel** - Frontend + AI Gateway deployment
 - **Node.js** - Backend runtime (production)
 - **esbuild** - Backend bundling
