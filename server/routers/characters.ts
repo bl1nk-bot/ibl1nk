@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { protectedProcedure, router } from '../_core/trpc';
+import { z } from "zod";
+import { protectedProcedure, router } from "../_core/trpc";
 import {
   getCharactersByOutlineId,
   getCharactersByUserId,
@@ -7,7 +7,7 @@ import {
   updateCharacter,
   getCharacterRelationships,
   createCharacterRelationship,
-} from '../db';
+} from "../db";
 
 export const charactersRouter = router({
   // Character Procedures

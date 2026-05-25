@@ -8,6 +8,7 @@ Claude Writer Dashboard is a **Built-in Plugin** integrated into the Manus syste
 
 **Plugin Classification:** Built-in Plugin (integrated into Manus core)
 **Integration Level:** System-level with access to:
+
 - Manus OAuth and user authentication
 - Database (MySQL/TiDB)
 - Built-in LLM services
@@ -47,27 +48,29 @@ Claude Writer Dashboard is a **Built-in Plugin** integrated into the Manus syste
 
 ### Core Tables (10 tables)
 
-| Table | Purpose | Key Relationships |
-|-------|---------|------------------|
-| `users` | User authentication | Primary key for all user-scoped data |
-| `outlines` | Story structure root | Parent of chapters, characters, analysis |
-| `chapters` | Story chapters | Child of outlines, parent of scenes |
-| `scenes` | Story scenes | Child of chapters, subject of analysis |
-| `characters` | Character database | Linked to outlines, has relationships |
-| `characterRelationships` | Character connections | Links characters to each other |
-| `contentAnalysis` | AI analysis results | Scoped to outline/chapter/scene |
-| `writingProgress` | Daily tracking | User + outline scoped |
-| `obsidianSync` | Vault sync metadata | User + file path scoped |
-| `craftCredentials` | API credentials | User scoped, encrypted |
-| `slackIntegration` | Slack OAuth tokens | User scoped, encrypted |
+| Table                    | Purpose               | Key Relationships                        |
+| ------------------------ | --------------------- | ---------------------------------------- |
+| `users`                  | User authentication   | Primary key for all user-scoped data     |
+| `outlines`               | Story structure root  | Parent of chapters, characters, analysis |
+| `chapters`               | Story chapters        | Child of outlines, parent of scenes      |
+| `scenes`                 | Story scenes          | Child of chapters, subject of analysis   |
+| `characters`             | Character database    | Linked to outlines, has relationships    |
+| `characterRelationships` | Character connections | Links characters to each other           |
+| `contentAnalysis`        | AI analysis results   | Scoped to outline/chapter/scene          |
+| `writingProgress`        | Daily tracking        | User + outline scoped                    |
+| `obsidianSync`           | Vault sync metadata   | User + file path scoped                  |
+| `craftCredentials`       | API credentials       | User scoped, encrypted                   |
+| `slackIntegration`       | Slack OAuth tokens    | User scoped, encrypted                   |
 
 ### SQL Migration Files
 
 Migrations follow meaningful naming convention:
+
 - `0000_create_users_table.sql` - User authentication (from template)
 - `0001_create_writer_core_schema.sql` - All writer-specific tables (outlines, chapters, scenes, characters, analysis, sync, progress)
 
 Future migrations should follow pattern:
+
 - `002_create_craft_integration_tables.sql`
 - `003_add_slack_webhook_storage.sql`
 - `004_create_search_indexes.sql`
@@ -180,6 +183,7 @@ App
 **Purpose:** Backup and sync story structure to Craft Collections
 
 **Flow:**
+
 1. User creates outline in dashboard
 2. System creates Craft Collection for outline
 3. Each chapter creates Craft Document
@@ -187,6 +191,7 @@ App
 5. Bidirectional sync keeps both systems in sync
 
 **Endpoints Used:**
+
 - Collections API (create, read, update)
 - Documents API (create, read, update)
 - Blocks API (create, read, update)
@@ -196,6 +201,7 @@ App
 **Purpose:** Sync Markdown files from Obsidian vault
 
 **Flow:**
+
 1. User configures vault path in settings
 2. System reads Markdown files
 3. Extracts outline from headings (H1→outline, H2→chapter, H3→scene)
@@ -204,6 +210,7 @@ App
 6. Optional: pushes updates back to Obsidian
 
 **File Structure Expected:**
+
 ```
 vault/
 ├── Story Name/
@@ -217,12 +224,14 @@ vault/
 **Purpose:** Notifications and commands for accountability
 
 **Features:**
+
 - Daily writing progress notifications
 - Slash commands: `/claude-writer dashboard`, `/claude-writer analyze`
 - Incoming webhooks for custom notifications
 - Slack Events API for interactive workflows
 
 **Slack App Scopes Required:**
+
 - `chat:write` - Send messages
 - `commands` - Register slash commands
 - `incoming-webhook` - Receive webhooks
@@ -233,6 +242,7 @@ vault/
 **Purpose:** AI-powered analysis of narrative content
 
 **Analysis Types:**
+
 1. **Sentiment Analysis** - Emotional tone of scenes
 2. **Keyword Extraction** - Important concepts and themes
 3. **Grammar & Spell Check** - Writing quality
@@ -241,6 +251,7 @@ vault/
 6. **Significance Scoring** - Which scenes matter most
 
 **LLM Integration:**
+
 - Uses Manus built-in LLM (via `invokeLLM` helper)
 - Structured output via JSON schema
 - Caching for repeated analyses
@@ -252,6 +263,7 @@ vault/
 **Purpose:** Generate beautiful, interactive dashboards from user data
 
 **Dashboard Types:**
+
 1. **Writing Progress Dashboard**
    - Weekly word count chart
    - Writing streak tracking
@@ -273,6 +285,7 @@ vault/
    - Writing quality metrics
 
 **Export Options:**
+
 - HTML (interactive, browser-viewable)
 - PDF (printable, shareable)
 - PNG (social media, quick share)
@@ -280,6 +293,7 @@ vault/
 ### Data Binding
 
 Dashboard components receive data from tRPC procedures:
+
 ```typescript
 // Frontend
 const dashboardData = await trpc.outlines.storyOverview.query({ outlineId });
@@ -386,6 +400,7 @@ s3://bucket/
 ### Environment Configuration
 
 **Required Environment Variables:**
+
 ```env
 # Database
 DATABASE_URL=mysql://...

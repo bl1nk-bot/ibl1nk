@@ -7,6 +7,7 @@ Template files are NOT intended to be loaded into context, but rather used withi
 the output Manus produces.
 
 Example template files from other skills:
+
 - Brand guidelines: logo.png, slides_template.pptx
 - Frontend builder: hello-world/ directory with HTML/React boilerplate
 - Typography: custom-font.ttf, font-family.woff2

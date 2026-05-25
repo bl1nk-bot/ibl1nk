@@ -1,8 +1,21 @@
 import { useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -54,7 +67,10 @@ const sampleCharacters = [
   },
 ];
 
-const roleColors: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
+const roleColors: Record<
+  string,
+  "default" | "secondary" | "outline" | "destructive"
+> = {
   protagonist: "default",
   antagonist: "destructive",
   mentor: "secondary",
@@ -65,7 +81,9 @@ export default function CharactersWithViews() {
   const { isAuthenticated } = useAuth();
   const [viewType, setViewType] = useState<ViewType>("grid");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [selectedCharacter, setSelectedCharacter] = useState<(typeof sampleCharacters)[0] | null>(null);
+  const [selectedCharacter, setSelectedCharacter] = useState<
+    (typeof sampleCharacters)[0] | null
+  >(null);
   const [newCharacter, setNewCharacter] = useState({
     name: "",
     role: "supporting",
@@ -79,12 +97,17 @@ export default function CharactersWithViews() {
 
   const handleCreateCharacter = () => {
     console.log("Creating character:", newCharacter);
-    setNewCharacter({ name: "", role: "supporting", description: "", traits: "" });
+    setNewCharacter({
+      name: "",
+      role: "supporting",
+      description: "",
+      traits: "",
+    });
     setIsCreateDialogOpen(false);
   };
 
   // Convert to Grid View format
-  const gridItems: GridItem[] = sampleCharacters.map((char) => ({
+  const gridItems: GridItem[] = sampleCharacters.map(char => ({
     id: char.id,
     title: char.name,
     description: char.description,
@@ -100,7 +123,7 @@ export default function CharactersWithViews() {
   }));
 
   // Convert to List View format
-  const listItems: ListItem[] = sampleCharacters.map((char) => ({
+  const listItems: ListItem[] = sampleCharacters.map(char => ({
     id: char.id,
     title: char.name,
     description: char.description,
@@ -118,7 +141,7 @@ export default function CharactersWithViews() {
   }));
 
   // Convert to Gallery View format
-  const galleryItems: GalleryItem[] = sampleCharacters.map((char) => ({
+  const galleryItems: GalleryItem[] = sampleCharacters.map(char => ({
     id: char.id,
     title: char.name,
     description: char.description,
@@ -138,11 +161,16 @@ export default function CharactersWithViews() {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-3xl font-bold">Characters</h1>
-            <p className="text-muted-foreground mt-1">Manage your story characters</p>
+            <p className="text-muted-foreground mt-1">
+              Manage your story characters
+            </p>
           </div>
           <div className="flex gap-2">
             <ViewToggle value={viewType} onChange={setViewType} />
-            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <Dialog
+              open={isCreateDialogOpen}
+              onOpenChange={setIsCreateDialogOpen}
+            >
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
@@ -152,7 +180,9 @@ export default function CharactersWithViews() {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Create New Character</DialogTitle>
-                  <DialogDescription>Add a new character to your story</DialogDescription>
+                  <DialogDescription>
+                    Add a new character to your story
+                  </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
@@ -161,7 +191,12 @@ export default function CharactersWithViews() {
                       id="name"
                       placeholder="Enter character name"
                       value={newCharacter.name}
-                      onChange={(e) => setNewCharacter({ ...newCharacter, name: e.target.value })}
+                      onChange={e =>
+                        setNewCharacter({
+                          ...newCharacter,
+                          name: e.target.value,
+                        })
+                      }
                     />
                   </div>
                   <div>
@@ -170,7 +205,12 @@ export default function CharactersWithViews() {
                       id="role"
                       className="w-full px-3 py-2 border rounded-md"
                       value={newCharacter.role}
-                      onChange={(e) => setNewCharacter({ ...newCharacter, role: e.target.value })}
+                      onChange={e =>
+                        setNewCharacter({
+                          ...newCharacter,
+                          role: e.target.value,
+                        })
+                      }
                     >
                       <option value="protagonist">Protagonist</option>
                       <option value="antagonist">Antagonist</option>
@@ -184,8 +224,11 @@ export default function CharactersWithViews() {
                       id="description"
                       placeholder="Describe the character"
                       value={newCharacter.description}
-                      onChange={(e) =>
-                        setNewCharacter({ ...newCharacter, description: e.target.value })
+                      onChange={e =>
+                        setNewCharacter({
+                          ...newCharacter,
+                          description: e.target.value,
+                        })
                       }
                     />
                   </div>
@@ -195,7 +238,12 @@ export default function CharactersWithViews() {
                       id="traits"
                       placeholder="e.g., brave, intelligent, mysterious"
                       value={newCharacter.traits}
-                      onChange={(e) => setNewCharacter({ ...newCharacter, traits: e.target.value })}
+                      onChange={e =>
+                        setNewCharacter({
+                          ...newCharacter,
+                          traits: e.target.value,
+                        })
+                      }
                     />
                   </div>
                   <Button onClick={handleCreateCharacter} className="w-full">
@@ -210,7 +258,9 @@ export default function CharactersWithViews() {
         {/* Views */}
         {viewType === "grid" && <GridView items={gridItems} columns={3} />}
         {viewType === "list" && <ListView items={listItems} />}
-        {viewType === "gallery" && <GalleryView items={galleryItems} columns={3} />}
+        {viewType === "gallery" && (
+          <GalleryView items={galleryItems} columns={3} />
+        )}
 
         {/* Character Detail */}
         {selectedCharacter && (
@@ -220,11 +270,15 @@ export default function CharactersWithViews() {
                 <div>
                   <CardTitle>{selectedCharacter.name}</CardTitle>
                   <CardDescription>
-                    {selectedCharacter.role.charAt(0).toUpperCase() + selectedCharacter.role.slice(1)} •{" "}
-                    {selectedCharacter.appearances} appearances
+                    {selectedCharacter.role.charAt(0).toUpperCase() +
+                      selectedCharacter.role.slice(1)}{" "}
+                    • {selectedCharacter.appearances} appearances
                   </CardDescription>
                 </div>
-                <Button variant="outline" onClick={() => setSelectedCharacter(null)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setSelectedCharacter(null)}
+                >
                   Close
                 </Button>
               </div>
@@ -240,13 +294,15 @@ export default function CharactersWithViews() {
                 <TabsContent value="details" className="space-y-4">
                   <div>
                     <h4 className="font-semibold mb-2">Description</h4>
-                    <p className="text-muted-foreground">{selectedCharacter.description}</p>
+                    <p className="text-muted-foreground">
+                      {selectedCharacter.description}
+                    </p>
                   </div>
 
                   <div>
                     <h4 className="font-semibold mb-2">Traits</h4>
                     <div className="flex flex-wrap gap-2">
-                      {selectedCharacter.traits.map((trait) => (
+                      {selectedCharacter.traits.map(trait => (
                         <Badge key={trait}>{trait}</Badge>
                       ))}
                     </div>
@@ -254,11 +310,15 @@ export default function CharactersWithViews() {
                 </TabsContent>
 
                 <TabsContent value="relationships">
-                  <p className="text-muted-foreground text-sm">Relationship details coming soon</p>
+                  <p className="text-muted-foreground text-sm">
+                    Relationship details coming soon
+                  </p>
                 </TabsContent>
 
                 <TabsContent value="arc">
-                  <p className="text-muted-foreground text-sm">Character arc details coming soon</p>
+                  <p className="text-muted-foreground text-sm">
+                    Character arc details coming soon
+                  </p>
                 </TabsContent>
               </Tabs>
             </CardContent>
