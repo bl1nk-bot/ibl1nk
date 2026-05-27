@@ -65,7 +65,8 @@ class CraftAPIClient {
       redirect_uri: this.authConfig.redirectUri,
       response_type: "code",
       state,
-      scope: "collections:read collections:write documents:read documents:write",
+      scope:
+        "collections:read collections:write documents:read documents:write",
     });
     return `https://oauth.craft.io/authorize?${params.toString()}`;
   }
@@ -131,7 +132,8 @@ class CraftAPIClient {
    * Set authorization header
    */
   private setAuthHeader(accessToken: string): void {
-    this.client.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    this.client.defaults.headers.common["Authorization"] =
+      `Bearer ${accessToken}`;
   }
 
   /**
@@ -150,7 +152,10 @@ class CraftAPIClient {
   /**
    * Create a new collection
    */
-  async createCollection(name: string, description?: string): Promise<CraftCollection> {
+  async createCollection(
+    name: string,
+    description?: string
+  ): Promise<CraftCollection> {
     try {
       const response = await this.client.post("/collections", {
         name,
@@ -168,7 +173,9 @@ class CraftAPIClient {
    */
   async getDocuments(collectionId: string): Promise<CraftDocument[]> {
     try {
-      const response = await this.client.get(`/collections/${collectionId}/documents`);
+      const response = await this.client.get(
+        `/collections/${collectionId}/documents`
+      );
       return response.data.data || [];
     } catch (error) {
       console.error("Failed to fetch documents:", error);
@@ -179,12 +186,19 @@ class CraftAPIClient {
   /**
    * Create a new document
    */
-  async createDocument(collectionId: string, title: string, content?: unknown): Promise<CraftDocument> {
+  async createDocument(
+    collectionId: string,
+    title: string,
+    content?: unknown
+  ): Promise<CraftDocument> {
     try {
-      const response = await this.client.post(`/collections/${collectionId}/documents`, {
-        title,
-        blocks: content ? [{ type: "text", content }] : [],
-      });
+      const response = await this.client.post(
+        `/collections/${collectionId}/documents`,
+        {
+          title,
+          blocks: content ? [{ type: "text", content }] : [],
+        }
+      );
       return response.data.data;
     } catch (error) {
       console.error("Failed to create document:", error);
@@ -195,9 +209,15 @@ class CraftAPIClient {
   /**
    * Update a document
    */
-  async updateDocument(documentId: string, updates: Partial<CraftDocument>): Promise<CraftDocument> {
+  async updateDocument(
+    documentId: string,
+    updates: Partial<CraftDocument>
+  ): Promise<CraftDocument> {
     try {
-      const response = await this.client.patch(`/documents/${documentId}`, updates);
+      const response = await this.client.patch(
+        `/documents/${documentId}`,
+        updates
+      );
       return response.data.data;
     } catch (error) {
       console.error("Failed to update document:", error);
