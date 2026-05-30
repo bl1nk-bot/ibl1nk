@@ -1,19 +1,31 @@
-import { eq } from "drizzle-orm";
+import { eq, or, and, gte } from "drizzle-orm";
+// Optimization: use static imports to avoid dynamic module resolution overhead in hot paths
 import { drizzle } from "drizzle-orm/mysql2";
 import {
-  InsertUser, users,
-  InsertOutline, outlines,
-  InsertChapter, chapters,
-  InsertScene, scenes,
-  InsertCharacter, characters,
-  InsertCharacterRelationship, characterRelationships,
-  InsertContentAnalysis, contentAnalysis,
-  InsertWritingProgress, writingProgress,
-  InsertCraftCredentials, craftCredentials,
-  InsertObsidianSync, obsidianSync,
-  InsertSlackIntegration, slackIntegration,
+  InsertUser,
+  users,
+  InsertOutline,
+  outlines,
+  InsertChapter,
+  chapters,
+  InsertScene,
+  scenes,
+  InsertCharacter,
+  characters,
+  InsertCharacterRelationship,
+  characterRelationships,
+  InsertContentAnalysis,
+  contentAnalysis,
+  InsertWritingProgress,
+  writingProgress,
+  InsertCraftCredentials,
+  craftCredentials,
+  InsertObsidianSync,
+  obsidianSync,
+  InsertSlackIntegration,
+  slackIntegration,
 } from "../drizzle/schema";
-import { ENV } from './_core/env';
+import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -68,8 +80,8 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.role = user.role;
       updateSet.role = user.role;
     } else if (user.openId === ENV.ownerOpenId) {
-      values.role = 'admin';
-      updateSet.role = 'admin';
+      values.role = "admin";
+      updateSet.role = "admin";
     }
 
     if (!values.lastSignedIn) {
@@ -96,7 +108,11 @@ export async function getUserByOpenId(openId: string) {
     return undefined;
   }
 
-  const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.openId, openId))
+    .limit(1);
 
   return result.length > 0 ? result[0] : undefined;
 }
@@ -112,7 +128,11 @@ export async function getUserOutlines(userId: number) {
 export async function getOutlineById(id: number) {
   const db = await getDb();
   if (!db) return undefined;
-  const result = await db.select().from(outlines).where(eq(outlines.id, id)).limit(1);
+  const result = await db
+    .select()
+    .from(outlines)
+    .where(eq(outlines.id, id))
+    .limit(1);
   return result[0];
 }
 
@@ -134,7 +154,11 @@ export async function updateOutline(id: number, data: Partial<InsertOutline>) {
 export async function getChaptersByOutlineId(outlineId: number) {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(chapters).where(eq(chapters.outlineId, outlineId)).orderBy(chapters.order);
+  return db
+    .select()
+    .from(chapters)
+    .where(eq(chapters.outlineId, outlineId))
+    .orderBy(chapters.order);
 }
 
 export async function createChapter(data: InsertChapter) {
@@ -154,7 +178,11 @@ export async function updateChapter(id: number, data: Partial<InsertChapter>) {
 export async function getScenesByChapterId(chapterId: number) {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(scenes).where(eq(scenes.chapterId, chapterId)).orderBy(scenes.order);
+  return db
+    .select()
+    .from(scenes)
+    .where(eq(scenes.chapterId, chapterId))
+    .orderBy(scenes.order);
 }
 
 export async function createScene(data: InsertScene) {
@@ -174,7 +202,10 @@ export async function updateScene(id: number, data: Partial<InsertScene>) {
 export async function getCharactersByOutlineId(outlineId: number) {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(characters).where(eq(characters.outlineId, outlineId));
+  return db
+    .select()
+    .from(characters)
+    .where(eq(characters.outlineId, outlineId));
 }
 
 export async function getCharactersByUserId(userId: number) {
@@ -189,7 +220,10 @@ export async function createCharacter(data: InsertCharacter) {
   return db.insert(characters).values(data);
 }
 
-export async function updateCharacter(id: number, data: Partial<InsertCharacter>) {
+export async function updateCharacter(
+  id: number,
+  data: Partial<InsertCharacter>
+) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   return db.update(characters).set(data).where(eq(characters.id, id));
@@ -198,16 +232,20 @@ export async function updateCharacter(id: number, data: Partial<InsertCharacter>
 export async function getCharacterRelationships(characterId: number) {
   const db = await getDb();
   if (!db) return [];
-  const { or } = await import("drizzle-orm");
-  return db.select().from(characterRelationships).where(
-    or(
-      eq(characterRelationships.character1Id, characterId),
-      eq(characterRelationships.character2Id, characterId)
-    )
-  );
+  return db
+    .select()
+    .from(characterRelationships)
+    .where(
+      or(
+        eq(characterRelationships.character1Id, characterId),
+        eq(characterRelationships.character2Id, characterId)
+      )
+    );
 }
 
-export async function createCharacterRelationship(data: InsertCharacterRelationship) {
+export async function createCharacterRelationship(
+  data: InsertCharacterRelationship
+) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   return db.insert(characterRelationships).values(data);
@@ -218,7 +256,10 @@ export async function createCharacterRelationship(data: InsertCharacterRelations
 export async function getAnalysisForOutline(outlineId: number) {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(contentAnalysis).where(eq(contentAnalysis.outlineId, outlineId));
+  return db
+    .select()
+    .from(contentAnalysis)
+    .where(eq(contentAnalysis.outlineId, outlineId));
 }
 
 export async function createAnalysis(data: InsertContentAnalysis) {
@@ -229,20 +270,26 @@ export async function createAnalysis(data: InsertContentAnalysis) {
 
 // ── Writing Progress Queries ───────────────────────────────────
 
-export async function getWritingProgressForUser(userId: number, days: number = 30) {
+export async function getWritingProgressForUser(
+  userId: number,
+  days: number = 30
+) {
   const db = await getDb();
   if (!db) return [];
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
-  const dateStr = startDate.toISOString().split('T')[0];
-  
-  const { gte, and } = await import("drizzle-orm");
-  return db.select().from(writingProgress).where(
-    and(
-      eq(writingProgress.userId, userId),
-      gte(writingProgress.date, dateStr)
+  const dateStr = startDate.toISOString().split("T")[0];
+
+  return db
+    .select()
+    .from(writingProgress)
+    .where(
+      and(
+        eq(writingProgress.userId, userId),
+        gte(writingProgress.date, dateStr)
+      )
     )
-  ).orderBy(writingProgress.date);
+    .orderBy(writingProgress.date);
 }
 
 export async function createWritingProgress(data: InsertWritingProgress) {
@@ -256,7 +303,11 @@ export async function createWritingProgress(data: InsertWritingProgress) {
 export async function getCraftCredentials(userId: number) {
   const db = await getDb();
   if (!db) return undefined;
-  const result = await db.select().from(craftCredentials).where(eq(craftCredentials.userId, userId)).limit(1);
+  const result = await db
+    .select()
+    .from(craftCredentials)
+    .where(eq(craftCredentials.userId, userId))
+    .limit(1);
   return result[0];
 }
 
@@ -265,7 +316,10 @@ export async function saveCraftCredentials(data: InsertCraftCredentials) {
   if (!db) throw new Error("Database not available");
   const existing = await getCraftCredentials(data.userId);
   if (existing) {
-    return db.update(craftCredentials).set(data).where(eq(craftCredentials.userId, data.userId));
+    return db
+      .update(craftCredentials)
+      .set(data)
+      .where(eq(craftCredentials.userId, data.userId));
   }
   return db.insert(craftCredentials).values(data);
 }
@@ -275,13 +329,13 @@ export async function saveCraftCredentials(data: InsertCraftCredentials) {
 export async function getObsidianSyncStatus(userId: number, filePath: string) {
   const db = await getDb();
   if (!db) return undefined;
-  const { and } = await import("drizzle-orm");
-  const result = await db.select().from(obsidianSync).where(
-    and(
-      eq(obsidianSync.userId, userId),
-      eq(obsidianSync.filePath, filePath)
+  const result = await db
+    .select()
+    .from(obsidianSync)
+    .where(
+      and(eq(obsidianSync.userId, userId), eq(obsidianSync.filePath, filePath))
     )
-  ).limit(1);
+    .limit(1);
   return result[0];
 }
 
@@ -290,7 +344,10 @@ export async function createOrUpdateObsidianSync(data: InsertObsidianSync) {
   if (!db) throw new Error("Database not available");
   const existing = await getObsidianSyncStatus(data.userId, data.filePath);
   if (existing) {
-    return db.update(obsidianSync).set(data).where(eq(obsidianSync.id, existing.id));
+    return db
+      .update(obsidianSync)
+      .set(data)
+      .where(eq(obsidianSync.id, existing.id));
   }
   return db.insert(obsidianSync).values(data);
 }
@@ -300,7 +357,11 @@ export async function createOrUpdateObsidianSync(data: InsertObsidianSync) {
 export async function getSlackIntegration(userId: number) {
   const db = await getDb();
   if (!db) return undefined;
-  const result = await db.select().from(slackIntegration).where(eq(slackIntegration.userId, userId)).limit(1);
+  const result = await db
+    .select()
+    .from(slackIntegration)
+    .where(eq(slackIntegration.userId, userId))
+    .limit(1);
   return result[0];
 }
 
@@ -309,7 +370,10 @@ export async function saveSlackIntegration(data: InsertSlackIntegration) {
   if (!db) throw new Error("Database not available");
   const existing = await getSlackIntegration(data.userId);
   if (existing) {
-    return db.update(slackIntegration).set(data).where(eq(slackIntegration.userId, data.userId));
+    return db
+      .update(slackIntegration)
+      .set(data)
+      .where(eq(slackIntegration.userId, data.userId));
   }
   return db.insert(slackIntegration).values(data);
 }
