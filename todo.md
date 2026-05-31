@@ -2,10 +2,10 @@
 
 ## Architecture Overview
 
-**Plugin Type:** Built-in Plugin (integrated into Manus system)
-**Dashboard Generation:** Using visual-explainer skill for beautiful, interactive dashboards
-**Data Export:** HTML/PDF export of visual stories and dashboards from user-tracked data
-**SQL Naming:** Meaningful names (approx 3 syllables) (e.g., `001_user_base.sql`)
+1. **Plugin Type:** Built-in Plugin (integrated into Manus system)
+2. **Dashboard Generation:** Using visual-explainer skill for beautiful, interactive dashboards
+3. **Data Export:** HTML/PDF export of visual stories and dashboards from user-tracked data
+4. **SQL Naming:** Meaningful names (approx 3 syllables) (e.g., `001_user_base.sql`)
 
 ---
 

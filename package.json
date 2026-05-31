@@ -1,8 +1,27 @@
 {
   "name": "ibl1nk",
   "version": "1.0.0",
-  "type": "module",
+  "description": "แพลตฟอร์มจัดการงานเขียน all-in-one สำหรับนักเขียนนิยาย ที่รวมการจัดการโครงเรื่อง ตัวละคร การวิเคราะห์เนื้อหาด้วย AI และการซิงค์กับเครื่องมือภายนอก (Craft, Obsidian, Slack) ไว้ในที่เดียว",
+  "keywords": [
+    "ai",
+    "monorepo"
+  ],
+  "homepage": "https://github.com/billlzzz26/ibl1nk#readme",
+  "bugs": {
+    "url": "https://github.com/billlzzz26/ibl1nk/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/billlzzz26/ibl1nk.git"
+  },
   "license": "MIT",
+  "author": "billlzzz26",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
     "build": "vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
@@ -16,6 +35,8 @@
     "@aws-sdk/client-s3": "^3.693.0",
     "@aws-sdk/s3-request-presigner": "^3.693.0",
     "@hookform/resolvers": "^5.2.2",
+    "@lobehub/icons": "^5.8.0",
+    "@lobehub/ui": "^5.14.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.7",
@@ -53,14 +74,12 @@
     "cookie": "^1.0.2",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.2",
-    "drizzle-orm": "^0.44.5",
     "embla-carousel-react": "^8.6.0",
     "express": "^4.21.2",
     "framer-motion": "^12.23.22",
     "input-otp": "^1.4.2",
     "jose": "6.1.0",
-    "lucide-react": "^0.453.0",
-    "mysql2": "^3.15.0",
+    "lucide-react": "^1.16.0",
     "nanoid": "^5.1.5",
     "next-themes": "^0.4.6",
     "react": "^19.2.1",
@@ -90,7 +109,6 @@
     "@vitejs/plugin-react": "^5.0.4",
     "add": "^2.0.6",
     "autoprefixer": "^10.4.20",
-    "drizzle-kit": "^0.31.4",
     "esbuild": "^0.25.0",
     "pnpm": "^10.15.1",
     "postcss": "^8.4.47",

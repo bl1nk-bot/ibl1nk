@@ -5,7 +5,9 @@
     "work-log-on-complete",
     "plan-then-confirm",
     "no-duplicate-structure",
-    "thai-output-technical-unchanged"
+    "thai-output-technical-unchanged",
+    "research-must-document",
+    "file-deletion-authority"
   ],
   "severity": {
     "glob-before-create": "critical",
@@ -13,6 +15,8 @@
     "work-log-on-complete": "critical",
     "plan-then-confirm": "critical",
     "no-duplicate-structure": "critical",
-    "thai-output-technical-unchanged": "standard"
+    "thai-output-technical-unchanged": "standard",
+    "research-must-document": "critical",
+    "file-deletion-authority": "critical"
   }
 }

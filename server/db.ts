@@ -1,5 +1,6 @@
-import { and, eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
+import { and, eq, sql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import Database from "better-sqlite3";
 import {
   InsertUser, users,
   InsertProject, projects,
@@ -19,14 +20,18 @@ import {
   InsertLoreEntry, loreEntries,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
+import path from "path";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
+  if (!_db) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      // For SQLite, DATABASE_URL should be a file path, e.g., "sqlite.db"
+      const dbPath = process.env.DATABASE_URL || "ibl1nk.db";
+      const sqlite = new Database(dbPath);
+      _db = drizzle(sqlite);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
@@ -85,7 +90,8 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       updateSet.lastSignedIn = new Date();
     }
 
-    await db.insert(users).values(values).onDuplicateKeyUpdate({
+    await db.insert(users).values(values).onConflictDoUpdate({
+      target: users.openId,
       set: updateSet,
     });
   } catch (error) {
