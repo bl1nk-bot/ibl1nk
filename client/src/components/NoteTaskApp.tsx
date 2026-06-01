@@ -40,29 +40,9 @@ import PublishingHubPage from './components/PublishingHubPage';
 import TaskFocusPage from './components/TaskFocusPage';
 import ApiKeyPromptModal from './components/ApiKeyPromptModal';
 
-// Firebase Imports
-import { initializeApp, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth } from 'firebase/auth';
-import { getFirestore, Firestore } from 'firebase/firestore';
-import { getStorage, FirebaseStorage } from 'firebase/storage';
-
-
 const _MIN_LEARNED_WORD_LENGTH =3;
 const STREAM_ERROR_MARKER = "[[STREAM_ERROR]]"; 
 const CURRENT_SCHEMA_VERSION = 1;
-
-// --- Firebase Configuration Placeholder ---
-// TODO: Replace with your actual Firebase project configuration
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY_HERE",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID" // Optional
-};
-// --- End of Firebase Configuration Placeholder ---
 
 
 const plainTextCharCount = (text: string): number => {
@@ -218,12 +198,6 @@ const _NoteTaskAppWithRouter =() => {
   const apiKeyPromptResolverRef = useRef<((value: string | PromiseLike<string>) => void) | null>(null);
   const apiKeyPromptRejecterRef = useRef<((reason?: any) => void) | null>(null);
 
-  // Firebase state
-  const [firebaseApp, setFirebaseApp] = useState<FirebaseApp | null>(null);
-  const [firebaseAuth, setFirebaseAuth] = useState<Auth | null>(null);
-  const [firestoreDb, setFirestoreDb] = useState<Firestore | null>(null);
-  const [firebaseStorage, setFirebaseStorage] = useState<FirebaseStorage | null>(null);
-
   const handleToggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -308,38 +282,6 @@ const _NoteTaskAppWithRouter =() => {
     loadInitialData();
   }, []);
 
-  // Firebase Initialization Effect
-  useEffect(() => {
-    try {
-      // Check if essential Firebase config values are placeholders or actual values.
-      if (firebaseConfig.apiKey === "YOUR_API_KEY_HERE" || 
-          firebaseConfig.authDomain === "YOUR_PROJECT_ID.firebaseapp.com" ||
-          firebaseConfig.projectId === "YOUR_PROJECT_ID") {
-        console.warn(
-          "Firebase configuration is using placeholder values. " +
-          "Please update firebaseConfig in NoteTaskApp.tsx " +
-          "Firebase services will not be available until this is done."
-        );
-        return; 
-      }
-
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const db = getFirestore(app);
-      const storage = getStorage(app);
-
-      setFirebaseApp(app);
-      setFirebaseAuth(auth);
-      setFirestoreDb(db);
-      setFirebaseStorage(storage);
-
-      console.log("Firebase initialized successfully with provided configuration.");
-    } catch (error) {
-      console.error("Firebase initialization error:", error);
-      console.error("Ensure you have replaced the placeholder firebaseConfig in NoteTaskApp.tsx with your actual Firebase project credentials.");
-    }
-  }, []); 
-  
   const _normalizeProject =(project: any): Project => ({ id: String(project.id || Date.now().toString()), name: String(project.name || 'Untitled Project'), genre: project.genre ? String(project.genre) : undefined, description: project.description ? String(project.description) : undefined, createdAt: String(project.createdAt || new Date().toISOString()), isArchived: typeof project.isArchived === 'boolean' ? project.isArchived : false, lastModified: project.lastModified || new Date().toISOString(), summary: project.summary || project.description?.substring(0,100) || '' });
   const _normalizeLoreEntry =(entry: any): LoreEntry => ({ id: String(entry.id || Date.now().toString() + Math.random()), title: String(entry.title || 'Untitled Lore'), type: entry.type || 'Concept', content: String(entry.content || ''), tags: Array.isArray(entry.tags) ? entry.tags.map(String) : [], createdAt: String(entry.createdAt || new Date().toISOString()), projectId: entry.projectId || null, role: entry.role || undefined, characterArcana: Array.isArray(entry.characterArcana) ? entry.characterArcana.map(String) : [], relationships: Array.isArray(entry.relationships) ? entry.relationships.map((r: any) => ({ targetCharacterId: String(r.targetCharacterId || ''), targetCharacterName: r.targetCharacterName ? String(r.targetCharacterName) : undefined, relationshipType: String(r.relationshipType || ''), description: r.description ? String(r.description) : undefined })) : [], coverImageUrl: entry.coverImageUrl || undefined });
   const _normalizeNote =(note: any): AppNote => ({ id: note.id || Date.now(), title: String(note.title || 'Untitled Note'), icon: note.icon || undefined, coverImageUrl: note.coverImageUrl || undefined, content: String(note.content || ''), category: String(note.category || 'general'), tags: Array.isArray(note.tags) ? note.tags.map(String) : [], createdAt: String(note.createdAt || new Date().toISOString()), updatedAt: note.updatedAt ? String(note.updatedAt) : new Date().toISOString(), versions: Array.isArray(note.versions) ? note.versions.map((v: any) => ({ timestamp: String(v.timestamp || new Date().toISOString()), content: String(v.content || '') })) : [], links: Array.isArray(note.links) ? note.links.map((l: any) => ({ targetTitle: String(l.targetTitle || '') })) : parseNoteLinks(String(note.content || '')), projectId: note.projectId || null });

@@ -1,0 +1,44 @@
+{
+  "_comment": "Story Studio - Context Template v1.1 | Copy this file to your project folder as context.json",
+
+  "story_info": {
+    "title": "",
+    "genre": "",
+    "total_episodes": 60,
+    "current_episode": 0,
+    "status": "planning",
+    "created_at": "",
+    "updated_at": ""
+  },
+
+  "characters": [
+    {
+      "id": "char_001",
+      "name": "",
+      "role": "protagonist",
+      "traits": [],
+      "current_state": "",
+      "first_appearance": 1,
+      "relationships": {}
+    }
+  ],
+
+  "locations": [
+    {
+      "id": "loc_001",
+      "name": "",
+      "description": "",
+      "first_appearance": 1
+    }
+  ],
+
+  "keywords": [],
+
+  "plot_summary": "",
+
+  "episodes": [],
+
+  "last_episode_hook": "",
+
+  "word_count_log": {}
+}
