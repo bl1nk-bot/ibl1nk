@@ -193,12 +193,14 @@ const firebaseConfig = {
 };
 // --- End of Firebase Configuration Placeholder ---
 
+const extractPlainText = (html: string): string => {
+  if (!html) return "";
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  return doc.body.textContent || doc.body.innerText || "";
+};
+
 const plainTextCharCount = (text: string): number => {
-  if (!text) return 0;
-  const tempDiv = document.createElement("div");
-  tempDiv.innerHTML = text;
-  const plainText = tempDiv.textContent || tempDiv.innerText || "";
-  return plainText.length;
+  return extractPlainText(text).length;
 };
 
 const parseNoteLinks = (content: string): NoteLink[] => {
@@ -925,10 +927,7 @@ const _NoteTaskAppWithRouter = () => {
             weight: 0.3,
             getFn: (note: AppNote) =>
               plainTextCharCount(note.content) > 0
-                ? ((document.createElement("div").innerHTML = note.content),
-                  document.createElement("div").textContent ||
-                    document.createElement("div").innerText ||
-                    "")
+                ? extractPlainText(note.content)
                 : "",
           },
           { name: "tags", weight: 0.2 },
@@ -1949,7 +1948,7 @@ const _NoteTaskAppWithRouter = () => {
         .slice(0, MAX_PROJECT_NOTES_IN_CONTEXT)
         .map(
           n =>
-            `โน้ต "${n.title}": ${plainTextCharCount(n.content) > 0 ? ((document.createElement("div").innerHTML = n.content), (document.createElement("div").textContent || document.createElement("div").innerText || "").substring(0, PROJECT_CONTEXT_MAX_NOTE_CHARS)) : ""}...`
+            `โน้ต "${n.title}": ${plainTextCharCount(n.content) > 0 ? extractPlainText(n.content).substring(0, PROJECT_CONTEXT_MAX_NOTE_CHARS) : ""}...`
         )
         .join("\n");
       const contextLore = projectLoreToConsider
@@ -2098,10 +2097,10 @@ const _NoteTaskAppWithRouter = () => {
 
   const handleCopyAiResponse = async () => {
     if (aiResponseRef.current) {
-      let textToCopy = "";
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = aiResponseRef.current.innerHTML;
-      textToCopy = tempDiv.textContent || tempDiv.innerText || "";
+      const textToCopy =
+        aiResponseRef.current.textContent ||
+        aiResponseRef.current.innerText ||
+        "";
       if (
         textToCopy &&
         textToCopy !== INITIAL_AI_RESPONSE_MESSAGE &&
@@ -2133,12 +2132,9 @@ const _NoteTaskAppWithRouter = () => {
         if (titleMatch && titleMatch[1])
           noteTitleSuggestion = titleMatch[1].trim();
       } else {
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = window.marked
-          ? window.marked.parse(aiResponse)
-          : aiResponse;
-        const plainTextResponse =
-          tempDiv.textContent || tempDiv.innerText || "";
+        const plainTextResponse = extractPlainText(
+          window.marked ? window.marked.parse(aiResponse) : aiResponse
+        );
         const firstLine = plainTextResponse.split("\n")[0].substring(0, 50);
         if (firstLine.trim()) noteTitleSuggestion = firstLine.trim();
       }
