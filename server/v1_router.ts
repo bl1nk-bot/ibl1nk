@@ -7,6 +7,7 @@
  */
 
 import { Router, Request, Response, NextFunction } from "express";
+import rateLimit from "express-rate-limit";
 import { ENV } from "./_core/env";
 import { sdk } from "./_core/sdk";
 import { User } from "../drizzle/schema";
@@ -18,6 +19,13 @@ export interface AuthenticatedRequest extends Request {
 }
 
 const v1Router = Router();
+
+const authRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false
+});
 
 // ── Auth Middleware ───────────────────────────────────────────
 
@@ -70,6 +78,7 @@ v1Router.get("/health", (req, res) => {
 });
 
 // Protect all other routes
+v1Router.use(authRateLimiter);
 v1Router.use(authMiddleware);
 
 v1Router.get("/auth/check", (req, res) => {
