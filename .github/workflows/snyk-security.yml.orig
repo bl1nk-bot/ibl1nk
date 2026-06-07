@@ -70,6 +70,7 @@ jobs:
         # Push the Snyk Code results into GitHub Code Scanning tab
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
-        continue-on-error: true
         with:
+        continue-on-error: true
+
           sarif_file: snyk-code.sarif
