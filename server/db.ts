@@ -231,6 +231,7 @@ export async function updateCharacter(
 export async function getCharacterRelationships(characterId: number) {
   const db = await getDb();
   if (!db) return [];
+  // Optimization: use static imports instead of dynamic import for drizzle-orm
   return db
     .select()
     .from(characterRelationships)
@@ -279,6 +280,7 @@ export async function getWritingProgressForUser(
   startDate.setDate(startDate.getDate() - days);
   const dateStr = startDate.toISOString().split("T")[0];
 
+  // Optimization: use static imports instead of dynamic import for drizzle-orm
   return db
     .select()
     .from(writingProgress)
@@ -328,6 +330,7 @@ export async function saveCraftCredentials(data: InsertCraftCredentials) {
 export async function getObsidianSyncStatus(userId: number, filePath: string) {
   const db = await getDb();
   if (!db) return undefined;
+  // Optimization: use static imports instead of dynamic import for drizzle-orm
   const result = await db
     .select()
     .from(obsidianSync)
