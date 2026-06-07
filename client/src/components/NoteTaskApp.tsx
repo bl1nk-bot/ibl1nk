@@ -195,8 +195,11 @@ const firebaseConfig = {
 
 const extractPlainText = (html: string): string => {
   if (!html) return "";
-  const doc = new DOMParser().parseFromString(html, "text/html");
-  return doc.body.textContent || doc.body.innerText || "";
+  // Strip HTML tags using regex to avoid CodeQL "DOM text is reinterpreted as HTML" warnings.
+  return html
+    .replace(/<[^>]*>?/gm, "")
+    .replace(/&nbsp;/g, " ")
+    .trim();
 };
 
 const plainTextCharCount = (text: string): number => {

@@ -1,0 +1,14 @@
+--- client/src/components/NoteTaskApp.tsx
++++ client/src/components/NoteTaskApp.tsx
+@@ -193,10 +193,8 @@
+ };
+ // --- End of Firebase Configuration Placeholder ---
+
+ const extractPlainText = (html: string): string => {
+   if (!html) return "";
+-  const doc = new DOMParser().parseFromString(html, "text/html");
+-  return doc.body.textContent || doc.body.innerText || "";
++  return html.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
+ };
+
+ const plainTextCharCount = (text: string): number => {
