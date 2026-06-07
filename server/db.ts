@@ -1,3 +1,4 @@
+import { eq, or, gte, and } from "drizzle-orm";
 import { eq, or, and, gte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
@@ -232,6 +233,7 @@ export async function getCharacterRelationships(characterId: number) {
   const db = await getDb();
   if (!db) return [];
   // ⚡ Bolt Optimization: Use static top-level import for better performance
+  // Optimization: use static imports instead of dynamic import for drizzle-orm
   return db
     .select()
     .from(characterRelationships)
@@ -281,6 +283,7 @@ export async function getWritingProgressForUser(
   const dateStr = startDate.toISOString().split("T")[0];
 
   // ⚡ Bolt Optimization: Use static top-level import for better performance
+  // Optimization: use static imports instead of dynamic import for drizzle-orm
   return db
     .select()
     .from(writingProgress)
@@ -331,6 +334,7 @@ export async function getObsidianSyncStatus(userId: number, filePath: string) {
   const db = await getDb();
   if (!db) return undefined;
   // ⚡ Bolt Optimization: Use static top-level import for better performance
+  // Optimization: use static imports instead of dynamic import for drizzle-orm
   const result = await db
     .select()
     .from(obsidianSync)
