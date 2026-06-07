@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { TRPCError } from '@trpc/server';
 import { protectedProcedure, router } from '../_core/trpc';
 import {
   getUserOutlines,
@@ -23,9 +24,14 @@ export const outlinesRouter = router({
 
   get: protectedProcedure
     .input(z.object({ id: z.number() }))
-    .query(async ({ input }) => {
-      const outline = await getOutlineById(input.id);
-      if (!outline) throw new Error('Outline not found');
+    .query(async ({ ctx, input }) => {
+      const outline = await getOutlineById(input.id, ctx.user.id);
+      if (!outline) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'ไม่พบโครงเรื่องนี้ (20001)',
+        });
+      }
       return outline;
     }),
 
@@ -59,8 +65,8 @@ export const outlinesRouter = router({
         wordCount: z.number().optional(),
       })
     )
-    .mutation(async ({ input }) => {
-      return updateOutline(input.id, {
+    .mutation(async ({ ctx, input }) => {
+      return updateOutline(input.id, ctx.user.id, {
         title: input.title,
         description: input.description,
         status: input.status,
@@ -167,8 +173,14 @@ export const outlinesRouter = router({
   // Story Overview
   storyOverview: protectedProcedure
     .input(z.object({ outlineId: z.number() }))
-    .query(async ({ input }) => {
-      const outline = await getOutlineById(input.outlineId);
+    .query(async ({ ctx, input }) => {
+      const outline = await getOutlineById(input.outlineId, ctx.user.id);
+      if (!outline) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'ไม่พบโครงเรื่องนี้ (20002)',
+        });
+      }
       const chapters = await getChaptersByOutlineId(input.outlineId);
       const characters = await getCharactersByOutlineId(input.outlineId);
 

@@ -1,0 +1,8 @@
+{
+  "track_id": "db-unit-tests_20260408",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-04-08T10:00:00Z",
+  "updated_at": "2026-04-08T10:00:00Z",
+  "description": "Write unit tests for projectsRouter and DB queries"
+}

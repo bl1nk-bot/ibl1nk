@@ -1,3 +1,22 @@
+import { and, eq } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/mysql2";
+import {
+  InsertUser, users,
+  InsertProject, projects,
+  InsertOutline, outlines,
+  InsertChapter, chapters,
+  InsertScene, scenes,
+  InsertCharacter, characters,
+  InsertCharacterRelationship, characterRelationships,
+  InsertContentAnalysis, contentAnalysis,
+  InsertWritingProgress, writingProgress,
+  InsertCraftCredentials, craftCredentials,
+  InsertObsidianSync, obsidianSync,
+  InsertSlackIntegration, slackIntegration,
+  InsertPlotOutlineNode, plotOutlineNodes,
+  InsertNote, notes,
+  InsertTask, tasks,
+  InsertLoreEntry, loreEntries,
 import { eq, or, gte, and } from "drizzle-orm";
 import { eq, or, and, gte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
@@ -125,9 +144,10 @@ export async function getUserOutlines(userId: number) {
   return db.select().from(outlines).where(eq(outlines.userId, userId));
 }
 
-export async function getOutlineById(id: number) {
+export async function getOutlineById(id: number, userId: number) {
   const db = await getDb();
   if (!db) return undefined;
+  const result = await db.select().from(outlines).where(and(eq(outlines.id, id), eq(outlines.userId, userId))).limit(1);
   const result = await db
     .select()
     .from(outlines)
@@ -143,10 +163,10 @@ export async function createOutline(data: InsertOutline) {
   return result;
 }
 
-export async function updateOutline(id: number, data: Partial<InsertOutline>) {
+export async function updateOutline(id: number, userId: number, data: Partial<InsertOutline>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  return db.update(outlines).set(data).where(eq(outlines.id, id));
+  return db.update(outlines).set(data).where(and(eq(outlines.id, id), eq(outlines.userId, userId)));
 }
 
 // ── Chapter Queries ────────────────────────────────────────────
@@ -279,6 +299,13 @@ export async function getWritingProgressForUser(
   if (!db) return [];
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
+  const dateStr = startDate.toISOString().split('T')[0];
+  
+  const { gte, and: andDrizzle } = await import("drizzle-orm");
+  return db.select().from(writingProgress).where(
+    andDrizzle(
+      eq(writingProgress.userId, userId),
+      gte(writingProgress.date, dateStr)
   const dateStr = startDate.toISOString().split("T")[0];
 
   // Optimization: use static imports instead of dynamic import for drizzle-orm
@@ -331,6 +358,11 @@ export async function saveCraftCredentials(data: InsertCraftCredentials) {
 export async function getObsidianSyncStatus(userId: number, filePath: string) {
   const db = await getDb();
   if (!db) return undefined;
+  const { and: andDrizzle } = await import("drizzle-orm");
+  const result = await db.select().from(obsidianSync).where(
+    andDrizzle(
+      eq(obsidianSync.userId, userId),
+      eq(obsidianSync.filePath, filePath)
   // Optimization: use static imports instead of dynamic import for drizzle-orm
   const result = await db
     .select()
@@ -379,4 +411,141 @@ export async function saveSlackIntegration(data: InsertSlackIntegration) {
       .where(eq(slackIntegration.userId, data.userId));
   }
   return db.insert(slackIntegration).values(data);
+}
+
+// ── Project Queries ────────────────────────────────────────────
+
+export async function getUserProjects(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(projects).where(eq(projects.userId, userId)).orderBy(projects.updatedAt);
+}
+
+export async function getProjectById(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(projects).where(and(eq(projects.id, id), eq(projects.userId, userId))).limit(1);
+  return result[0];
+}
+
+export async function createProject(data: InsertProject) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(projects).values(data);
+}
+
+export async function updateProject(id: number, userId: number, data: Partial<InsertProject>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(projects).set(data).where(and(eq(projects.id, id), eq(projects.userId, userId)));
+}
+
+// ── Note Queries ───────────────────────────────────────────────
+
+export async function getNotesByProject(projectId: number, userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(notes).where(and(eq(notes.projectId, projectId), eq(notes.userId, userId))).orderBy(notes.updatedAt);
+}
+
+export async function getNotesByOutline(outlineId: number, userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(notes).where(and(eq(notes.outlineId, outlineId), eq(notes.userId, userId))).orderBy(notes.updatedAt);
+}
+
+export async function createNote(data: InsertNote) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(notes).values(data);
+}
+
+export async function updateNote(id: number, userId: number, data: Partial<InsertNote>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(notes).set(data).where(and(eq(notes.id, id), eq(notes.userId, userId)));
+}
+
+export async function deleteNote(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.delete(notes).where(and(eq(notes.id, id), eq(notes.userId, userId)));
+}
+
+// ── Task Queries ───────────────────────────────────────────────
+
+export async function getTasksByProject(projectId: number, userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(tasks).where(and(eq(tasks.projectId, projectId), eq(tasks.userId, userId))).orderBy(tasks.order);
+}
+
+export async function getTasksByOutline(outlineId: number, userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(tasks).where(and(eq(tasks.outlineId, outlineId), eq(tasks.userId, userId))).orderBy(tasks.order);
+}
+
+export async function createTask(data: InsertTask) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(tasks).values(data);
+}
+
+export async function updateTask(id: number, userId: number, data: Partial<InsertTask>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(tasks).set(data).where(and(eq(tasks.id, id), eq(tasks.userId, userId)));
+}
+
+export async function deleteTask(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.delete(tasks).where(and(eq(tasks.id, id), eq(tasks.userId, userId)));
+}
+
+// ── Lore Queries ───────────────────────────────────────────────
+
+export async function getLoreByProject(projectId: number, userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(loreEntries).where(and(eq(loreEntries.projectId, projectId), eq(loreEntries.userId, userId))).orderBy(loreEntries.updatedAt);
+}
+
+export async function createLoreEntry(data: InsertLoreEntry) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(loreEntries).values(data);
+}
+
+export async function updateLoreEntry(id: number, userId: number, data: Partial<InsertLoreEntry>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(loreEntries).set(data).where(and(eq(loreEntries.id, id), eq(loreEntries.userId, userId)));
+}
+
+export async function deleteLoreEntry(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.delete(loreEntries).where(and(eq(loreEntries.id, id), eq(loreEntries.userId, userId)));
+}
+
+// ── Plot Outline Queries ───────────────────────────────────────
+
+export async function getPlotNodesByOutline(outlineId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(plotOutlineNodes).where(eq(plotOutlineNodes.outlineId, outlineId)).orderBy(plotOutlineNodes.order);
+}
+
+export async function createPlotNode(data: InsertPlotOutlineNode) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(plotOutlineNodes).values(data);
+}
+
+export async function updatePlotNode(id: number, data: Partial<InsertPlotOutlineNode>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(plotOutlineNodes).set(data).where(eq(plotOutlineNodes.id, id));
 }

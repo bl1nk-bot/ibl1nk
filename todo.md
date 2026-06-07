@@ -1,11 +1,11 @@
-# Claude Writer Dashboard - Project TODO
+# ibl1nk Dashboard - Project TODO
 
 ## Architecture Overview
 
-**Plugin Type:** Built-in Plugin (integrated into Manus system)
-**Dashboard Generation:** Using visual-explainer skill for beautiful, interactive dashboards
-**Data Export:** HTML/PDF export of visual stories and dashboards from user-tracked data
-**SQL Naming:** Meaningful names indicating purpose (e.g., `001_create_outlines_chapters_scenes.sql`)
+1. **Plugin Type:** Built-in Plugin (integrated into Manus system)
+2. **Dashboard Generation:** Using visual-explainer skill for beautiful, interactive dashboards
+3. **Data Export:** HTML/PDF export of visual stories and dashboards from user-tracked data
+4. **SQL Naming:** Meaningful names (approx 3 syllables) (e.g., `001_user_base.sql`)
 
 ---
 
@@ -18,7 +18,9 @@
 - [x] Create database tables for Obsidian file sync metadata
 - [x] Create database tables for writing analysis results
 - [x] Create database tables for Slack integration logs
-- [ ] Rename SQL migration files with meaningful names (e.g., `001_create_outlines_chapters_scenes.sql`)
+- [x] Add `projects` table (isolated context for notes/tasks/lore)
+- [x] Add `notes`, `tasks`, and `loreEntries` tables
+- [x] Rename SQL migration files with meaningful names (e.g., `001_user_base.sql`)
 - [ ] Implement data versioning/backup system for S3
 
 ### 2. Craft API Integration
@@ -43,6 +45,7 @@
 
 ### 4. Content Analysis & AI Integration
 
+- [x] Implement AI Chat with Project context
 - [ ] Implement sentiment analysis using LLM
 - [ ] Implement keyword extraction and density analysis
 - [ ] Implement spell check and grammar correction
@@ -75,7 +78,7 @@
 
 - [ ] Create Slack App configuration
 - [ ] Implement Slack Incoming Webhooks for notifications
-- [ ] Implement Slack Slash Commands (/claude-writer analyze, /character, /dashboard)
+- [ ] Implement Slack Slash Commands (/ibl1nk analyze, /character, /dashboard)
 - [ ] Implement Slack Events API for interactive workflows
 - [ ] Create Slack Workflow Canvas integration (optional)
 - [ ] Add daily writing progress notifications
@@ -84,6 +87,7 @@
 ### 8. Frontend UI Components (Mobile-First)
 
 - [x] Refactor Dashboard for mobile-first design (DashboardMobile.tsx)
+- [x] Integrate `NoteTaskApp` logic into `NoteTaskApp.tsx` page
 - [ ] Refactor Outlines for mobile-first design with mobile views
 - [ ] Refactor Characters for mobile-first design with mobile views
 - [x] Create Graph View for character relationships (CharacterGraphView.tsx)
@@ -104,6 +108,11 @@
 
 - [x] Create procedures for outline CRUD
 - [x] Create procedures for character CRUD
+- [x] Create procedures for project CRUD (Project API)
+- [x] Create procedures for note CRUD (Note API)
+- [x] Create procedures for task CRUD (Task API)
+- [x] Create procedures for lore CRUD (Lore API)
+- [x] Implement secure IDOR protection (userId scoping) for all routers
 - [ ] Create procedures for canvas entry CRUD (save/load entries)
 - [ ] Create procedures for export (JSON, PDF, EPUB)
 - [ ] Create procedures for import (Craft, Obsidian, JSON)
@@ -145,6 +154,8 @@
 
 ### 13. Testing & Quality Assurance
 
+- [x] Review security and best practices (IDOR, Error Handling)
+- [ ] Write unit tests for projectsRouter and DB queries
 - [ ] Write unit tests for Craft API integration
 - [ ] Write unit tests for content analysis functions
 - [ ] Write unit tests for Obsidian sync logic
@@ -156,7 +167,10 @@
 
 ### 14. Documentation & Deployment
 
-- [ ] Write API documentation
+- [x] Write API documentation (v1)
+- [x] Create project LICENSE (MIT)
+- [x] Create SECURITY.md policy
+- [x] Create project cleanup script (`scripts/clean-project.sh`)
 - [ ] Create user guide for dashboard
 - [ ] Create admin guide for plugin configuration
 - [ ] Document Craft/Obsidian/Slack setup instructions
@@ -168,49 +182,21 @@
 
 ## SQL Migration Files (Meaningful Naming Convention)
 
-When creating SQL migrations, use this naming pattern:
-- `001_create_outlines_chapters_scenes.sql` - Initial schema for story structure
-- `002_create_characters_relationships.sql` - Character database and relationships
-- `003_create_analysis_results.sql` - Content analysis storage
-- `004_create_obsidian_sync_metadata.sql` - Obsidian vault sync tracking
-- `005_create_craft_slack_credentials.sql` - API credential storage
-- `006_create_writing_progress_tracking.sql` - Daily writing statistics
-
-Each migration file should:
-1. Have a sequential number (001, 002, etc.)
-2. Clearly describe what tables/columns it creates or modifies
-3. Include comments explaining the purpose of each table
-4. Be idempotent (safe to run multiple times)
-
----
-
-## Plugin Integration Points
-
-### Manus System Hooks
-- [ ] Register plugin with Manus plugin manager
-- [ ] Implement lifecycle hooks (init, activate, deactivate)
-- [ ] Add plugin to sidebar/menu
-- [ ] Create plugin settings panel
-
-### Built-in Skills Integration
-- [ ] Integrate visual-explainer for dashboard generation
-- [ ] Use claude-writer-plugin skill for content analysis
-- [ ] Leverage built-in LLM for AI features
-
-### External Service Integrations
-- [ ] Craft API OAuth setup
-- [ ] Obsidian vault configuration
-- [ ] Slack App OAuth setup
-- [ ] S3 bucket configuration
+Migration pattern (approx 3 syllables):
+- `001_user_base.sql` - Core user table and auth
+- `002_writer_core.sql` - Outlines, Chapters, Scenes, and Characters
+- `003_analysis_log.sql` - Content analysis and writing stats
+- `004_external_sync.sql` - Obsidian and Craft sync metadata
+- `005_workspace_mod.sql` - Projects, Notes, Tasks, and Lore (New)
 
 ---
 
 ## Priority Roadmap
 
-**Phase 1 (Current):** ✅ Database + Backend API + Dashboard Design
-**Phase 2:** Frontend UI Components + Dashboard Integration
+**Phase 1 (Completed):** ✅ Database + Backend API + Dashboard Design + Projects/Notes/Tasks Integration
+**Phase 2:** Testing + Bug Fixes (IDOR/Security) + Refining Workspace UI
 **Phase 3:** Craft API + Obsidian Sync Implementation
 **Phase 4:** Content Analysis + Search Features
 **Phase 5:** Slack Integration + Notifications
 **Phase 6:** Built-in Plugin Integration + visual-explainer
-**Phase 7:** Testing + Documentation + Deployment
+**Phase 7:** Documentation + Deployment

@@ -149,6 +149,10 @@ import {
   AppDataType,
 } from "./services/appDataService";
 
+const _MIN_LEARNED_WORD_LENGTH =3;
+const STREAM_ERROR_MARKER = "[[STREAM_ERROR]]"; 
+const CURRENT_SCHEMA_VERSION = 1;
+
 import Header from "./components/Header";
 import Sidebar, { NavItem } from "./components/Sidebar";
 import NoteModal from "./components/NoteModal";
@@ -575,6 +579,38 @@ const _NoteTaskAppWithRouter = () => {
     loadInitialData();
   }, []);
 
+  const _normalizeProject =(project: any): Project => ({ id: String(project.id || Date.now().toString()), name: String(project.name || 'Untitled Project'), genre: project.genre ? String(project.genre) : undefined, description: project.description ? String(project.description) : undefined, createdAt: String(project.createdAt || new Date().toISOString()), isArchived: typeof project.isArchived === 'boolean' ? project.isArchived : false, lastModified: project.lastModified || new Date().toISOString(), summary: project.summary || project.description?.substring(0,100) || '' });
+  const _normalizeLoreEntry =(entry: any): LoreEntry => ({ id: String(entry.id || Date.now().toString() + Math.random()), title: String(entry.title || 'Untitled Lore'), type: entry.type || 'Concept', content: String(entry.content || ''), tags: Array.isArray(entry.tags) ? entry.tags.map(String) : [], createdAt: String(entry.createdAt || new Date().toISOString()), projectId: entry.projectId || null, role: entry.role || undefined, characterArcana: Array.isArray(entry.characterArcana) ? entry.characterArcana.map(String) : [], relationships: Array.isArray(entry.relationships) ? entry.relationships.map((r: any) => ({ targetCharacterId: String(r.targetCharacterId || ''), targetCharacterName: r.targetCharacterName ? String(r.targetCharacterName) : undefined, relationshipType: String(r.relationshipType || ''), description: r.description ? String(r.description) : undefined })) : [], coverImageUrl: entry.coverImageUrl || undefined });
+  const _normalizeNote =(note: any): AppNote => ({ id: note.id || Date.now(), title: String(note.title || 'Untitled Note'), icon: note.icon || undefined, coverImageUrl: note.coverImageUrl || undefined, content: String(note.content || ''), category: String(note.category || 'general'), tags: Array.isArray(note.tags) ? note.tags.map(String) : [], createdAt: String(note.createdAt || new Date().toISOString()), updatedAt: note.updatedAt ? String(note.updatedAt) : new Date().toISOString(), versions: Array.isArray(note.versions) ? note.versions.map((v: any) => ({ timestamp: String(v.timestamp || new Date().toISOString()), content: String(v.content || '') })) : [], links: Array.isArray(note.links) ? note.links.map((l: any) => ({ targetTitle: String(l.targetTitle || '') })) : parseNoteLinks(String(note.content || '')), projectId: note.projectId || null });
+  const _normalizeTask =(task: any): AppTask => ({ id: task.id || Date.now(), title: String(task.title || 'Untitled Task'), icon: task.icon || undefined, completed: typeof task.completed === 'boolean' ? task.completed : false, priority: String(task.priority || 'medium'), dueDate: String(task.dueDate || ''), category: String(task.category || 'general'), subtasks: Array.isArray(task.subtasks) ? task.subtasks.map((st: any): AppSubtask => ({ id: String(st.id || Date.now().toString() + Math.random().toString(36).substring(2, 9)), title: String(st.title || 'Subtask'), completed: typeof st.completed === 'boolean' ? st.completed : false })) : [], createdAt: String(task.createdAt || new Date().toISOString()), projectId: task.projectId || null, description: task.description || undefined, htmlDescription: task.htmlDescription || undefined });
+  const _normalizePlotOutlineNode =(node: any): PlotOutlineNode => ({ id: String(node.id || Date.now().toString() + Math.random()), text: String(node.text || 'Untitled Plot Point'), parentId: node.parentId || null, order: typeof node.order === 'number' ? node.order : 0, projectId: node.projectId || null, createdAt: String(node.createdAt || new Date().toISOString()), linkedNoteIds: Array.isArray(node.linkedNoteIds) ? node.linkedNoteIds.map(Number).filter((id:number) => !isNaN(id)) : [], linkedLoreIds: Array.isArray(node.linkedLoreIds) ? node.linkedLoreIds.map(String) : [] });
+
+ useEffect(() => { 
+    if (!isInitialLoadComplete) return; 
+    try { 
+        const appData: AppDataType = { 
+            dataSchemaVersion: CURRENT_SCHEMA_VERSION,
+            notes, 
+            tasks, 
+            loreEntries, 
+            projects, 
+            userTemplates, 
+            plotOutlines, 
+            longformDocuments, 
+            activeTheme: activeThemeKey, 
+            pomodoroConfig, 
+            userPreferences 
+        }; 
+        localStorage.setItem('smartNotesAppData', JSON.stringify(appData)); 
+    } catch (e) { 
+        console.error("Failed to save app data to localStorage:", e);
+    } 
+}, [notes, tasks, loreEntries, projects, userTemplates, plotOutlines, longformDocuments, activeThemeKey, pomodoroConfig, userPreferences, isInitialLoadComplete]); 
+
+ useEffect(() => { if (!isInitialLoadComplete) return; try { localStorage.setItem('smartNotesLearnedWordsAi', JSON.stringify(Array.from(learnedWordsAi))); } catch (e) { console.error("Failed to save learned words to localStorage:", e); } }, [learnedWordsAi, isInitialLoadComplete]);
+ useEffect(() => { setInputCharCountAi(plainTextCharCount(String(inputPromptAi || ''))); }, [inputPromptAi]);
+ useEffect(() => { setResponseCharCountAi(plainTextCharCount(String(aiResponse || ''))); }, [aiResponse]);
+ useEffect(() => { const htmlElement = document.documentElement; if (themes[activeThemeKey]?.name.toLowerCase().includes('dark') || themes[activeThemeKey]?.name.toLowerCase().includes('deep') || themes[activeThemeKey]?.name.toLowerCase().includes('night')) htmlElement.classList.add('dark'); else htmlElement.classList.remove('dark'); if (document.body && userPreferences.selectedFontFamily) document.body.style.fontFamily = userPreferences.selectedFontFamily; }, [activeThemeKey, userPreferences.selectedFontFamily]);
   // Firebase Initialization Effect
   useEffect(() => {
     try {

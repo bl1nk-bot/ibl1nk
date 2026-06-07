@@ -1,0 +1,99 @@
+{
+  "primary_root": ".",
+  "current_branch": "learn-09-04-2026",
+  "last_commit": "509b87b",
+  "lanes": [
+    {
+      "id": "main",
+      "path": ".",
+      "owner": "omg-director",
+      "purpose": "merge-ready baseline",
+      "health": {
+        "cleanliness": "dirty",
+        "trusted": "trusted",
+        "handoff": "needs-review"
+      },
+      "notes": "2 modified files, 2 untracked learned rules — pending T008a/b cleanup"
+    },
+    {
+      "id": "docs",
+      "path": "docs/",
+      "owner": "agent",
+      "purpose": "project documentation & work-log",
+      "health": {
+        "cleanliness": "clean",
+        "trusted": "trusted",
+        "handoff": "ready"
+      },
+      "notes": "docs/QWEN.md, docs/work-log.csv — committed"
+    },
+    {
+      "id": "omg-state",
+      "path": ".omg/state/",
+      "owner": "agent",
+      "purpose": "OmG state anchors (taskboard, workspace)",
+      "health": {
+        "cleanliness": "dirty",
+        "trusted": "trusted",
+        "handoff": "needs-review"
+      },
+      "notes": "workspace.json exists (validated), taskboard.md untracked — pending T012b commit"
+    },
+    {
+      "id": "omg-rules",
+      "path": ".omg/rules/",
+      "owner": "agent",
+      "purpose": "learned behavioral rules",
+      "health": {
+        "cleanliness": "dirty",
+        "trusted": "trusted",
+        "handoff": "needs-review"
+      },
+      "notes": "6 rules committed, 2 untracked — pending T013a (learn.json) + T008b (tracked rules)"
+    },
+    {
+      "id": "plugin-sdk",
+      "path": "packages/plugin-sdk/",
+      "owner": "unknown",
+      "purpose": "Plugin SDK package (incomplete)",
+      "health": {
+        "cleanliness": "dirty",
+        "trusted": "untrusted",
+        "handoff": "blocked"
+      },
+      "notes": "tests exist but no src/ — duplicate of tests/pluginsdk/ — T002-decision pending"
+    },
+    {
+      "id": "server-pluginsdk",
+      "path": "server/_core/pluginsdk/",
+      "owner": "agent",
+      "purpose": "Plugin SDK implementation (source of truth)",
+      "health": {
+        "cleanliness": "clean",
+        "trusted": "trusted",
+        "handoff": "ready"
+      },
+      "notes": "7 files — authoritative implementation"
+    }
+  ],
+  "collision_risks": [
+    {
+      "lanes": ["plugin-sdk", "server-pluginsdk", "tests/pluginsdk"],
+      "risk": "high",
+      "detail": "3 locations with overlapping plugin-sdk content — tests duplicated, src missing in packages — T002-decision required"
+    },
+    {
+      "lanes": ["omg-state"],
+      "risk": "low",
+      "detail": "taskboard.md untracked — T012b will commit and resolve"
+    },
+    {
+      "lanes": ["main"],
+      "risk": "low",
+      "detail": "2 untracked learned rules files — T008b will move to .omg/rules/learned/"
+    }
+  ],
+  "cross_lane_policy": "explicit-handoff",
+  "worktree_support": false,
+  "source": "omg:workspace"
+}

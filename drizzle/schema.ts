@@ -25,11 +25,27 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
+// ── Projects ───────────────────────────────────────────────────
+
+export const projects = mysqlTable("projects", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  status: mysqlEnum("status", ["active", "completed", "archived"]).default("active"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Project = typeof projects.$inferSelect;
+export type InsertProject = typeof projects.$inferInsert;
+
 // ── Outline & Story Structure ──────────────────────────────────
 
 export const outlines = mysqlTable("outlines", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull().references(() => users.id),
+  projectId: int("projectId").references(() => projects.id, { onDelete: "set null" }),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
   craftDocumentId: varchar("craftDocumentId", { length: 255 }),
@@ -198,3 +214,77 @@ export const craftCredentials = mysqlTable("craftCredentials", {
 
 export type CraftCredentials = typeof craftCredentials.$inferSelect;
 export type InsertCraftCredentials = typeof craftCredentials.$inferInsert;
+
+// ── Plot Outline Nodes ──────────────────────────────────────────
+
+export const plotOutlineNodes = mysqlTable("plotOutlineNodes", {
+  id: int("id").autoincrement().primaryKey(),
+  outlineId: int("outlineId").notNull().references(() => outlines.id, { onDelete: "cascade" }),
+  parentId: int("parentId"), // For hierarchical plot structure
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content"),
+  type: varchar("type", { length: 50 }).default("beat"), // beat, plot_point, pinch_point, etc.
+  order: int("order").default(0),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PlotOutlineNode = typeof plotOutlineNodes.$inferSelect;
+export type InsertPlotOutlineNode = typeof plotOutlineNodes.$inferInsert;
+
+// ── Notes ───────────────────────────────────────────────────────
+
+export const notes = mysqlTable("notes", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  projectId: int("projectId").references(() => projects.id, { onDelete: "set null" }),
+  outlineId: int("outlineId").references(() => outlines.id, { onDelete: "set null" }),
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content"),
+  tags: text("tags"), // JSON array
+  isPinned: int("isPinned").default(0),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Note = typeof notes.$inferSelect;
+export type InsertNote = typeof notes.$inferInsert;
+
+// ── Tasks ───────────────────────────────────────────────────────
+
+export const tasks = mysqlTable("tasks", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  projectId: int("projectId").references(() => projects.id, { onDelete: "set null" }),
+  outlineId: int("outlineId").references(() => outlines.id, { onDelete: "set null" }),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  status: mysqlEnum("status", ["todo", "in_progress", "done", "cancelled"]).default("todo"),
+  priority: mysqlEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  dueDate: timestamp("dueDate"),
+  parentTaskId: int("parentTaskId"), // For subtasks
+  order: int("order").default(0),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Task = typeof tasks.$inferSelect;
+export type InsertTask = typeof tasks.$inferInsert;
+
+// ── Lore Entries ────────────────────────────────────────────────
+
+export const loreEntries = mysqlTable("loreEntries", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  projectId: int("projectId").references(() => projects.id, { onDelete: "set null" }),
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content"),
+  category: varchar("category", { length: 100 }), // world, magic_system, history, etc.
+  tags: text("tags"), // JSON array
+  relatedLoreIds: text("relatedLoreIds"), // JSON array of IDs
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type LoreEntry = typeof loreEntries.$inferSelect;
+export type InsertLoreEntry = typeof loreEntries.$inferInsert;

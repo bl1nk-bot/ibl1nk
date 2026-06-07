@@ -1,0 +1,78 @@
+{
+  "_comment": "Story Studio - Miro Board Template v1.0 | Layout สำหรับ Storyboard และ Corkboard",
+
+  "board_types": {
+
+    "storyboard": {
+      "_description": "บอร์ดเรียงตอนแบบ visual timeline — เหมาะสำหรับดูภาพรวมทั้งเรื่อง",
+      "layout": "horizontal_flow",
+      "frame_title": "🎬 {story_title} — Storyboard",
+      "card_per_episode": {
+        "fields": ["episode_number", "title", "word_count", "status", "hook"],
+        "color_by_status": {
+          "Draft":  "#FFD700",
+          "Edited": "#87CEEB",
+          "Final":  "#90EE90"
+        },
+        "show_word_count_badge": true
+      },
+      "sections": [
+        { "label": "Act 1 — ตอนที่ 1–5",   "color": "#FF6B6B", "episode_range": [1, 5]  },
+        { "label": "Act 2 — ตอนที่ 6–25",  "color": "#4ECDC4", "episode_range": [6, 25] },
+        { "label": "Act 3 — ตอนที่ 26–40", "color": "#45B7D1", "episode_range": [26, 40]},
+        { "label": "Act 4 — ตอนที่ 41–60", "color": "#96CEB4", "episode_range": [41, 60]}
+      ]
+    },
+
+    "corkboard": {
+      "_description": "บอร์ดแบบ cork — เหมาะสำหรับ brainstorm และวางแผน plot",
+      "layout": "freeform_cluster",
+      "frame_title": "📌 {story_title} — Corkboard",
+      "clusters": [
+        {
+          "label": "🧑 ตัวละคร",
+          "color": "#FFB347",
+          "source": "characters",
+          "card_fields": ["name", "role", "current_state", "traits"]
+        },
+        {
+          "label": "📍 สถานที่",
+          "color": "#98D8C8",
+          "source": "locations",
+          "card_fields": ["name", "description"]
+        },
+        {
+          "label": "🎯 Plot Points สำคัญ",
+          "color": "#F7DC6F",
+          "source": "plot_points",
+          "card_fields": ["event", "episode_ref", "type", "description"]
+        },
+        {
+          "label": "📣 Marketing Assets",
+          "color": "#BB8FCE",
+          "source": "marketing_assets",
+          "card_fields": ["type", "content", "selected"]
+        }
+      ]
+    },
+
+    "word_count_tracker": {
+      "_description": "บอร์ดแสดงสถานะ word count ต่อตอนแบบ Kanban",
+      "layout": "kanban",
+      "frame_title": "📊 {story_title} — Word Count Tracker",
+      "columns": [
+        { "label": "⚠️ สั้นเกิน",  "filter": "word_count_status == 'สั้นเกิน'" },
+        { "label": "✅ ผ่าน",       "filter": "word_count_status == 'ผ่าน'"     },
+        { "label": "⚠️ ยาวเกิน",   "filter": "word_count_status == 'ยาวเกิน'" }
+      ]
+    }
+
+  },
+
+  "word_count_spec": {
+    "1-5":   { "min": 800, "max": 1000 },
+    "6-25":  { "min": 650, "max": 900  },
+    "26-40": { "min": 1,   "max": 800  },
+    "41-60": { "min": 1,   "max": 700  }
+  }
+}

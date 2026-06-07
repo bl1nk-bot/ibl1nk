@@ -1,0 +1,37 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"\nimport json, os, sys\nctx_path = 'context.json'\nif os.path.exists(ctx_path):\n    with open(ctx_path) as f:\n        ctx = json.load(f)\n    ep = ctx.get('story_info', {}).get('current_episode', 0)\n    title = ctx.get('story_info', {}).get('title', 'Untitled')\n    print(f'[Story Studio] Context OK — {title} | ตอนปัจจุบัน: {ep}')\nelse:\n    print('[Story Studio] context.json ยังไม่มี — รัน /start-project ก่อน')\n\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse:notion_sync": [
+      {
+        "matcher": "mcp__notion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[Story Studio] Notion sync triggered — ตรวจสอบ Dashboard บน Notion'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse:miro_update": [
+      {
+        "matcher": "mcp__miro",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[Story Studio] Miro board updated — ตรวจสอบ board ล่าสุด'"
+          }
+        ]
+      }
+    ]
+  }
+}
