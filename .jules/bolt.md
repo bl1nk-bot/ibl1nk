@@ -7,3 +7,6 @@
 ## 2024-06-06 - Dynamic Import Bottleneck in Drizzle ORM
 **Learning:** Frequent queries like `getCharacterRelationships` and `getWritingProgressForUser` were using dynamic imports (`await import("drizzle-orm")`) for query operators (`or`, `and`, `gte`). This causes performance bottlenecks and module resolution overhead, particularly for endpoints accessed often.
 **Action:** Always prefer top-level static imports for Drizzle ORM operators (`and`, `or`, `eq`, `gte`, etc.) in frequently called database query functions to eliminate module resolution overhead and optimize response times.
+## 2026-06-08 - Use Promise.all for independent DB fetches
+**Learning:** Sequential awaits for independent database operations inside endpoints like `storyOverview` compound latency linearly (T1 + T2 + T3) whereas they can be parallelized (Max(T1, T2, T3)).
+**Action:** Identify independent data dependencies in route handlers and refactor sequential awaits to `Promise.all` to reduce overall response time.
