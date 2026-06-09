@@ -195,9 +195,8 @@ const firebaseConfig = {
 
 const plainTextCharCount = (text: string): number => {
   if (!text) return 0;
-  const tempDiv = document.createElement("div");
-  tempDiv.innerHTML = text;
-  const plainText = tempDiv.textContent || tempDiv.innerText || "";
+  const doc = new DOMParser().parseFromString(text, "text/html");
+  const plainText = doc.body.textContent || doc.body.innerText || "";
   return plainText.length;
 };
 
@@ -923,13 +922,16 @@ const _NoteTaskAppWithRouter = () => {
           {
             name: "content",
             weight: 0.3,
-            getFn: (note: AppNote) =>
-              plainTextCharCount(note.content) > 0
-                ? ((document.createElement("div").innerHTML = note.content),
-                  document.createElement("div").textContent ||
-                    document.createElement("div").innerText ||
-                    "")
-                : "",
+            getFn: (note: AppNote) => {
+              if (plainTextCharCount(note.content) > 0) {
+                const doc = new DOMParser().parseFromString(
+                  note.content,
+                  "text/html"
+                );
+                return doc.body.textContent || doc.body.innerText || "";
+              }
+              return "";
+            },
           },
           { name: "tags", weight: 0.2 },
           { name: "category", weight: 0.1 },
@@ -1947,10 +1949,15 @@ const _NoteTaskAppWithRouter = () => {
         : loreEntries;
       const contextNotes = projectNotesToConsider
         .slice(0, MAX_PROJECT_NOTES_IN_CONTEXT)
-        .map(
-          n =>
-            `โน้ต "${n.title}": ${plainTextCharCount(n.content) > 0 ? ((document.createElement("div").innerHTML = n.content), (document.createElement("div").textContent || document.createElement("div").innerText || "").substring(0, PROJECT_CONTEXT_MAX_NOTE_CHARS)) : ""}...`
-        )
+        .map(n => {
+          let excerpt = "";
+          if (plainTextCharCount(n.content) > 0) {
+            const doc = new DOMParser().parseFromString(n.content, "text/html");
+            const text = doc.body.textContent || doc.body.innerText || "";
+            excerpt = text.substring(0, PROJECT_CONTEXT_MAX_NOTE_CHARS);
+          }
+          return `โน้ต "${n.title}": ${excerpt}...`;
+        })
         .join("\n");
       const contextLore = projectLoreToConsider
         .slice(0, MAX_PROJECT_LORE_IN_CONTEXT)
@@ -2099,9 +2106,11 @@ const _NoteTaskAppWithRouter = () => {
   const handleCopyAiResponse = async () => {
     if (aiResponseRef.current) {
       let textToCopy = "";
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = aiResponseRef.current.innerHTML;
-      textToCopy = tempDiv.textContent || tempDiv.innerText || "";
+      const doc = new DOMParser().parseFromString(
+        aiResponseRef.current.innerHTML,
+        "text/html"
+      );
+      textToCopy = doc.body.textContent || doc.body.innerText || "";
       if (
         textToCopy &&
         textToCopy !== INITIAL_AI_RESPONSE_MESSAGE &&
@@ -2133,12 +2142,17 @@ const _NoteTaskAppWithRouter = () => {
         if (titleMatch && titleMatch[1])
           noteTitleSuggestion = titleMatch[1].trim();
       } else {
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = window.marked
+        const parsedContent = window.marked
           ? window.marked.parse(aiResponse)
           : aiResponse;
+        // Fix TS error since parsedContent could be Promise<string> if marked is async. Assume it is a string here as it was used synchronously before.
+        const contentStr =
+          typeof parsedContent === "string"
+            ? parsedContent
+            : (parsedContent as any as string);
+        const doc = new DOMParser().parseFromString(contentStr, "text/html");
         const plainTextResponse =
-          tempDiv.textContent || tempDiv.innerText || "";
+          doc.body.textContent || doc.body.innerText || "";
         const firstLine = plainTextResponse.split("\n")[0].substring(0, 50);
         if (firstLine.trim()) noteTitleSuggestion = firstLine.trim();
       }
