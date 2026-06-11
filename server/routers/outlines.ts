@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { protectedProcedure, router } from '../_core/trpc';
+import { z } from "zod";
+import { protectedProcedure, router } from "../_core/trpc";
 import {
   getUserOutlines,
   getOutlineById,
@@ -13,7 +13,7 @@ import {
   updateScene,
   getCharactersByOutlineId,
   getCharacterRelationships,
-} from '../db';
+} from "../db";
 
 export const outlinesRouter = router({
   // Outline Procedures
@@ -25,7 +25,7 @@ export const outlinesRouter = router({
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
       const outline = await getOutlineById(input.id);
-      if (!outline) throw new Error('Outline not found');
+      if (!outline) throw new Error("Outline not found");
       return outline;
     }),
 
@@ -45,7 +45,7 @@ export const outlinesRouter = router({
         description: input.description,
         craftDocumentId: input.craftDocumentId,
         craftCollectionId: input.craftCollectionId,
-        status: 'draft',
+        status: "draft",
       });
     }),
 
@@ -55,7 +55,9 @@ export const outlinesRouter = router({
         id: z.number(),
         title: z.string().optional(),
         description: z.string().optional(),
-        status: z.enum(['draft', 'in_progress', 'completed', 'archived']).optional(),
+        status: z
+          .enum(["draft", "in_progress", "completed", "archived"])
+          .optional(),
         wordCount: z.number().optional(),
       })
     )
@@ -82,7 +84,9 @@ export const outlinesRouter = router({
         title: z.string().min(1),
         description: z.string().optional(),
         chapterNumber: z.number().optional(),
-        status: z.enum(['planning', 'writing', 'reviewing', 'completed']).optional(),
+        status: z
+          .enum(["planning", "writing", "reviewing", "completed"])
+          .optional(),
         order: z.number().optional(),
       })
     )
@@ -92,7 +96,7 @@ export const outlinesRouter = router({
         title: input.title,
         description: input.description,
         chapterNumber: input.chapterNumber,
-        status: (input.status as any) || 'planning',
+        status: (input.status as any) || "planning",
         order: input.order || 0,
       });
     }),
@@ -103,7 +107,9 @@ export const outlinesRouter = router({
         id: z.number(),
         title: z.string().optional(),
         description: z.string().optional(),
-        status: z.enum(['planning', 'writing', 'reviewing', 'completed']).optional(),
+        status: z
+          .enum(["planning", "writing", "reviewing", "completed"])
+          .optional(),
         wordCount: z.number().optional(),
       })
     )
@@ -130,7 +136,9 @@ export const outlinesRouter = router({
         title: z.string().min(1),
         description: z.string().optional(),
         sceneNumber: z.number().optional(),
-        status: z.enum(['planning', 'writing', 'reviewing', 'completed']).optional(),
+        status: z
+          .enum(["planning", "writing", "reviewing", "completed"])
+          .optional(),
         order: z.number().optional(),
       })
     )
@@ -140,7 +148,7 @@ export const outlinesRouter = router({
         title: input.title,
         description: input.description,
         sceneNumber: input.sceneNumber,
-        status: (input.status as any) || 'planning',
+        status: (input.status as any) || "planning",
         order: input.order || 0,
       });
     }),
@@ -151,7 +159,9 @@ export const outlinesRouter = router({
         id: z.number(),
         title: z.string().optional(),
         description: z.string().optional(),
-        status: z.enum(['planning', 'writing', 'reviewing', 'completed']).optional(),
+        status: z
+          .enum(["planning", "writing", "reviewing", "completed"])
+          .optional(),
         wordCount: z.number().optional(),
       })
     )
@@ -168,9 +178,12 @@ export const outlinesRouter = router({
   storyOverview: protectedProcedure
     .input(z.object({ outlineId: z.number() }))
     .query(async ({ input }) => {
-      const outline = await getOutlineById(input.outlineId);
-      const chapters = await getChaptersByOutlineId(input.outlineId);
-      const characters = await getCharactersByOutlineId(input.outlineId);
+      // ⚡ Bolt: Parallelize independent DB queries to reduce latency
+      const [outline, chapters, characters] = await Promise.all([
+        getOutlineById(input.outlineId),
+        getChaptersByOutlineId(input.outlineId),
+        getCharactersByOutlineId(input.outlineId),
+      ]);
 
       return {
         outline,
@@ -179,7 +192,10 @@ export const outlinesRouter = router({
         stats: {
           totalChapters: chapters.length,
           totalCharacters: characters.length,
-          totalWordCount: chapters.reduce((sum, ch) => sum + (ch.wordCount || 0), 0),
+          totalWordCount: chapters.reduce(
+            (sum, ch) => sum + (ch.wordCount || 0),
+            0
+          ),
         },
       };
     }),
