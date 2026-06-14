@@ -1,36 +1,34 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { BookOpen, Users, Zap, TrendingUp, Plus, Settings, ChevronRight } from "lucide-react";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { BookOpen, Users, Plus, Settings, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 
-// Sample data
-const writingProgressData = [
-  { week: "W1", words: 2500 },
-  { week: "W2", words: 3200 },
-  { week: "W3", words: 2800 },
-  { week: "W4", words: 4100 },
-  { week: "W5", words: 5300 },
-  { week: "W6", words: 6680 },
-];
-
-const storyStatusData = [
-  { name: "Completed", value: 8, fill: "#d4a574" },
-  { name: "In Progress", value: 2, fill: "#6b8e99" },
-  { name: "Planning", value: 2, fill: "#c9b8a8" },
-];
+const STATUS_COLORS: Record<string, string> = {
+  completed: "#d4a574",
+  in_progress: "#6b8e99",
+  draft: "#c9b8a8",
+  archived: "#a0a0a0",
+};
 
 export default function DashboardMobile() {
   const { user, isAuthenticated } = useAuth();
 
+  const { data: outlines = [], isLoading: outlinesLoading } = trpc.outlines.list.useQuery(
+    undefined,
+    { enabled: isAuthenticated }
+  );
+  const { data: characters = [], isLoading: charactersLoading } = trpc.characters.listByUser.useQuery(
+    undefined,
+    { enabled: isAuthenticated }
+  );
+
   if (!isAuthenticated) {
     return (
       <div className="flex items-center justify-center min-h-screen p-4">
-        <Card className="w-full">
+        <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle>Welcome to Claude Writer</CardTitle>
             <CardDescription>Your personal writing dashboard</CardDescription>
@@ -46,10 +44,22 @@ export default function DashboardMobile() {
     );
   }
 
+  const totalWords = outlines.reduce((sum, o) => sum + (o.wordCount ?? 0), 0);
+  const inProgress = outlines.filter((o) => o.status === "in_progress").length;
+
+  const statusGroups = [
+    { name: "Completed", value: outlines.filter((o) => o.status === "completed").length, fill: STATUS_COLORS.completed },
+    { name: "In Progress", value: outlines.filter((o) => o.status === "in_progress").length, fill: STATUS_COLORS.in_progress },
+    { name: "Draft", value: outlines.filter((o) => o.status === "draft").length, fill: STATUS_COLORS.draft },
+    { name: "Archived", value: outlines.filter((o) => o.status === "archived").length, fill: STATUS_COLORS.archived },
+  ].filter((g) => g.value > 0);
+
+  const isLoading = outlinesLoading || charactersLoading;
+
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* Mobile Header */}
-      <div className="sticky top-0 z-40 bg-background border-b p-4 space-y-2">
+      {/* Header */}
+      <div className="sticky top-0 z-40 bg-background border-b p-4">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold">Welcome back!</h1>
@@ -65,156 +75,140 @@ export default function DashboardMobile() {
 
       {/* Main Content */}
       <div className="p-4 space-y-4">
-        {/* Quick Stats - Vertical Stack for Mobile */}
-        <div className="space-y-3">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Total Words</p>
-                <p className="text-3xl font-bold">24,580</p>
-                <p className="text-xs text-muted-foreground mt-1">+2,580 this week</p>
-                <Progress value={68} className="mt-3" />
-                <p className="text-xs text-muted-foreground mt-1">68% of 36,000 goal</p>
-              </div>
-            </CardContent>
-          </Card>
+        {isLoading ? (
+          <p className="text-sm text-muted-foreground text-center py-8">Loading...</p>
+        ) : (
+          <>
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-3">
+              <Card>
+                <CardContent className="pt-5 pb-4">
+                  <p className="text-xs text-muted-foreground mb-1">Total Words</p>
+                  <p className="text-2xl font-bold">{totalWords.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Across all stories</p>
+                </CardContent>
+              </Card>
 
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Active Stories</p>
-                <p className="text-3xl font-bold">3</p>
-                <p className="text-xs text-muted-foreground mt-1">2 in progress</p>
-                <Link href="/outlines" className="block mt-3">
-                  <Button variant="outline" size="sm" className="w-full text-xs">
-                    View Stories <ChevronRight className="w-3 h-3 ml-1" />
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+              <Card>
+                <CardContent className="pt-5 pb-4">
+                  <p className="text-xs text-muted-foreground mb-1">Stories</p>
+                  <p className="text-2xl font-bold">{outlines.length}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{inProgress} in progress</p>
+                </CardContent>
+              </Card>
 
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Characters</p>
-                <p className="text-3xl font-bold">12</p>
-                <p className="text-xs text-muted-foreground mt-1">Across all stories</p>
-                <Link href="/characters" className="block mt-3">
-                  <Button variant="outline" size="sm" className="w-full text-xs">
-                    Manage <ChevronRight className="w-3 h-3 ml-1" />
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+              <Card>
+                <CardContent className="pt-5 pb-4">
+                  <p className="text-xs text-muted-foreground mb-1">Characters</p>
+                  <p className="text-2xl font-bold">{characters.length}</p>
+                  <Link href="/characters" className="block mt-2">
+                    <Button variant="outline" size="sm" className="w-full text-xs h-7">
+                      Manage <ChevronRight className="w-3 h-3 ml-1" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
 
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">Writing Streak</p>
-                <p className="text-3xl font-bold">7</p>
-                <p className="text-xs text-muted-foreground mt-1">days in a row</p>
-                <div className="flex gap-1 justify-center mt-3">
-                  {[...Array(7)].map((_, i) => (
-                    <div key={i} className="w-2 h-2 rounded-full bg-accent-gold" />
+              <Card>
+                <CardContent className="pt-5 pb-4">
+                  <p className="text-xs text-muted-foreground mb-1">Active</p>
+                  <p className="text-2xl font-bold">{inProgress}</p>
+                  <Link href="/outlines" className="block mt-2">
+                    <Button variant="outline" size="sm" className="w-full text-xs h-7">
+                      View All <ChevronRight className="w-3 h-3 ml-1" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Story Status Pie Chart */}
+            {statusGroups.length > 0 && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Story Status</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={180}>
+                    <PieChart>
+                      <Pie
+                        data={statusGroups}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={70}
+                        dataKey="value"
+                      >
+                        {statusGroups.map((entry, index) => (
+                          <Cell key={index} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="flex flex-wrap gap-3 justify-center mt-2">
+                    {statusGroups.map((g) => (
+                      <div key={g.name} className="flex items-center gap-1.5 text-xs">
+                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: g.fill }} />
+                        <span className="text-muted-foreground">{g.name} ({g.value})</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Recent Stories */}
+            {outlines.length > 0 && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Recent Stories</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {outlines.slice(0, 4).map((outline) => (
+                    <div key={outline.id} className="flex items-center justify-between py-1.5 border-b last:border-0">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{outline.title}</p>
+                        <p className="text-xs text-muted-foreground capitalize">
+                          {outline.status?.replace("_", " ")} &bull; {(outline.wordCount ?? 0).toLocaleString()} words
+                        </p>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0 ml-2" />
+                    </div>
                   ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                  {outlines.length > 4 && (
+                    <Link href="/outlines">
+                      <Button variant="ghost" size="sm" className="w-full text-xs mt-1">
+                        View all {outlines.length} stories
+                      </Button>
+                    </Link>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
-        {/* Tabs for Charts */}
-        <Tabs defaultValue="progress" className="space-y-3">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="progress" className="text-xs">
-              Progress
-            </TabsTrigger>
-            <TabsTrigger value="status" className="text-xs">
-              Status
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="progress">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Weekly Progress</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={200}>
-                  <LineChart data={writingProgressData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="week" tick={{ fontSize: 12 }} />
-                    <YAxis tick={{ fontSize: 12 }} />
-                    <Tooltip />
-                    <Line
-                      type="monotone"
-                      dataKey="words"
-                      stroke="#d4a574"
-                      strokeWidth={2}
-                      dot={{ r: 3 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="status">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Story Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
-                    <Pie
-                      data={storyStatusData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={40}
-                      outerRadius={70}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {storyStatusData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-
-        {/* Recent Activity */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {[
-              { title: "Completed Chapter 8", time: "2h ago" },
-              { title: "Updated Aria's backstory", time: "5h ago" },
-              { title: "Content analysis done", time: "1d ago" },
-            ].map((activity, i) => (
-              <div key={i} className="flex items-start gap-2 pb-2 border-b last:border-0">
-                <div className="w-2 h-2 rounded-full bg-accent-gold mt-1 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium truncate">{activity.title}</p>
-                  <p className="text-xs text-muted-foreground">{activity.time}</p>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+            {/* Empty state */}
+            {outlines.length === 0 && characters.length === 0 && (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <BookOpen className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                  <p className="font-medium mb-1">No stories yet</p>
+                  <p className="text-sm text-muted-foreground mb-4">Start your first story to see your dashboard come alive.</p>
+                  <Link href="/outlines">
+                    <Button size="sm">
+                      <Plus className="w-3 h-3 mr-1" />
+                      Create Story
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            )}
+          </>
+        )}
       </div>
 
-      {/* Mobile Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-3 space-y-2">
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-3">
         <div className="grid grid-cols-3 gap-2">
           <Link href="/outlines">
             <Button variant="outline" size="sm" className="w-full text-xs">
@@ -228,10 +222,12 @@ export default function DashboardMobile() {
               Characters
             </Button>
           </Link>
-          <Button variant="default" size="sm" className="w-full text-xs">
-            <Plus className="w-3 h-3 mr-1" />
+          <Link href="/outlines">
+            <Button variant="default" size="sm" className="w-full text-xs">
+              <Plus className="w-3 h-3 mr-1" />
               New
-          </Button>
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

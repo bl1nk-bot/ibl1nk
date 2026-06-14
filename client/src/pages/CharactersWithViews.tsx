@@ -12,60 +12,30 @@ import { ViewToggle, type ViewType } from "@/components/ViewToggle";
 import { GridView, type GridItem } from "@/components/GridView";
 import { ListView, type ListItem } from "@/components/ListView";
 import { GalleryView, type GalleryItem } from "@/components/GalleryView";
+import { trpc } from "@/lib/trpc";
 import { Plus, Users } from "lucide-react";
 
-// Sample character data
-const sampleCharacters = [
-  {
-    id: 1,
-    name: "Aria",
-    role: "protagonist",
-    traits: ["brave", "curious", "determined"],
-    description: "A 32-year-old woman searching for her lost past",
-    image: "https://via.placeholder.com/300x400?text=Aria",
-    appearances: 24,
-  },
-  {
-    id: 2,
-    name: "Marcus",
-    role: "mentor",
-    traits: ["wise", "mysterious", "protective"],
-    description: "An old friend who returns with secrets",
-    image: "https://via.placeholder.com/300x400?text=Marcus",
-    appearances: 12,
-  },
-  {
-    id: 3,
-    name: "Elena",
-    role: "antagonist",
-    traits: ["ambitious", "ruthless", "intelligent"],
-    description: "A powerful businesswoman with hidden motives",
-    image: "https://via.placeholder.com/300x400?text=Elena",
-    appearances: 8,
-  },
-  {
-    id: 4,
-    name: "James",
-    role: "supporting",
-    traits: ["loyal", "humorous", "reliable"],
-    description: "Aria's best friend and confidant",
-    image: "https://via.placeholder.com/300x400?text=James",
-    appearances: 15,
-  },
-];
-
-const roleColors: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
+const ROLE_COLORS: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
   protagonist: "default",
   antagonist: "destructive",
   mentor: "secondary",
   supporting: "outline",
 };
 
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function parseTraits(traits: string | null | undefined): string[] {
+  if (!traits) return [];
+  return traits.split(",").map((t) => t.trim()).filter(Boolean);
+}
+
 export default function CharactersWithViews() {
   const { isAuthenticated } = useAuth();
   const [viewType, setViewType] = useState<ViewType>("grid");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [selectedCharacter, setSelectedCharacter] = useState<(typeof sampleCharacters)[0] | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [newCharacter, setNewCharacter] = useState({
     name: "",
     role: "supporting",
@@ -73,62 +43,76 @@ export default function CharactersWithViews() {
     traits: "",
   });
 
+  const { data: characters = [], isLoading } = trpc.characters.listByUser.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  const utils = trpc.useUtils();
+  const createMutation = trpc.characters.create.useMutation({
+    onSuccess: () => {
+      utils.characters.listByUser.invalidate();
+      setNewCharacter({ name: "", role: "supporting", description: "", traits: "" });
+      setIsCreateDialogOpen(false);
+    },
+  });
+
   if (!isAuthenticated) {
-    return <div className="p-4">Please log in to view characters</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="text-muted-foreground">Please log in to view characters.</p>
+      </div>
+    );
   }
 
-  const handleCreateCharacter = () => {
-    console.log("Creating character:", newCharacter);
-    setNewCharacter({ name: "", role: "supporting", description: "", traits: "" });
-    setIsCreateDialogOpen(false);
+  const handleCreate = () => {
+    if (!newCharacter.name.trim()) return;
+    createMutation.mutate({
+      name: newCharacter.name.trim(),
+      role: newCharacter.role || undefined,
+      description: newCharacter.description.trim() || undefined,
+      traits: newCharacter.traits.trim() || undefined,
+    });
   };
 
-  // Convert to Grid View format
-  const gridItems: GridItem[] = sampleCharacters.map((char) => ({
+  const selectedCharacter = characters.find((c) => c.id === selectedId) ?? null;
+
+  const gridItems: GridItem[] = characters.map((char) => ({
     id: char.id,
     title: char.name,
-    description: char.description,
-    badge: char.role.charAt(0).toUpperCase() + char.role.slice(1),
-    badgeVariant: roleColors[char.role],
-    tags: char.traits,
-    stats: [
-      { label: "Appearances", value: char.appearances },
-      { label: "Role", value: char.role },
-    ],
-    onEdit: () => setSelectedCharacter(char),
-    onDelete: () => console.log("Delete:", char.id),
+    description: char.description ?? "",
+    badge: capitalize(char.role ?? "supporting"),
+    badgeVariant: ROLE_COLORS[char.role ?? "supporting"] ?? "outline",
+    tags: parseTraits(char.traits),
+    stats: [{ label: "Role", value: char.role ?? "supporting" }],
+    onEdit: () => setSelectedId(char.id),
+    onDelete: () => {},
   }));
 
-  // Convert to List View format
-  const listItems: ListItem[] = sampleCharacters.map((char) => ({
+  const listItems: ListItem[] = characters.map((char) => ({
     id: char.id,
     title: char.name,
-    description: char.description,
-    badge: char.role.charAt(0).toUpperCase() + char.role.slice(1),
-    badgeVariant: roleColors[char.role],
-    tags: char.traits,
-    stats: [
-      { label: "Appearances", value: char.appearances },
-      { label: "Role", value: char.role },
-    ],
-    metadata: `Last modified: 2 days ago`,
-    onEdit: () => setSelectedCharacter(char),
-    onDelete: () => console.log("Delete:", char.id),
-    onClick: () => setSelectedCharacter(char),
+    description: char.description ?? "",
+    badge: capitalize(char.role ?? "supporting"),
+    badgeVariant: ROLE_COLORS[char.role ?? "supporting"] ?? "outline",
+    tags: parseTraits(char.traits),
+    stats: [{ label: "Role", value: char.role ?? "supporting" }],
+    metadata: `Created ${new Date(char.createdAt).toLocaleDateString()}`,
+    onEdit: () => setSelectedId(char.id),
+    onDelete: () => {},
+    onClick: () => setSelectedId(char.id),
   }));
 
-  // Convert to Gallery View format
-  const galleryItems: GalleryItem[] = sampleCharacters.map((char) => ({
+  const galleryItems: GalleryItem[] = characters.map((char) => ({
     id: char.id,
     title: char.name,
-    description: char.description,
-    image: char.image,
-    badge: char.role.charAt(0).toUpperCase() + char.role.slice(1),
-    badgeVariant: roleColors[char.role],
-    tags: char.traits,
-    onEdit: () => setSelectedCharacter(char),
-    onDelete: () => console.log("Delete:", char.id),
-    onClick: () => setSelectedCharacter(char),
+    description: char.description ?? "",
+    image: undefined,
+    badge: capitalize(char.role ?? "supporting"),
+    badgeVariant: ROLE_COLORS[char.role ?? "supporting"] ?? "outline",
+    tags: parseTraits(char.traits),
+    onEdit: () => setSelectedId(char.id),
+    onDelete: () => {},
+    onClick: () => setSelectedId(char.id),
   }));
 
   return (
@@ -168,7 +152,7 @@ export default function CharactersWithViews() {
                     <Label htmlFor="role">Role</Label>
                     <select
                       id="role"
-                      className="w-full px-3 py-2 border rounded-md"
+                      className="w-full px-3 py-2 border rounded-md bg-background text-foreground"
                       value={newCharacter.role}
                       onChange={(e) => setNewCharacter({ ...newCharacter, role: e.target.value })}
                     >
@@ -184,35 +168,64 @@ export default function CharactersWithViews() {
                       id="description"
                       placeholder="Describe the character"
                       value={newCharacter.description}
-                      onChange={(e) =>
-                        setNewCharacter({ ...newCharacter, description: e.target.value })
-                      }
+                      onChange={(e) => setNewCharacter({ ...newCharacter, description: e.target.value })}
                     />
                   </div>
                   <div>
                     <Label htmlFor="traits">Traits (comma-separated)</Label>
                     <Input
                       id="traits"
-                      placeholder="e.g., brave, intelligent, mysterious"
+                      placeholder="e.g. brave, intelligent, mysterious"
                       value={newCharacter.traits}
                       onChange={(e) => setNewCharacter({ ...newCharacter, traits: e.target.value })}
                     />
                   </div>
-                  <Button onClick={handleCreateCharacter} className="w-full">
-                    Create Character
+                  <Button
+                    onClick={handleCreate}
+                    className="w-full"
+                    disabled={createMutation.isPending || !newCharacter.name.trim()}
+                  >
+                    {createMutation.isPending ? "Creating..." : "Create Character"}
                   </Button>
+                  {createMutation.error && (
+                    <p className="text-sm text-destructive">{createMutation.error.message}</p>
+                  )}
                 </div>
               </DialogContent>
             </Dialog>
           </div>
         </div>
 
-        {/* Views */}
-        {viewType === "grid" && <GridView items={gridItems} columns={3} />}
-        {viewType === "list" && <ListView items={listItems} />}
-        {viewType === "gallery" && <GalleryView items={galleryItems} columns={3} />}
+        {/* Loading */}
+        {isLoading && (
+          <p className="text-sm text-muted-foreground">Loading characters...</p>
+        )}
 
-        {/* Character Detail */}
+        {/* Empty state */}
+        {!isLoading && characters.length === 0 && (
+          <Card>
+            <CardContent className="p-10 text-center">
+              <Users className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+              <p className="font-medium mb-1">No characters yet</p>
+              <p className="text-sm text-muted-foreground mb-4">Add your first character to get started.</p>
+              <Button onClick={() => setIsCreateDialogOpen(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                New Character
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Views */}
+        {!isLoading && characters.length > 0 && (
+          <>
+            {viewType === "grid" && <GridView items={gridItems} columns={3} />}
+            {viewType === "list" && <ListView items={listItems} />}
+            {viewType === "gallery" && <GalleryView items={galleryItems} columns={3} />}
+          </>
+        )}
+
+        {/* Character Detail Panel */}
         {selectedCharacter && (
           <Card>
             <CardHeader>
@@ -220,11 +233,10 @@ export default function CharactersWithViews() {
                 <div>
                   <CardTitle>{selectedCharacter.name}</CardTitle>
                   <CardDescription>
-                    {selectedCharacter.role.charAt(0).toUpperCase() + selectedCharacter.role.slice(1)} •{" "}
-                    {selectedCharacter.appearances} appearances
+                    {capitalize(selectedCharacter.role ?? "supporting")}
                   </CardDescription>
                 </div>
-                <Button variant="outline" onClick={() => setSelectedCharacter(null)}>
+                <Button variant="outline" size="sm" onClick={() => setSelectedId(null)}>
                   Close
                 </Button>
               </div>
@@ -238,27 +250,33 @@ export default function CharactersWithViews() {
                 </TabsList>
 
                 <TabsContent value="details" className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">Description</h4>
-                    <p className="text-muted-foreground">{selectedCharacter.description}</p>
-                  </div>
-
-                  <div>
-                    <h4 className="font-semibold mb-2">Traits</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedCharacter.traits.map((trait) => (
-                        <Badge key={trait}>{trait}</Badge>
-                      ))}
+                  {selectedCharacter.description && (
+                    <div>
+                      <h4 className="font-semibold mb-2">Description</h4>
+                      <p className="text-muted-foreground text-sm">{selectedCharacter.description}</p>
                     </div>
-                  </div>
+                  )}
+                  {selectedCharacter.traits && (
+                    <div>
+                      <h4 className="font-semibold mb-2">Traits</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {parseTraits(selectedCharacter.traits).map((trait) => (
+                          <Badge key={trait} variant="secondary">{trait}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {!selectedCharacter.description && !selectedCharacter.traits && (
+                    <p className="text-sm text-muted-foreground">No details added yet.</p>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="relationships">
-                  <p className="text-muted-foreground text-sm">Relationship details coming soon</p>
+                  <p className="text-sm text-muted-foreground">Relationship tracking coming soon.</p>
                 </TabsContent>
 
                 <TabsContent value="arc">
-                  <p className="text-muted-foreground text-sm">Character arc details coming soon</p>
+                  <p className="text-sm text-muted-foreground">Character arc details coming soon.</p>
                 </TabsContent>
               </Tabs>
             </CardContent>
