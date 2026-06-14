@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -25,13 +24,10 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 export default function Outlines() {
-  const { isAuthenticated } = useAuth();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newOutline, setNewOutline] = useState({ title: "", description: "" });
 
-  const { data: outlines = [], isLoading } = trpc.outlines.list.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
+  const { data: outlines = [], isLoading } = trpc.outlines.list.useQuery();
 
   const utils = trpc.useUtils();
   const createMutation = trpc.outlines.create.useMutation({
@@ -41,14 +37,6 @@ export default function Outlines() {
       setIsCreateDialogOpen(false);
     },
   });
-
-  if (!isAuthenticated) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-muted-foreground">Please log in to view your stories.</p>
-      </div>
-    );
-  }
 
   const handleCreate = () => {
     if (!newOutline.title.trim()) return;

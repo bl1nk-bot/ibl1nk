@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -32,7 +31,6 @@ function parseTraits(traits: string | null | undefined): string[] {
 }
 
 export default function CharactersWithViews() {
-  const { isAuthenticated } = useAuth();
   const [viewType, setViewType] = useState<ViewType>("grid");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -43,9 +41,7 @@ export default function CharactersWithViews() {
     traits: "",
   });
 
-  const { data: characters = [], isLoading } = trpc.characters.listByUser.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
+  const { data: characters = [], isLoading } = trpc.characters.listByUser.useQuery();
 
   const utils = trpc.useUtils();
   const createMutation = trpc.characters.create.useMutation({
@@ -55,14 +51,6 @@ export default function CharactersWithViews() {
       setIsCreateDialogOpen(false);
     },
   });
-
-  if (!isAuthenticated) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-muted-foreground">Please log in to view characters.</p>
-      </div>
-    );
-  }
 
   const handleCreate = () => {
     if (!newCharacter.name.trim()) return;

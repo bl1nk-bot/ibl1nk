@@ -1,6 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { BookOpen, Users, Plus, Settings, ChevronRight } from "lucide-react";
@@ -14,35 +14,10 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function DashboardMobile() {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
-  const { data: outlines = [], isLoading: outlinesLoading } = trpc.outlines.list.useQuery(
-    undefined,
-    { enabled: isAuthenticated }
-  );
-  const { data: characters = [], isLoading: charactersLoading } = trpc.characters.listByUser.useQuery(
-    undefined,
-    { enabled: isAuthenticated }
-  );
-
-  if (!isAuthenticated) {
-    return (
-      <div className="flex items-center justify-center min-h-screen p-4">
-        <Card className="w-full max-w-sm">
-          <CardHeader>
-            <CardTitle>Welcome to Claude Writer</CardTitle>
-            <CardDescription>Your personal writing dashboard</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
-              Manage your stories, characters, and writing progress in one place.
-            </p>
-            <Button className="w-full">Log In</Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const { data: outlines = [], isLoading: outlinesLoading } = trpc.outlines.list.useQuery();
+  const { data: characters = [], isLoading: charactersLoading } = trpc.characters.listByUser.useQuery();
 
   const totalWords = outlines.reduce((sum, o) => sum + (o.wordCount ?? 0), 0);
   const inProgress = outlines.filter((o) => o.status === "in_progress").length;
