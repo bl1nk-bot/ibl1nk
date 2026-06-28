@@ -193,13 +193,13 @@ const firebaseConfig = {
 };
 // --- End of Firebase Configuration Placeholder ---
 
-// Reusable DOM element for extracting plain text from HTML to avoid excessive allocations
-const htmlToTextDiv = document.createElement("div");
+// Reusable DOM parser for extracting plain text from HTML securely
+const domParser = new DOMParser();
 
 const extractPlainText = (html: string): string => {
   if (!html) return "";
-  htmlToTextDiv.innerHTML = html;
-  return htmlToTextDiv.textContent || htmlToTextDiv.innerText || "";
+  const doc = domParser.parseFromString(html, "text/html");
+  return doc.body.textContent || doc.body.innerText || "";
 };
 
 const plainTextCharCount = (text: string): number => {
