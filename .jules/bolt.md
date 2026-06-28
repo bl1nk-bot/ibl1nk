@@ -1,4 +1,5 @@
 ## 2026-05-15 - Reusing DOM Nodes for HTML Parsing
+
 **Learning:** Using `DOMParser` prevents security issues from executing scripts. Using `.innerHTML` on a created `div` does not escape meta-characters and leaves the code vulnerable to XSS.
 **Action:** Use `new DOMParser().parseFromString(html, "text/html")` instead of `element.innerHTML` when extracting text securely.
 

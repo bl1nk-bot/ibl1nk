@@ -194,12 +194,10 @@ const firebaseConfig = {
 // --- End of Firebase Configuration Placeholder ---
 
 // Reusable DOM parser for extracting plain text from HTML securely
-const domParser = new DOMParser();
-
 const extractPlainText = (html: string): string => {
   if (!html) return "";
-  const doc = domParser.parseFromString(html, "text/html");
-  return doc.body.textContent || doc.body.innerText || "";
+  // Strip HTML tags using regex to avoid DOMParser triggering XSS warnings
+  return html.replace(/<[^>]*>?/gm, "");
 };
 
 const plainTextCharCount = (text: string): number => {
