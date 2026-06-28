@@ -2119,12 +2119,11 @@ const _NoteTaskAppWithRouter = () => {
         if (titleMatch && titleMatch[1])
           noteTitleSuggestion = titleMatch[1].trim();
       } else {
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = window.marked
-          ? window.marked.parse(aiResponse)
-          : aiResponse;
-        const plainTextResponse =
-          tempDiv.textContent || tempDiv.innerText || "";
+        const plainTextResponse = extractPlainText(
+          window.marked
+            ? (window.marked.parse(aiResponse) as string)
+            : aiResponse
+        );
         const firstLine = plainTextResponse.split("\n")[0].substring(0, 50);
         if (firstLine.trim()) noteTitleSuggestion = firstLine.trim();
       }
