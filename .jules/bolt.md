@@ -7,3 +7,6 @@
 ## 2024-06-06 - Dynamic Import Bottleneck in Drizzle ORM
 **Learning:** Frequent queries like `getCharacterRelationships` and `getWritingProgressForUser` were using dynamic imports (`await import("drizzle-orm")`) for query operators (`or`, `and`, `gte`). This causes performance bottlenecks and module resolution overhead, particularly for endpoints accessed often.
 **Action:** Always prefer top-level static imports for Drizzle ORM operators (`and`, `or`, `eq`, `gte`, etc.) in frequently called database query functions to eliminate module resolution overhead and optimize response times.
+## 2024-07-28 - Avoid using innerHTML on detached DOM elements for text extraction
+**Learning:** Using `innerHTML` on detached DOM elements to parse HTML strings (e.g. `document.createElement("div").innerHTML = text`) poses XSS risks and causes performance overhead by eagerly triggering network requests for media tags (like `<img>`).
+**Action:** Use `new DOMParser().parseFromString(text, 'text/html')` instead for safe and performant plain-text extraction.

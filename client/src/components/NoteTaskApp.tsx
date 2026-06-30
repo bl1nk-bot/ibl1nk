@@ -195,9 +195,9 @@ const firebaseConfig = {
 
 const plainTextCharCount = (text: string): number => {
   if (!text) return 0;
-  const tempDiv = document.createElement("div");
-  tempDiv.innerHTML = text;
-  const plainText = tempDiv.textContent || tempDiv.innerText || "";
+  // ⚡ Bolt: Avoid using innerHTML on detached DOM elements to prevent XSS risks and performance overhead from eager resource loading.
+  const doc = new DOMParser().parseFromString(text, "text/html");
+  const plainText = doc.body.textContent || "";
   return plainText.length;
 };
 
@@ -923,13 +923,15 @@ const _NoteTaskAppWithRouter = () => {
           {
             name: "content",
             weight: 0.3,
-            getFn: (note: AppNote) =>
-              plainTextCharCount(note.content) > 0
-                ? ((document.createElement("div").innerHTML = note.content),
-                  document.createElement("div").textContent ||
-                    document.createElement("div").innerText ||
-                    "")
-                : "",
+            getFn: (note: AppNote) => {
+              if (plainTextCharCount(note.content) === 0) return "";
+              // ⚡ Bolt: Avoid using innerHTML on detached DOM elements to prevent XSS risks and performance overhead from eager resource loading.
+              const doc = new DOMParser().parseFromString(
+                note.content,
+                "text/html"
+              );
+              return doc.body.textContent || "";
+            },
           },
           { name: "tags", weight: 0.2 },
           { name: "category", weight: 0.1 },
@@ -1947,10 +1949,18 @@ const _NoteTaskAppWithRouter = () => {
         : loreEntries;
       const contextNotes = projectNotesToConsider
         .slice(0, MAX_PROJECT_NOTES_IN_CONTEXT)
-        .map(
-          n =>
-            `โน้ต "${n.title}": ${plainTextCharCount(n.content) > 0 ? ((document.createElement("div").innerHTML = n.content), (document.createElement("div").textContent || document.createElement("div").innerText || "").substring(0, PROJECT_CONTEXT_MAX_NOTE_CHARS)) : ""}...`
-        )
+        .map(n => {
+          let notePreview = "";
+          if (plainTextCharCount(n.content) > 0) {
+            // ⚡ Bolt: Avoid using innerHTML on detached DOM elements to prevent XSS risks and performance overhead from eager resource loading.
+            const doc = new DOMParser().parseFromString(n.content, "text/html");
+            notePreview = (doc.body.textContent || "").substring(
+              0,
+              PROJECT_CONTEXT_MAX_NOTE_CHARS
+            );
+          }
+          return `โน้ต "${n.title}": ${notePreview}...`;
+        })
         .join("\n");
       const contextLore = projectLoreToConsider
         .slice(0, MAX_PROJECT_LORE_IN_CONTEXT)
@@ -2099,9 +2109,12 @@ const _NoteTaskAppWithRouter = () => {
   const handleCopyAiResponse = async () => {
     if (aiResponseRef.current) {
       let textToCopy = "";
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = aiResponseRef.current.innerHTML;
-      textToCopy = tempDiv.textContent || tempDiv.innerText || "";
+      // ⚡ Bolt: Avoid using innerHTML on detached DOM elements to prevent XSS risks and performance overhead from eager resource loading.
+      const doc = new DOMParser().parseFromString(
+        aiResponseRef.current.innerHTML,
+        "text/html"
+      );
+      textToCopy = doc.body.textContent || "";
       if (
         textToCopy &&
         textToCopy !== INITIAL_AI_RESPONSE_MESSAGE &&
@@ -2133,12 +2146,12 @@ const _NoteTaskAppWithRouter = () => {
         if (titleMatch && titleMatch[1])
           noteTitleSuggestion = titleMatch[1].trim();
       } else {
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = window.marked
+        const parsedContent = window.marked
           ? window.marked.parse(aiResponse)
           : aiResponse;
-        const plainTextResponse =
-          tempDiv.textContent || tempDiv.innerText || "";
+        // ⚡ Bolt: Avoid using innerHTML on detached DOM elements to prevent XSS risks and performance overhead from eager resource loading.
+        const doc = new DOMParser().parseFromString(parsedContent, "text/html");
+        const plainTextResponse = doc.body.textContent || "";
         const firstLine = plainTextResponse.split("\n")[0].substring(0, 50);
         if (firstLine.trim()) noteTitleSuggestion = firstLine.trim();
       }
