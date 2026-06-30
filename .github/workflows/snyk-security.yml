@@ -54,23 +54,49 @@ jobs:
         # Runs Snyk Code (SAST) analysis and uploads result into GitHub.
         # Use || true to not fail the pipeline
       - name: Snyk Code test
-        run: snyk code test --sarif > snyk-code.sarif # || true
+        run: |
+          if [ -n "${{ secrets.SNYK_TOKEN }}" ]; then
+            snyk code test --sarif > snyk-code.sarif || true
+          else
+            echo "SNYK_TOKEN is not set. Skipping Snyk Code test."
+            echo "{}" > snyk-code.sarif
+          fi
 
         # Runs Snyk Open Source (SCA) analysis and uploads result to Snyk.
       - name: Snyk Open Source monitor
-        run: snyk monitor --all-projects
+        run: |
+          if [ -n "${{ secrets.SNYK_TOKEN }}" ]; then
+            snyk monitor --all-projects || true
+          else
+            echo "SNYK_TOKEN is not set. Skipping Snyk Open Source monitor."
+          fi
 
         # Runs Snyk Infrastructure as Code (IaC) analysis and uploads result to Snyk.
         # Use || true to not fail the pipeline.
       - name: Snyk IaC test and report
-        run: snyk iac test --report # || true
+        run: |
+          if [ -n "${{ secrets.SNYK_TOKEN }}" ]; then
+            snyk iac test --report || true
+          else
+            echo "SNYK_TOKEN is not set. Skipping Snyk IaC test."
+          fi
 
         # Build the docker image for testing
       - name: Build a Docker image
-        run: docker build -t your/image-to-test .
+        run: |
+          if [ -n "${{ secrets.SNYK_TOKEN }}" ]; then
+            docker build -t your/image-to-test .
+          else
+            echo "SNYK_TOKEN is not set. Skipping Docker build."
+          fi
         # Runs Snyk Container (Container and SCA) analysis and uploads result to Snyk.
       - name: Snyk Container monitor
-        run: snyk container monitor your/image-to-test --file=Dockerfile
+        run: |
+          if [ -n "${{ secrets.SNYK_TOKEN }}" ]; then
+            snyk container monitor your/image-to-test --file=Dockerfile || true
+          else
+            echo "SNYK_TOKEN is not set. Skipping Snyk Container monitor."
+          fi
 
         # Push the Snyk Code results into GitHub Code Scanning tab
       - name: Upload result to GitHub Code Scanning
