@@ -59,7 +59,7 @@ jobs:
             snyk code test --sarif > snyk-code.sarif || true
           else
             echo "SNYK_TOKEN is not set. Skipping Snyk Code test."
-            echo "{}" > snyk-code.sarif
+            echo '{"$schema":"https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json","version":"2.1.0","runs":[]}' > snyk-code.sarif
           fi
 
         # Runs Snyk Open Source (SCA) analysis and uploads result to Snyk.
