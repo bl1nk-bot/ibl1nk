@@ -53,7 +53,8 @@ def create_worktree(repo_path, base_branch, task_id):
     try:
         run_git(["branch", "-D", new_branch], cwd=repo_path)
     except Exception:
-        pass 
+        # Branch may not exist yet; continue because we are creating a fresh branch next.
+        pass
 
     print(f"Creating worktree at {worktree_path} (branch: {new_branch})...")
     run_git(["worktree", "add", "-b", new_branch, worktree_path, base_branch], cwd=repo_path)
