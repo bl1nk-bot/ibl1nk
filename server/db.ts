@@ -17,6 +17,8 @@ import {
   InsertNote, notes,
   InsertTask, tasks,
   InsertLoreEntry, loreEntries,
+import { eq, or, and, gte } from "drizzle-orm";
+// Optimization: use static imports to avoid dynamic module resolution overhead in hot paths
 import { eq, or, gte, and } from "drizzle-orm";
 import { eq, or, and, gte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
