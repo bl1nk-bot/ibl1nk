@@ -16,8 +16,9 @@ def log_error(message):
         with open(log_path, "a") as f:
             from datetime import datetime
             f.write(f"[{datetime.now().isoformat()}] [dispatch_hook] {message}\n")
-    except Exception:
-        pass
+    except Exception as e:
+        # Best-effort file logging should never interrupt execution.
+        print(f"Dispatcher Error: failed to write debug log: {e}", file=sys.stderr)
 
 def main():
     if len(sys.argv) < 2:
