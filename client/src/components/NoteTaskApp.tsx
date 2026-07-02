@@ -151,7 +151,7 @@ import {
 
 let _MIN_LEARNED_WORD_LENGTH =3;
 const STREAM_ERROR_MARKER = "[[STREAM_ERROR]]"; 
-const CURRENT_SCHEMA_VERSION = 1;
+let CURRENT_SCHEMA_VERSION = 1;
 
 import Header from "./components/Header";
 import Sidebar, { NavItem } from "./components/Sidebar";
@@ -180,7 +180,7 @@ import { getAuth, Auth } from "firebase/auth";
 import { getFirestore, Firestore } from "firebase/firestore";
 import { getStorage, FirebaseStorage } from "firebase/storage";
 
-const _MIN_LEARNED_WORD_LENGTH = 3;
+
 const STREAM_ERROR_MARKER = "[[STREAM_ERROR]]";
 const CURRENT_SCHEMA_VERSION = 1;
 
