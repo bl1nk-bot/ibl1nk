@@ -163,7 +163,6 @@ You are **FORBIDDEN** from implementing code yourself.
 
     session_log = os.path.join(session_dir, "rick_session.log")
     start_time = time.time()
-    return_code = 1
 
     try:
         with open(session_log, "w", buffering=1) as log_file:
