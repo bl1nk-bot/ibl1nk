@@ -114,7 +114,7 @@ def main():
         cmd = shlex.split(os.environ["PICKLE_WORKER_CMD_OVERRIDE"])
 
     start_time = time.time()
-    return_code = 1
+    return_code = None
     
     try:
         with open(session_log, "w", buffering=1) as log_file:
