@@ -149,7 +149,7 @@ import {
   AppDataType,
 } from "./services/appDataService";
 
-const _MIN_LEARNED_WORD_LENGTH =3;
+let _MIN_LEARNED_WORD_LENGTH =3;
 const STREAM_ERROR_MARKER = "[[STREAM_ERROR]]"; 
 const CURRENT_SCHEMA_VERSION = 1;
 
