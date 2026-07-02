@@ -196,35 +196,35 @@ You are **FORBIDDEN** from implementing code yourself.
 
             spinner = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
             idx = 0
-            log_reader = open(session_log, "r")
             last_line = "Initializing..."
 
-            while True:
-                ret_code = process.poll()
-                if ret_code is not None:
-                    return_code = ret_code
-                    break
-                if time.time() - start_time > args.timeout:
-                    process.kill()
-                    return_code = 124
-                    break
-
+            with open(session_log, "r") as log_reader:
                 while True:
-                    line = log_reader.readline()
-                    if not line: break
-                    clean = line.strip()
-                    if clean and not any(clean.startswith(x) for x in ["Command", "Directory", "Output", "```"]):
-                         if len(clean) < 100 and clean[0].isupper():
-                            last_line = clean
+                    ret_code = process.poll()
+                    if ret_code is not None:
+                        return_code = ret_code
+                        break
+                    if time.time() - start_time > args.timeout:
+                        process.kill()
+                        return_code = 124
+                        break
 
-                disp = last_line[:67] + "..." if len(last_line) > 70 else last_line
-                spin = spinner[idx % len(spinner)]
-                sys.stdout.write(
-                    f"\r   {utils.Style.MAGENTA}{spin}{utils.Style.RESET} [{utils.format_time(int(time.time() - start_time))}] {utils.Style.DIM}{disp}{utils.Style.RESET}\033[K"
-                )
-                sys.stdout.flush()
-                idx += 1
-                time.sleep(0.1)
+                    while True:
+                        line = log_reader.readline()
+                        if not line: break
+                        clean = line.strip()
+                        if clean and not any(clean.startswith(x) for x in ["Command", "Directory", "Output", "```"]):
+                             if len(clean) < 100 and clean[0].isupper():
+                                last_line = clean
+
+                    disp = last_line[:67] + "..." if len(last_line) > 70 else last_line
+                    spin = spinner[idx % len(spinner)]
+                    sys.stdout.write(
+                        f"\r   {utils.Style.MAGENTA}{spin}{utils.Style.RESET} [{utils.format_time(int(time.time() - start_time))}] {utils.Style.DIM}{disp}{utils.Style.RESET}\033[K"
+                    )
+                    sys.stdout.flush()
+                    idx += 1
+                    time.sleep(0.1)
             print("\r\033[K", end="")
 
     except Exception as e:
