@@ -16,7 +16,7 @@ def log_error(message):
         with open(log_path, "a") as f:
             from datetime import datetime
             f.write(f"[{datetime.now().isoformat()}] [dispatch_hook] {message}\n")
-    except:
+    except Exception:
         pass
 
 def main():
