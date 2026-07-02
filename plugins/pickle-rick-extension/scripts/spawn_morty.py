@@ -57,8 +57,11 @@ def main():
                     if remaining < effective_timeout:
                         effective_timeout = max(10, int(remaining))
                         print(f"{utils.Style.YELLOW}⚠️  Worker timeout clamped: {effective_timeout}s{utils.Style.RESET}")
-        except Exception:
-            pass
+        except Exception as e:
+            print(
+                f"{utils.Style.YELLOW}⚠️  Unable to load timeout state from {timeout_state_path}: {e}. Using requested timeout.{utils.Style.RESET}",
+                file=sys.stderr,
+            )
 
     # Initial Output
     utils.print_minimal_panel(
