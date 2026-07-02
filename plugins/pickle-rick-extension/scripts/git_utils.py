@@ -43,8 +43,8 @@ def create_worktree(repo_path, base_branch, task_id):
         print(f"Worktree path exists, cleaning up: {worktree_path}")
         try:
             run_git(["worktree", "remove", "--force", worktree_path])
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"Best-effort worktree remove failed ({e}); falling back to filesystem cleanup.")
         if os.path.exists(worktree_path):
              shutil.rmtree(worktree_path)
              run_git(["worktree", "prune"], check=False)
