@@ -168,9 +168,14 @@ export const outlinesRouter = router({
   storyOverview: protectedProcedure
     .input(z.object({ outlineId: z.number() }))
     .query(async ({ input }) => {
-      const outline = await getOutlineById(input.outlineId);
-      const chapters = await getChaptersByOutlineId(input.outlineId);
-      const characters = await getCharactersByOutlineId(input.outlineId);
+      // ⚡ BOLT OPTIMIZATION:
+      // Parallelize independent DB queries using Promise.all
+      // Impact: Reduces latency from (T_outline + T_chapters + T_characters) to max(T_outline, T_chapters, T_characters)
+      const [outline, chapters, characters] = await Promise.all([
+        getOutlineById(input.outlineId),
+        getChaptersByOutlineId(input.outlineId),
+        getCharactersByOutlineId(input.outlineId),
+      ]);
 
       return {
         outline,
