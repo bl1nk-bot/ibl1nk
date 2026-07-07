@@ -7,3 +7,6 @@
 ## 2024-06-06 - Dynamic Import Bottleneck in Drizzle ORM
 **Learning:** Frequent queries like `getCharacterRelationships` and `getWritingProgressForUser` were using dynamic imports (`await import("drizzle-orm")`) for query operators (`or`, `and`, `gte`). This causes performance bottlenecks and module resolution overhead, particularly for endpoints accessed often.
 **Action:** Always prefer top-level static imports for Drizzle ORM operators (`and`, `or`, `eq`, `gte`, etc.) in frequently called database query functions to eliminate module resolution overhead and optimize response times.
+## 2024-06-11 - Use Promise.all for independent DB queries in tRPC route handlers
+**Learning:** Sequential DB queries in route handlers, such as `getOutlineById`, `getChaptersByOutlineId`, and `getCharactersByOutlineId` in the `storyOverview` procedure, create unnecessary sequential latency. When read operations are independent, waiting for one to finish before starting the next leads to suboptimal performance.
+**Action:** Always parallelize independent read-only database queries using `Promise.all` in tRPC route handlers and API endpoints to minimize overall response time.
