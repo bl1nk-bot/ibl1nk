@@ -6,7 +6,7 @@ from datetime import datetime
 import sys
 
 try:
-    import pickle_utils
+    import pickle_utils as _
 except ImportError:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
