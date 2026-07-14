@@ -1,0 +1,75 @@
+{
+  "_comment": "Story Studio - Notion Schema Template v1.0 | กำหนด mapping ระหว่าง context.json และ Notion databases",
+
+  "notion_config": {
+    "token_env": "NOTION_TOKEN",
+    "_note": "ใส่ token และ database_id ใน environment หรือส่งตรงเมื่อเรียกใช้ /sync-notion"
+  },
+
+  "databases": {
+
+    "episodes": {
+      "database_id": "",
+      "_description": "ฐานข้อมูลสำหรับเก็บตอนทั้งหมดของเรื่อง",
+      "properties": {
+        "title_field":        "Episode Title",
+        "episode_number":     { "notion_type": "number",       "maps_to": "episode_number" },
+        "content":            { "notion_type": "rich_text",    "maps_to": "content" },
+        "word_count":         { "notion_type": "number",       "maps_to": "word_count" },
+        "word_count_status":  { "notion_type": "select",       "maps_to": "word_count_status",
+                                "options": ["✅ ผ่าน", "⚠️ สั้นเกิน", "⚠️ ยาวเกิน"] },
+        "status":             { "notion_type": "select",       "maps_to": "status",
+                                "options": ["Draft", "Edited", "Final"] },
+        "hook":               { "notion_type": "rich_text",    "maps_to": "hook" },
+        "created_at":         { "notion_type": "date",         "maps_to": "created_at" }
+      }
+    },
+
+    "characters": {
+      "database_id": "",
+      "_description": "ฐานข้อมูลสำหรับเก็บข้อมูลตัวละครทั้งหมด",
+      "properties": {
+        "title_field":        "Character Name",
+        "role":               { "notion_type": "select",       "maps_to": "role",
+                                "options": ["protagonist", "antagonist", "supporting", "minor"] },
+        "traits":             { "notion_type": "multi_select", "maps_to": "traits" },
+        "current_state":      { "notion_type": "rich_text",    "maps_to": "current_state" },
+        "first_appearance":   { "notion_type": "number",       "maps_to": "first_appearance" }
+      }
+    },
+
+    "plot_points": {
+      "database_id": "",
+      "_description": "ฐานข้อมูลสำหรับ timeline เหตุการณ์สำคัญ",
+      "properties": {
+        "title_field":        "Event",
+        "episode_ref":        { "notion_type": "number",       "maps_to": "episode_number" },
+        "type":               { "notion_type": "select",       "maps_to": "type",
+                                "options": ["Conflict", "Reveal", "Turning Point", "Resolution", "Hook"] },
+        "description":        { "notion_type": "rich_text",    "maps_to": "description" },
+        "characters_involved":{ "notion_type": "multi_select", "maps_to": "characters_involved" }
+      }
+    },
+
+    "marketing_assets": {
+      "database_id": "",
+      "_description": "ฐานข้อมูลสำหรับเก็บชื่อเรื่องและ hook โปรโมท",
+      "properties": {
+        "title_field":        "Asset Title",
+        "type":               { "notion_type": "select",       "maps_to": "type",
+                                "options": ["Film Title", "Opening Hook", "Episode Hook", "Tagline"] },
+        "content":            { "notion_type": "rich_text",    "maps_to": "content" },
+        "selected":           { "notion_type": "checkbox",     "maps_to": "selected" },
+        "episode_ref":        { "notion_type": "number",       "maps_to": "episode_number" }
+      }
+    }
+
+  },
+
+  "sync_rules": {
+    "on_episode_complete":    ["episodes", "plot_points"],
+    "on_project_start":       ["characters", "marketing_assets"],
+    "on_marketing_assets":    ["marketing_assets"],
+    "on_context_update":      ["characters", "plot_points"]
+  }
+}

@@ -1,0 +1,185 @@
+# Plugin Standardization Implementation Plan
+
+## Phase 1: Analyze & Define Standards
+- [x] Task: Analyze existing plugins and extract majority patterns `b0c4b76`
+    - [x] Survey all 5 plugins and document their structures
+    - [x] Identify common components patterns (agents, commands, skills, tools, hooks)
+    - [x] Identify common config patterns
+    - [x] Document majority directory structures
+    - [x] Document majority file naming conventions
+- [x] Task: Define standard plugin structure `b0c4b76`
+    - [ ] Create standard bl1nk.jsonc schema
+    - [ ] Create standard context file template
+    - [ ] Create standard directory structure spec
+    - [ ] Create standard component templates (agent, command, skill, tool, hook)
+- [ ] Task: Design config reading SDK
+    - [ ] Define SDK API (read, validate, resolve paths, env vars)
+    - [ ] Define error handling patterns
+    - [ ] Define TypeScript types
+- [ ] Task: Conductor - User Manual Verification 'Analyze & Define Standards' (Protocol in workflow.md)
+
+## Phase 2: Create Config Reading SDK
+- [ ] Task: Write tests for SDK (TDD)
+    - [ ] Unit tests for config reading functions
+    - [ ] Unit tests for schema validation
+    - [ ] Unit tests for path resolution
+    - [ ] Unit tests for environment variable substitution
+    - [ ] Integration tests for loading real bl1nk.jsonc files
+- [ ] Task: Implement config reading SDK
+    - [ ] Create SDK entry point and exports
+    - [ ] Implement config file reader
+    - [ ] Implement JSON schema validator
+    - [ ] Implement path resolver (relative to plugin dir)
+    - [ ] Implement environment variable substitution
+    - [ ] Implement error handling utilities
+    - [ ] Export TypeScript types
+- [ ] Task: Test and verify SDK
+    - [ ] Run all tests - must pass 100%
+    - [ ] Type check - tsc --noEmit no errors
+    - [ ] Lint/format - prettier --write . no issues
+    - [ ] Build check - npm run build succeeds
+    - [ ] Manual verification - test SDK with sample configs
+    - [ ] Commit with summary
+- [ ] Task: Conductor - User Manual Verification 'Create Config Reading SDK' (Protocol in workflow.md)
+
+## Phase 3: Normalize agent-browser Plugin
+- [ ] Task: Write tests for agent-browser (TDD)
+    - [ ] Unit tests for browser automation helpers
+    - [ ] Integration tests for browser session management
+    - [ ] Component tests for SKILL.md structure
+    - [ ] E2E tests for browser automation workflow
+- [ ] Task: Normalize agent-browser structure
+    - [ ] Create bl1nk.jsonc for agent-browser
+    - [ ] Create/adapt context file (PLUGIN.md or AGENT.md)
+    - [ ] Reorganize directory structure to standard
+    - [ ] Migrate references/ to references/
+    - [ ] Migrate templates/ to appropriate location
+    - [ ] Update SKILL.md to match standard format
+    - [ ] Update documentation (README)
+- [ ] Task: Test and verify agent-browser
+    - [ ] Run all tests - must pass 100%
+    - [ ] Type check - tsc --noEmit no errors
+    - [ ] Lint/format - prettier --write . no issues
+    - [ ] Build check - npm run build succeeds
+    - [ ] Manual verification - test browser automation still works
+    - [ ] Commit with summary
+- [ ] Task: Conductor - User Manual Verification 'Normalize agent-browser Plugin' (Protocol in workflow.md)
+
+## Phase 4: Normalize ibl1nk Plugin
+- [ ] Task: Write tests for ibl1nk (TDD)
+    - [ ] Unit tests for writing management helpers
+    - [ ] Integration tests for tRPC routers
+    - [ ] Integration tests for Craft/Obsidian/Slack integrations
+    - [ ] Component tests for story management components
+    - [ ] E2E tests for writing workflow
+- [ ] Task: Normalize ibl1nk structure
+    - [ ] Create bl1nk.jsonc for ibl1nk
+    - [ ] Create/adapt context file
+    - [ ] Reorganize directory structure to standard
+    - [ ] Organize agents/ (if any)
+    - [ ] Organize commands/ (if any)
+    - [ ] Organize skills/ (if any)
+    - [ ] Organize tools/ (if any)
+    - [ ] Organize hooks/ (if any)
+    - [ ] Update SKILL.md to match standard
+    - [ ] Update documentation (README)
+- [ ] Task: Test and verify ibl1nk
+    - [ ] Run all tests - must pass 100%
+    - [ ] Type check - tsc --noEmit no errors
+    - [ ] Lint/format - prettier --write . no issues
+    - [ ] Build check - npm run build succeeds
+    - [ ] Manual verification - test writing features still work
+    - [ ] Commit with summary
+- [ ] Task: Conductor - User Manual Verification 'Normalize ibl1nk Plugin' (Protocol in workflow.md)
+
+## Phase 5: Normalize pickle-rick-extension Plugin
+- [ ] Task: Write tests for pickle-rick (TDD)
+    - [ ] Unit tests for loop management
+    - [ ] Unit tests for persona injection
+    - [ ] Integration tests for command execution
+    - [ ] Integration tests for hooks (BeforeAgent, BeforeModel, AfterAgent)
+    - [ ] Component tests for skills (prd-drafter, ticket-manager, etc.)
+    - [ ] E2E tests for /pickle command workflow
+- [ ] Task: Normalize pickle-rick structure
+    - [ ] Create bl1nk.jsonc for pickle-rick
+    - [ ] Create/adapt context file (or keep GEMINI.md as standard)
+    - [ ] Reorganize directory structure to standard
+    - [ ] Organize commands/ (7 toml files)
+    - [ ] Organize skills/ (9 skill dirs)
+    - [ ] Organize hooks/ (hooks.json + scripts)
+    - [ ] Organize scripts/
+    - [ ] Organize resources/
+    - [ ] Organize themes/ (if any)
+    - [ ] Update documentation
+- [ ] Task: Test and verify pickle-rick
+    - [ ] Run all tests - must pass 100%
+    - [ ] Type check - tsc --noEmit no errors
+    - [ ] Lint/format - prettier --write . no issues
+    - [ ] Build check - npm run build succeeds
+    - [ ] Manual verification - test /pickle command still works
+    - [ ] Commit with summary
+- [ ] Task: Conductor - User Manual Verification 'Normalize pickle-rick-extension Plugin' (Protocol in workflow.md)
+
+## Phase 6: Normalize story-studio Plugin
+- [ ] Task: Write tests for story-studio (TDD)
+    - [ ] Unit tests for story management helpers
+    - [ ] Integration tests for commands
+    - [ ] Integration tests for hooks
+    - [ ] Component tests for agents (lead-writer, editor, etc.)
+    - [ ] E2E tests for story creation workflow
+- [ ] Task: Normalize story-studio structure
+    - [ ] Create bl1nk.jsonc for story-studio
+    - [ ] Create/adapt context file
+    - [ ] Reorganize directory structure to standard
+    - [ ] Organize agents/ (4 agents)
+    - [ ] Organize commands/ (7 commands)
+    - [ ] Organize hooks/
+    - [ ] Organize scripts/
+    - [ ] Organize references/
+    - [ ] Update documentation
+- [ ] Task: Test and verify story-studio
+    - [ ] Run all tests - must pass 100%
+    - [ ] Type check - tsc --noEmit no errors
+    - [ ] Lint/format - prettier --write . no issues
+    - [ ] Build check - npm run build succeeds
+    - [ ] Manual verification - test story studio features still work
+    - [ ] Commit with summary
+- [ ] Task: Conductor - User Manual Verification 'Normalize story-studio Plugin' (Protocol in workflow.md)
+
+## Phase 7: Normalize command-creator Plugin
+- [ ] Task: Write tests for command-creator (TDD)
+    - [ ] Unit tests for command generation helpers
+    - [ ] Integration tests for command creation workflow
+    - [ ] Component tests for skill (command-creator)
+    - [ ] E2E tests for command creation and execution
+- [ ] Task: Normalize command-creator structure
+    - [ ] Create bl1nk.jsonc for command-creator
+    - [ ] Create/adapt context file
+    - [ ] Reorganize directory structure to standard
+    - [ ] Organize commands/ (1 command)
+    - [ ] Organize skills/ (command-creator skill)
+    - [ ] Organize evals/
+    - [ ] Update documentation
+- [ ] Task: Test and verify command-creator
+    - [ ] Run all tests - must pass 100%
+    - [ ] Type check - tsc --noEmit no errors
+    - [ ] Lint/format - prettier --write . no issues
+    - [ ] Build check - npm run build succeeds
+    - [ ] Manual verification - test command-creator still works
+    - [ ] Commit with summary
+- [ ] Task: Conductor - User Manual Verification 'Normalize command-creator Plugin' (Protocol in workflow.md)
+
+## Phase 8: Integration & Final Verification
+- [ ] Task: Cross-plugin integration tests
+    - [ ] Test plugins can coexist without conflicts
+    - [ ] Test config reading SDK works with all plugins
+    - [ ] Test plugins discovery and loading
+- [ ] Task: Final verification
+    - [ ] Run ALL tests across all plugins - must pass 100%
+    - [ ] Type check - tsc --noEmit no errors across all plugins
+    - [ ] Lint/format - prettier --write . no issues
+    - [ ] Build check - npm run build succeeds
+    - [ ] Manual verification - test all plugins features
+    - [ ] Update documentation (README, conductor docs)
+    - [ ] Commit with summary
+- [ ] Task: Conductor - User Manual Verification 'Integration & Final Verification' (Protocol in workflow.md)

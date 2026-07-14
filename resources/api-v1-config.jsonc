@@ -1,0 +1,88 @@
+/**
+ * ibl1nk API v1 & Advanced Tooling Configuration (v1.0.0)
+ * ไฟล์นี้กำหนด "ความจริง" และ "ขอบเขตสิทธิ์" ของ REST API, 
+ * Text Editor Tool, Memory Tool และ Sandbox Execution
+ */
+{
+  "api_identity": {
+    "name": "ibl1nk REST API",
+    "version": "1.0.0",
+    "base_path": "/v1",
+    "status": "IMPLEMENTING", // สถานะปัจจุบัน: กำลังพัฒนา
+    "zdr_ready": true          // Zero Data Retention Compliance
+  },
+
+  /* การตั้งค่าระบบยืนยันตัวตน (Authentication & Authorization) */
+  "auth_config": {
+    "methods": {
+      "bearer_jwt": {
+        "enabled": true,
+        "purpose": "Web App Session (Manus OAuth Bridge)"
+      },
+      "api_key": {
+        "enabled": true,
+        "purpose": "External Plugins & CLI Tools",
+        "header_key": "X-API-Key"
+      }
+    },
+    "security_gate": {
+      "idor_protection": "Strict userId scoping on all queries",
+      "rate_limit": {
+        "standard": 1000, // requests per hour
+        "ai_tools": 50,   // requests per hour (cost control)
+        "sandbox": 200    // requests per hour (resource control)
+      }
+    }
+  },
+
+  /* การตั้งค่าเครื่องมือแก้ไขและบันทึกความจำ (Advanced Tooling) */
+  "advanced_tools": {
+    "text_editor": {
+      "type": "text_editor_20250728",
+      "name": "str_replace_based_edit_tool",
+      "constraints": {
+        "max_characters": 10000,
+        "backup_enabled": true,
+        "exact_match_only": true, // str_replace ต้องไม่กำกวม
+        "allowed_paths": ["/storage/emulated/0/Download/ibl1nk/plugins", "client/src", "server/routers"]
+      }
+    },
+    "memory_tool": {
+      "type": "memory_20250818",
+      "name": "memory",
+      "constraints": {
+        "root_directory": "/memories", // ขอบเขตสูงสุดของความจำ
+        "max_file_size": "2MB",
+        "retention_period": "30 days (Auto-clean idle memories)",
+        "security": "Path traversal protection mandatory"
+      }
+    }
+  },
+
+  /* การตั้งค่าสภาพแวดล้อมรันโค้ดจำลอง (Sandbox Environment) */
+  "sandbox_config": {
+    "engine": "Modal.com (Cloud Sandboxes)",
+    "isolation_level": "Remote Ephemeral Containers",
+    "resource_limits": {
+      "max_memory": "128MB",
+      "max_execution_time": "30s",
+      "network_access": false, // ปิดการเข้าถึงอินเทอร์เน็ตเพื่อความปลอดภัย
+      "filesystem_access": "ReadOnly (unless explicitly granted via permissions)"
+    },
+    "logging": {
+      "enabled": true,
+      "log_destination": "server/logs/sandbox"
+    }
+  },
+
+  /* ระบบปลั๊กอินและสกิล (Plugin & Skill Metadata) */
+  "skill_system": {
+    "manifest_file": "bl1nk.jsonc",
+    "required_files": ["SKILL.md"],
+    "source_types": ["system", "custom"],
+    "storage": {
+      "system_skills": "skills/",
+      "custom_skills": "plugins/custom-skills/"
+    }
+  }
+}

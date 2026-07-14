@@ -218,7 +218,7 @@ vault/
 
 **Features:**
 - Daily writing progress notifications
-- Slash commands: `/claude-writer dashboard`, `/claude-writer analyze`
+- Slash commands: `/ibl1nk dashboard`, `/ibl1nk analyze`
 - Incoming webhooks for custom notifications
 - Slack Events API for interactive workflows
 

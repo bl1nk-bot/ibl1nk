@@ -5,6 +5,7 @@ import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
+import v1Router from "../v1_router";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 
@@ -35,6 +36,8 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+  // ibl1nk REST API v1
+  app.use("/v1", v1Router);
   // tRPC API
   app.use(
     "/api/trpc",
