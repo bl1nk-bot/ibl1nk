@@ -19,9 +19,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  X,
-  Plus,
-  Copy,
   Undo2,
   Redo2,
   Save,
