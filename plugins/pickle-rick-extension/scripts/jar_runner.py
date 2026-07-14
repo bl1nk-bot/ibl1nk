@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
 import json
-import subprocess
 import argparse
 from datetime import datetime
 import sys
