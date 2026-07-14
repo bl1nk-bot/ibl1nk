@@ -1,0 +1,54 @@
+{
+  // Plugin Configuration Schema
+  // This is the standard configuration for all bl1nk plugins
+  
+  // Required: Plugin identifier (kebab-case)
+  "name": "plugin-name",
+  
+  // Required: Semantic version
+  "version": "0.1.0",
+  
+  // Required: Short description of what the plugin does
+  "description": "A brief description of the plugin's purpose and functionality",
+  
+  // Required: Path to the context file (machine-readable documentation)
+  // Accepts: AGENTS.md, AGENT.md, GEMINI.md, CONTEXT.md, หรือ <PLUGIN>.md
+  "contextFile": "AGENTS.md",
+  
+  // Optional: Plugin components (paths are relative to plugin directory)
+  "components": {
+    // Agent definitions (roles/personas)
+    "agents": ["agents/*.md"],
+    
+    // Command definitions (TOML or Markdown)
+    "commands": ["commands/*.toml", "commands/*.md"],
+    
+    // Skill definitions (each skill has its own SKILL.md)
+    "skills": ["skills/*/SKILL.md"],
+    
+    // Tool implementations (shell scripts, binaries, MCP servers)
+    "tools": ["tools/*", "scripts/*.sh", "scripts/*.js"],
+    
+    // Hook configurations (event-driven scripts)
+    "hooks": ["hooks/*.json"],
+    
+    // Theme definitions (UI customization)
+    "themes": ["themes/*"]
+  },
+  
+  // Optional: Environment variables required by the plugin
+  "env": {
+    // "VAR_NAME": "default_value" or null if required
+  },
+  
+  // Optional: Plugin dependencies (other plugin names)
+  "dependencies": [],
+  
+  // Optional: Plugin metadata
+  "metadata": {
+    "author": "Author Name",
+    "license": "MIT",
+    "repository": "https://github.com/...",
+    "homepage": "https://..."
+  }
+}

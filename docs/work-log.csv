@@ -1,0 +1,12 @@
+Task ID,Created At,Source Command,Description,Files Created/Modified,Status,Notes
+TASK-001,2026-04-09 16:00,สร้าง docs/QWEN.md,รวม global QWEN.md เข้า docs/QWEN.md,docs/QWEN.md + README.md,🟢 รอดูรีวิว,เพิ่มลิงก์ Qwen Guidelines ใน README.md
+TASK-002,2026-04-09 16:10,ตรวจสอบ plugin structure,พบปัญหา 3 ที่ซ้ำซ้อน: server/tests/packages,packages/plugin-sdk/,🔴 ปัญหา,tests ซ้ำ 2 ที่ package ไม่มี src/ - ยังไม่แก้ไข รอดูคำสั่ง
+TASK-003,2026-04-09 16:20,สร้าง learned rules,บันทึก 6 rules จาก session corrections,.omg/rules/learned/ (6 files) + .omg/MEMORY.md + .omg/hooks.json,🟢 รอดูรีวิว,6 rules: glob-before-create, jsdoc-evidence, work-log-on-complete, plan-then-confirm, no-duplicate-structure, thai-output
+TASK-004,2026-04-09 16:30,สร้าง hooks.json,workflow hooks: session start/task received/task complete,.omg/hooks.json,🟢 รอดูรีวิว,ระบุ 6-step pipeline: update todo → verify → biome → vitest → build → work-log
+TASK-005,2026-04-09 16:35,อัพเดต docs/QWEN.md,เพิ่ม Hooks & Workflow + JSDoc Standards section,docs/QWEN.md,🟢 รอดูรีวิว,รวม hooks pipeline + JSDoc format + TODO convention
+TASK-006,2026-04-09 16:40,อัพเดต global QWEN.md,เพิ่ม hooks + JSDoc section (ย่อ),/data/data/com.termux/files/home/.qwen/QWEN.md,🟢 รอดูรีวิว,อยู่นอก repo — ไม่ถูก commit
+TASK-007,2026-04-09 16:45,สร้าง branch + commit,commit ทุกอย่างบน learn-09-04-2026,30 files changed,🟢 รอดูรีวิว,commit 2f3ed13 — รวม rules, hooks, docs, conductor templates, plugin restructure
+TASK-008,2026-04-09 16:50,รีวิว commit,วิเคราะห์สิ่งที่ถูก commit และปัญหาที่เหลือ,git show 2f3ed13,🟡 ต้องแก้ไข,qwen-code-export file ถูก commit เข้าไปด้วย — ต้องเพิ่ม gitignore
+TASK-009,2026-04-09 17:00,สร้าง work-log CSV,สร้างไฟล์ติดตามงานเป็น CSV พร้อม emoji status,docs/work-log.csv,🟢 รอดูรีวิว,-
+TASK-010,2026-04-09 17:00,อัพเดต docs/QWEN.md,เพิ่ม section อธิบาย work-log CSV workflow,docs/QWEN.md,🟢 รอดูรีวิว,-
+TASK-011,2026-04-09 17:05,อัพเดต global QWEN.md,เพิ่ม hooks + JSDoc section (ย่อ),/data/data/com.termux/files/home/.qwen/QWEN.md,🟢 รอดูรีวิว,อยู่นอก repo — ไม่ถูก commit
