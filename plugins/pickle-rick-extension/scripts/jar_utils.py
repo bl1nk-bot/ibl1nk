@@ -7,11 +7,10 @@ import argparse
 from datetime import datetime
 
 try:
-    import pickle_utils  # probe import availability
+    import pickle_utils as utils
 except ImportError:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-import pickle_utils as utils
+    import pickle_utils as utils
 
 def get_branch(repo_path):
     """Gets the current branch name of the repository."""
