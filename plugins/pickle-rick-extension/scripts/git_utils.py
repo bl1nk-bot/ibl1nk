@@ -3,12 +3,13 @@ import os
 import sys
 import shutil
 import argparse
+import importlib
 
 try:
-    import pickle_utils as utils
+    utils = importlib.import_module("pickle_utils")
 except ImportError:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-    import pickle_utils as utils
+    utils = importlib.import_module("pickle_utils")
 
 def run_git(cmd, cwd=None, check=True):
     return utils.run_cmd(["git"] + cmd, cwd=cwd, check=check, capture=True)
