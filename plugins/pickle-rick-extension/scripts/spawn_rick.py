@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import importlib
 import json
 import os
 import shutil
@@ -9,10 +10,10 @@ import time
 from datetime import datetime
 
 try:
-    import pickle_utils as utils
+    utils = importlib.import_module("pickle_utils")
 except ImportError:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-    import pickle_utils as utils
+    utils = importlib.import_module("pickle_utils")
 
 PRD_TEMPLATE = """## Summary
 
