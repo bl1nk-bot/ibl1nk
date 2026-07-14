@@ -151,7 +151,7 @@ import {
 
 let _MIN_LEARNED_WORD_LENGTH =3;
 const STREAM_ERROR_MARKER = "[[STREAM_ERROR]]"; 
-let CURRENT_SCHEMA_VERSION = 1;
+const CURRENT_SCHEMA_VERSION = 1;
 
 import Header from "./components/Header";
 import Sidebar, { NavItem } from "./components/Sidebar";
