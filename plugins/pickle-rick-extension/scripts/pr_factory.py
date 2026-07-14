@@ -2,12 +2,15 @@
 import os
 import sys
 import argparse
+import importlib.util
 
 try:
-    import pickle_utils as utils
+    if importlib.util.find_spec("pickle_utils") is None:
+        raise ImportError
 except ImportError:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-    import pickle_utils as utils
+
+import pickle_utils as utils
 
 def create_pr(repo_path, branch, task_id, approved=False):
     """Pushes the branch and creates a PR via gh."""
