@@ -173,6 +173,12 @@ export const outlinesRouter = router({
   // Story Overview
   storyOverview: protectedProcedure
     .input(z.object({ outlineId: z.number() }))
+    .query(async ({ input }) => {
+      const [outline, chapters, characters] = await Promise.all([
+        getOutlineById(input.outlineId),
+        getChaptersByOutlineId(input.outlineId),
+        getCharactersByOutlineId(input.outlineId)
+      ]);
     .query(async ({ ctx, input }) => {
       const outline = await getOutlineById(input.outlineId, ctx.user.id);
       if (!outline) {
