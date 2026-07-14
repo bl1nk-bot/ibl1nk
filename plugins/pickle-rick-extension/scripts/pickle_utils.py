@@ -3,7 +3,6 @@ import shutil
 import textwrap
 import subprocess
 import sys
-import os
 
 # --- UI Styling ---
 class Style:
