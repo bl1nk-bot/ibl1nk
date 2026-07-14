@@ -4,7 +4,6 @@ import os
 import subprocess
 import platform
 import shutil
-import json
 
 def log_error(message):
     """Logs error to stderr and optionally to a file."""
