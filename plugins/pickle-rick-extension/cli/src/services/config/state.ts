@@ -2,6 +2,7 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { randomBytes } from "node:crypto";
 import { SessionStateSchema, type SessionState } from "./types.js";
 import { findProjectRoot } from "../../utils/project-root.js";
 import { loadSettings } from "./settings.js";
@@ -42,7 +43,7 @@ export async function saveState(sessionDir: string, state: SessionState): Promis
 export async function createSession(cwd: string, prompt: string, is_prd_mode: boolean = false): Promise<SessionState> {
     const root = findProjectRoot(cwd);
     const today = new Date().toISOString().split("T")[0];
-    const hash = Math.random().toString(36).substring(2, 10);
+    const hash = randomBytes(6).toString("hex");
     const sessionId = `${today}-${hash}`;
     const sessionDir = getSessionPath(root, sessionId);
     

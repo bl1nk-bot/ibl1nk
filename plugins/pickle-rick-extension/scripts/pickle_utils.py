@@ -3,7 +3,6 @@ import shutil
 import textwrap
 import subprocess
 import sys
-import os
 
 # --- UI Styling ---
 class Style:
@@ -21,7 +20,7 @@ def get_width(max_w=90):
     try:
         cols = shutil.get_terminal_size((80, 20)).columns
         return min(cols - 4, max_w)
-    except:
+    except Exception:
         return 80
 
 def print_minimal_panel(title, fields, color_name="GREEN", icon="🥒"):

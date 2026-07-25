@@ -3,12 +3,13 @@ import os
 import sys
 import shutil
 import argparse
+import importlib
 
 try:
-    import pickle_utils as utils
+    utils = importlib.import_module("pickle_utils")
 except ImportError:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-    import pickle_utils as utils
+    utils = importlib.import_module("pickle_utils")
 
 def run_git(cmd, cwd=None, check=True):
     return utils.run_cmd(["git"] + cmd, cwd=cwd, check=check, capture=True)
@@ -17,10 +18,10 @@ def get_github_user():
     """Retrieves the GitHub username or git config user."""
     try:
         return utils.run_cmd(["gh", "api", "user", "-q", ".login"], capture=True).strip()
-    except:
+    except Exception:
         try:
             return utils.run_cmd(["git", "config", "user.name"], capture=True).strip().replace(" ", "")
-        except:
+        except Exception:
             return "pickle-rick"
 
 def get_branch_name(task_id):
@@ -43,8 +44,8 @@ def create_worktree(repo_path, base_branch, task_id):
         print(f"Worktree path exists, cleaning up: {worktree_path}")
         try:
             run_git(["worktree", "remove", "--force", worktree_path])
-        except:
-            pass
+        except Exception as e:
+            print(f"Best-effort worktree remove failed ({e}); falling back to filesystem cleanup.")
         if os.path.exists(worktree_path):
              shutil.rmtree(worktree_path)
              run_git(["worktree", "prune"], check=False)
@@ -52,8 +53,9 @@ def create_worktree(repo_path, base_branch, task_id):
     # Check if branch exists and delete it (we want a fresh start)
     try:
         run_git(["branch", "-D", new_branch], cwd=repo_path)
-    except:
-        pass 
+    except Exception:
+        # Branch may not exist yet; continue because we are creating a fresh branch next.
+        pass
 
     print(f"Creating worktree at {worktree_path} (branch: {new_branch})...")
     run_git(["worktree", "add", "-b", new_branch, worktree_path, base_branch], cwd=repo_path)

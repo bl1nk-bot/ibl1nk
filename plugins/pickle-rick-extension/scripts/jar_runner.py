@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 import os
 import json
-import subprocess
 import argparse
 from datetime import datetime
 import sys
 
 try:
-    import pickle_utils as utils
+    import pickle_utils as _
 except ImportError:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-    import pickle_utils as utils
+
+import pickle_utils as utils
 
 def main():
     parser = argparse.ArgumentParser(description="Pickle Jar Runner")

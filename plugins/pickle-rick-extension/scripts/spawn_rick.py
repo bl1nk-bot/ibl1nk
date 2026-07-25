@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import importlib
 import json
 import os
 import shutil
@@ -9,10 +10,10 @@ import time
 from datetime import datetime
 
 try:
-    import pickle_utils as utils
+    utils = importlib.import_module("pickle_utils")
 except ImportError:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-    import pickle_utils as utils
+    utils = importlib.import_module("pickle_utils")
 
 PRD_TEMPLATE = """## Summary
 
@@ -163,7 +164,6 @@ You are **FORBIDDEN** from implementing code yourself.
 
     session_log = os.path.join(session_dir, "rick_session.log")
     start_time = time.time()
-    return_code = 1
 
     try:
         with open(session_log, "w", buffering=1) as log_file:
@@ -196,35 +196,35 @@ You are **FORBIDDEN** from implementing code yourself.
 
             spinner = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
             idx = 0
-            log_reader = open(session_log, "r")
             last_line = "Initializing..."
 
-            while True:
-                ret_code = process.poll()
-                if ret_code is not None:
-                    return_code = ret_code
-                    break
-                if time.time() - start_time > args.timeout:
-                    process.kill()
-                    return_code = 124
-                    break
-
+            with open(session_log, "r") as log_reader:
                 while True:
-                    line = log_reader.readline()
-                    if not line: break
-                    clean = line.strip()
-                    if clean and not any(clean.startswith(x) for x in ["Command", "Directory", "Output", "```"]):
-                         if len(clean) < 100 and clean[0].isupper():
-                            last_line = clean
+                    ret_code = process.poll()
+                    if ret_code is not None:
+                        return_code = ret_code
+                        break
+                    if time.time() - start_time > args.timeout:
+                        process.kill()
+                        return_code = 124
+                        break
 
-                disp = last_line[:67] + "..." if len(last_line) > 70 else last_line
-                spin = spinner[idx % len(spinner)]
-                sys.stdout.write(
-                    f"\r   {utils.Style.MAGENTA}{spin}{utils.Style.RESET} [{utils.format_time(int(time.time() - start_time))}] {utils.Style.DIM}{disp}{utils.Style.RESET}\033[K"
-                )
-                sys.stdout.flush()
-                idx += 1
-                time.sleep(0.1)
+                    while True:
+                        line = log_reader.readline()
+                        if not line: break
+                        clean = line.strip()
+                        if clean and not any(clean.startswith(x) for x in ["Command", "Directory", "Output", "```"]):
+                             if len(clean) < 100 and clean[0].isupper():
+                                last_line = clean
+
+                    disp = last_line[:67] + "..." if len(last_line) > 70 else last_line
+                    spin = spinner[idx % len(spinner)]
+                    sys.stdout.write(
+                        f"\r   {utils.Style.MAGENTA}{spin}{utils.Style.RESET} [{utils.format_time(int(time.time() - start_time))}] {utils.Style.DIM}{disp}{utils.Style.RESET}\033[K"
+                    )
+                    sys.stdout.flush()
+                    idx += 1
+                    time.sleep(0.1)
             print("\r\033[K", end="")
 
     except Exception as e:

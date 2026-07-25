@@ -16,7 +16,7 @@ def get_branch(repo_path):
     """Gets the current branch name of the repository."""
     try:
         return utils.run_cmd(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=repo_path, capture=True).strip()
-    except:
+    except Exception:
         return "unknown"
 
 def add_to_jar(session_dir):

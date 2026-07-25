@@ -1,0 +1,45 @@
+modules = ["nodejs-20", "web", "python-3.12"]
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+PORT = "5000"
+JWT_SECRET = "88aaeb9b48f28adcadf380a96d935cbb651e5db623b7fdc4ab508f1af8a0a494"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pnpm run dev"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["node", "dist/index.js"]
+build = ["pnpm", "run", "build"]

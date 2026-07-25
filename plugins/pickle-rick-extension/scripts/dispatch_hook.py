@@ -4,7 +4,6 @@ import os
 import subprocess
 import platform
 import shutil
-import json
 
 def log_error(message):
     """Logs error to stderr and optionally to a file."""
@@ -16,8 +15,9 @@ def log_error(message):
         with open(log_path, "a") as f:
             from datetime import datetime
             f.write(f"[{datetime.now().isoformat()}] [dispatch_hook] {message}\n")
-    except:
-        pass
+    except Exception as e:
+        # Best-effort file logging should never interrupt execution.
+        print(f"Dispatcher Error: failed to write debug log: {e}", file=sys.stderr)
 
 def main():
     if len(sys.argv) < 2:
