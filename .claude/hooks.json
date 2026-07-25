@@ -1,0 +1,129 @@
+{
+  "enabled": true,
+  "profile": "balanced",
+  "native_events": ["session-start", "stage-transition", "pre-verify", "post-verify", "checkpoint-save", "blocker-raised", "session-stop"],
+  "derived_signals": {
+    "context-drift": true,
+    "risk-spike": true,
+    "loop-stall": true,
+    "token-burst": false,
+    "blocker-repeat": false,
+    "agent-blocked": true,
+    "agent-finished-early": true
+  },
+  "lanes": {
+    "P0-safety": { "timeout_ms": 15000, "debounce_ms": 0 },
+    "P1-quality": { "timeout_ms": 60000, "debounce_ms": 2000 },
+    "P2-optimization": { "timeout_ms": 60000, "debounce_ms": 5000 }
+  },
+  "lifecycle_policy": {
+    "before_after_symmetry": true,
+    "continuation_reenters_safety_lane": true,
+    "terminal_states": ["completed", "blocked", "stopped"]
+  },
+  "team_safety": {
+    "disable_side_effects_for_worker_sessions": true
+  },
+
+  "hooks": {
+    "session-start": {
+      "lane": "P0-safety",
+      "timeout_ms": 10000,
+      "idempotency_key": "session-${sessionId}",
+      "description": "อ่าน memory และ todo.md ทุกครั้งที่เริ่ม session",
+      "actions": [
+        { "type": "read", "file": ".omg/MEMORY.md", "required": false },
+        { "type": "read", "file": "todo.md", "required": false }
+      ]
+    },
+    "task-received": {
+      "lane": "P0-safety",
+      "timeout_ms": 10000,
+      "idempotency_key": "task-${sessionId}-${taskHash}",
+      "description": "สร้างหรืออัพเดต todo.md เมื่อได้รับคำสั่งงาน",
+      "actions": [
+        {
+          "type": "append",
+          "file": "todo.md",
+          "format": "## {date} - {task_description}\n- [ ] {task_details}\n",
+          "never_overwrite": true
+        }
+      ]
+    },
+    "task-complete": {
+      "lane": "P1-quality",
+      "timeout_ms": 220000,
+      "description": "ขั้นตอนก่อนบอกว่าเสร็จ — 6 steps sequential pipeline",
+      "steps": [
+        { "step": 1, "lane": "P1-quality", "timeout_ms": 30000, "action": "update_todo", "description": "อัพเดต status task ใน todo.md เป็น [x] เสร็จ" },
+        { "step": 2, "lane": "P1-quality", "timeout_ms": 30000, "action": "verify", "description": "ตรวจสอบซ้ำว่าสิ่งที่ทำถูกต้อง ครบถ้วน" },
+        { "step": 3, "lane": "P2-optimization", "timeout_ms": 30000, "action": "lint_and_fix", "tool": "biome", "disabledInWorkerSessions": true, "description": "รัน biome lint + biome check --apply ถ้าแก้ได้ ให้ biome แก้ ถ้าแก้ไม่ได้ → แก้ด้วยตัวเอง" },
+        { "step": 4, "lane": "P2-optimization", "timeout_ms": 60000, "action": "test", "priority": ["vitest", "playwright"], "description": "รัน vitest เป็นอันดับแรก ถ้าเป็น UI test → ใช้ playwright ถ้าไม่มี playwright → รายงาน user + เสนอทางออก" },
+        { "step": 5, "lane": "P2-optimization", "timeout_ms": 60000, "requiresConfirmation": true, "disabledInWorkerSessions": true, "action": "build", "description": "ถ้าโปรเจคต้อง build → รัน build ถ้ารันได้เลย → ข้ามไป test" },
+        { "step": 6, "lane": "P2-optimization", "timeout_ms": 15000, "action": "write_work_log", "file": "docs/WORK-LOG.md", "description": "เขียนบันทึกสิ่งที่ทำ Evidence ผลการทดสอบ" }
+      ]
+    },
+    "agent-blocked": {
+      "lane": "P0-safety",
+      "timeout_ms": 15000,
+      "idempotency_key": "blocked-${sessionId}-${blockerHash}",
+      "description": "เมื่อ agent ติด blocker ที่แก้เองไม่ได้ → แจ้ง user + เสนอทางออก",
+      "actions": [
+        { "type": "notify", "description": "แจ้ง user ว่า agent ติด blocker — แสดงสาเหตุ + ทางเลือก" },
+        { "type": "update_taskboard", "description": "เปลี่ยน task status เป็น 'blocked' ใน taskboard.md พร้อมระบุเหตุผล" },
+        { "type": "escalate", "description": "รอ user ตัดสินใจ — ไม่พยายามทำงานต่อจนกว่าจะได้รับคำสั่งใหม่" }
+      ]
+    },
+    "agent-finished-early": {
+      "lane": "P1-quality",
+      "timeout_ms": 20000,
+      "idempotency_key": "early-finish-${sessionId}-${taskHash}",
+      "disabledInWorkerSessions": true,
+      "description": "เมื่อ agent จบงานก่อนบรรลุ goal → ตรวจสอบ incomplete state + รายงาน",
+      "actions": [
+        { "type": "validate_goals", "description": "เปรียบเทียบ goal ที่ตั้งไว้กับสิ่งที่ทำเสร็จ — ระบุสิ่งที่ขาด" },
+        { "type": "report_gaps", "description": "รายงาน user ว่างานยังไม่ครบ — list สิ่งที่ขาด + เสนอแผนทำต่อ" },
+        { "type": "update_taskboard", "description": "เปลี่ยน task status เป็น 'incomplete' ใน taskboard.md พร้อมระบุ gap" }
+      ]
+    },
+    "context-drift": {
+      "lane": "P2-optimization",
+      "timeout_ms": 10000,
+      "debounce_ms": 5000,
+      "idempotency_key": "drift-${sessionId}",
+      "description": "เมื่อ agent summary เปลี่ยนไปจาก intent เดิมมากเกิน threshold → เตือน + reload memory",
+      "actions": [
+        { "type": "detect_drift", "description": "เปรียบเทียบ current summary กับ task intent — คำนวณ semantic distance" },
+        { "type": "reload_memory", "description": "อ่าน .omg/MEMORY.md + taskboard.md ใหม่ — refresh context" },
+        { "type": "warn_user", "description": "แจ้งเตือนว่า agent อาจเบี่ยงเบนจาก intent — แสดง drift score" }
+      ]
+    },
+    "loop-stall": {
+      "lane": "P1-quality",
+      "timeout_ms": 10000,
+      "debounce_ms": 2000,
+      "idempotency_key": "loop-${sessionId}-${blockerHash}",
+      "description": "เมื่อ blocker เดิมซ้ำ 2+ ครั้งโดยไม่มีความคืบหน้า → หยุด loop + เสนอ escalation",
+      "actions": [
+        { "type": "detect_loop", "description": "ตรวจสอบ conversation history — หา repeated blocker/error pattern" },
+        { "type": "break_loop", "description": "หยุดทำงานปัจจุบัน — ไม่พยายามซ้ำวิธีเดิม" },
+        { "type": "propose_alternative", "description": "เสนอแนวทางใหม่ หรือ escalate ไป user — แสดง loop count + สิ่งที่ลองแล้ว" }
+      ]
+    },
+    "risk-spike": {
+      "lane": "P1-quality",
+      "timeout_ms": 10000,
+      "debounce_ms": 10000,
+      "idempotency_key": "risk-${sessionId}",
+      "disabledInWorkerSessions": true,
+      "description": "เมื่อ failure density เพิ่มสูงขึ้น (>3 failures ใน 5 tasks ล่าสุด) → เตือน + suggest review",
+      "actions": [
+        { "type": "calculate_failure_rate", "description": "นับ tasks ที่ fail/blocked/incomplete ใน 5 tasks ล่าสุด" },
+        { "type": "warn_user", "description": "แจ้งเตือนว่ามีความเสี่ยงสูง — แสดง failure rate + tasks ที่เกี่ยวข้อง" },
+        { "type": "suggest_review", "description": "แนะนำให้ user review workflow — เสนอ pause automation จนกว่าจะแก้ไข" }
+      ]
+    }
+  },
+
+  "source": "omg:hooks"
+}
