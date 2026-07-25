@@ -1,0 +1,16 @@
+[package]
+name = "bams-engine-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "bams-engine-server"
+path = "src/main.rs"
+
+[dependencies]
+mcp-bams-engine-core = { path = "../mcp-bams-engine-core" }
+server-common = { path = "../server-common" }
+tokio = { workspace = true }
+anyhow = { workspace = true }

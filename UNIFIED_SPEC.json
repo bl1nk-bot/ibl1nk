@@ -1,0 +1,73 @@
+{
+  "project": "Bams Workspace Ultimate (Unified Edition)",
+  "version": "3.0.0-atomic-hardcoded-spec",
+  "architectural_shift": {
+    "hardcoded_logic_priority": "Prompts and Templates are NOT database entries. They are hard-coded TS/Rust modules for maximum stability, performance, and minimal file bloat.",
+    "core_separation": {
+      "TemplateBuilder": "Constructs the structural 'frame' (e.g., Markdown layouts, JSON schemas).",
+      "PromptBuilder": "Assembles the 'message' by injecting data from the DB into hard-coded logic patterns."
+    }
+  },
+  "problem_decomposition_&_tradeoffs": {
+    "1_Identity_&_Security": {
+      "problem": "Ensuring safe multi-user access with low infra overhead.",
+      "tradeoff": "2FA is mandatory. We use Hard-coded Auth Roles (Admin/User) to avoid complex ACL tables.",
+      "solution": "Hard-coded 'Owner' check vs UUID-based sessions."
+    },
+    "2_State_Consistency": {
+      "problem": "Syncing Local SQLite with Cloud Postgres without data collision.",
+      "tradeoff": "Eventual consistency vs Blocking writes. We choose WAL-based async sync in Rust for speed.",
+      "solution": "Rust-driven background WAL replication."
+    },
+    "3_Logic_Construction": {
+      "problem": "Managing Prompt/Template variety without database garbage.",
+      "tradeoff": "Dynamic DB Templates (Flexible but messy) vs Hard-coded Logic (Rigid but clean/fast).",
+      "solution": "We choose HARD-CODED. Logic lives in code, only 'Variable Values' live in DB."
+    },
+    "4_Execution_&_Interactions": {
+      "problem": "Real-time AI responses vs Background long-running tasks.",
+      "tradeoff": "HTTP polling vs Streaming. We choose Vercel AI SDK (Streaming) + Rust MCP (Tools).",
+      "solution": "Unified API bridge (tRPC -> JSON-RPC)."
+    },
+    "5_Observability_&_Recovery": {
+      "problem": "Silent failures in background workers or AI logic.",
+      "tradeoff": "Verbose logging (Bloat) vs Exception-based snapshots.",
+      "solution": "Diagnostic table with context snapshots for Rust-side analysis."
+    }
+  },
+  "unified_schema_atomic": {
+    "Identity_Layer": {
+      "users": { "id": "UUID", "email": "TEXT", "mfa": "JSONB", "configs": "JSONB" }
+    },
+    "Work_Layer": {
+      "projects": { "id": "UUID", "user_id": "UUID", "name": "TEXT", "meta": "JSONB" },
+      "nodes": { "id": "UUID", "project_id": "UUID", "parent_id": "UUID", "type": "TEXT", "data": "TEXT", "props": "JSONB" }
+    },
+    "Observation_Layer": {
+      "logs": { "id": "UUID", "event": "TEXT", "payload": "JSONB", "ts": "TIMESTAMP" },
+      "diagnostics": { "id": "UUID", "code": "TEXT", "snapshot": "JSONB", "resolved": "BOOL" }
+    }
+  },
+  "construction_logic_manifest": {
+    "Template_Builder_Modules": [
+      { "id": "T_MD_NOTE", "desc": "Standard Markdown note template with metadata header" },
+      { "id": "T_JSON_DATA", "desc": "Structured data output template for analysis" }
+    ],
+    "Prompt_Builder_Modules": [
+      { "id": "P_WRITER_GEN", "logic": "Injects character traits + current scene into hard-coded writing prompt" },
+      { "id": "P_RESEARCH_MCP", "logic": "Assembles search query prompt for Google Search via MCP" }
+    ]
+  },
+  "api_contract_atomic": {
+    "tRPC_Gateway": {
+      "auth": ["login", "verify", "settings"],
+      "action": ["buildTemplate(id, data)", "executePrompt(id, vars)"],
+      "view": ["getDashboard", "getNodeTree"]
+    },
+    "Rust_RPC_Bridge": {
+      "db": "sql_execute(raw_sql)",
+      "worker": "control_scanner(path, op)",
+      "agent": "invoke_hardcoded_logic(prompt_id, ctx)"
+    }
+  }
+}

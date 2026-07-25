@@ -1,41 +1,70 @@
-# Design System Rules (ibl1nk)
+# Codebase Rules & Design System (Unified Workspace)
 
-## Component Organization
-- **UI Components:** Place base UI components (like buttons, dialogs) in `client/src/components/ui/`.
-- **Feature Components:** Place feature-specific components in `client/src/components/`.
-- **Naming Convention:** Use **PascalCase** for both component names and filenames (e.g., `AIChatBox.tsx`).
-- **Export Pattern:** Use named exports for all components.
+## 1. Design System Structure
 
-## Styling Rules
-- **Framework:** Use **Tailwind CSS v4** for styling.
-- **Utility Helper:** Always use the `cn()` utility from `@/lib/utils` to merge class names.
-- **Design Tokens:** 
-  - Reference CSS variables defined in `client/src/index.css` via Tailwind classes (e.g., `bg-primary`, `text-muted-foreground`).
-  - IMPORTANT: Never hardcode hex or OKLCH colors directly in components.
-- **Dark Mode:** Use the `dark:` variant for dark mode overrides.
-- **Component Pattern:** Use `class-variance-authority` (CVA) for components with multiple variants and sizes (refer to `client/src/components/ui/button.tsx`).
+### Token Definitions
+- **Location:** `client/src/index.css`
+- **Format:** Tailwind CSS v4 `@theme` block using CSS variables with OKLCH colors.
+- **Key Tokens:**
+  ```css
+  @theme inline {
+    --color-primary: var(--primary);
+    --color-background: var(--background);
+    /* ... shadcn-compatible tokens ... */
+  }
+  :root {
+    --background: oklch(1 0 0);
+    --primary: var(--color-blue-700);
+    --radius: 0.65rem;
+  }
+  ```
 
-## Figma MCP Integration Rules
-These rules define the mandatory workflow for translating Figma designs into code.
+### Component Library
+- **Core Primitives:** `client/src/components/ui/` (Radix-based, Shadcn style).
+- **V2 Components (Improved):** `client/src/components/v2/` (High-fidelity Editor & AI panels).
+- **Architecture:** Atomic components with composition. Components use `cn()` utility for tailwind classes.
+- **Upcoming Transition:** Migrating from custom UI primitives to **Lobe UI** (`@lobehub/ui`) for a more polished AI-centric workspace.
 
-### Required Flow (Do Not Skip)
-1. **Analyze:** Run `get_design_context` first to fetch the structured representation of the node(s).
-2. **Visualize:** Run `get_screenshot` for a visual reference of the design variant.
-3. **Implement:** Translate the Figma design into React + Tailwind v4 components, following this project's conventions.
-4. **Validate:** Compare the final implementation against the Figma screenshot for 1:1 visual and behavioral parity.
+## 2. Frameworks & Libraries
+- **Frontend:** React 19, Vite 7, Tailwind CSS 4.
+- **Icons:** Transitioning from `lucide-react` to **Lobe Icons** (`@lobehub/icons`).
+- **Data Flow:** tRPC 11 for Client-Server communication.
+- **Engine:** Standalone Rust Service (`engine/`) for Raw SQL and Agent Orchestration.
 
-### Implementation Guidelines
-- **Tokens Mapping:** Map Figma colors, typography, and spacing to the existing design tokens in `index.css`.
-- **Component Reuse:** Check for existing UI components in `client/src/components/ui/` before creating new ones.
-- **Responsive Design:** Implement mobile-first designs as per project policy. Use Tailwind breakpoints for scaling.
+## 3. Asset Management
+- **Static Assets:** `client/public/` (referenced via absolute paths `/asset.png`).
+- **Icons:** Imported from `@lobehub/icons`.
+  ```tsx
+  import { LucideIcon } from '@lobehub/icons'; // Pattern for migration
+  ```
 
-## Asset Handling
-- **Figma Assets:** Use the Figma MCP server assets endpoint for images and SVGs.
-- **Localhost Sources:** If a localhost source is provided by the server, use it directly.
-- **Storage:** Save downloaded static assets in `client/public/` if persistent storage is needed.
-- **Icons:** Prefer using existing icons from the design system or Lucide React if already integrated.
+## 4. Styling Approach
+- **Methodology:** Utility-first CSS using Tailwind 4.
+- **Responsiveness:** Mobile-first approach using standard Tailwind breakpoints (`sm:`, `md:`, `lg:`).
+- **Global Styles:** Managed in `client/src/index.css`.
+- **Animations:** Powered by `tw-animate-css` and `framer-motion`.
 
-## Project-Specific Conventions
-- **Routing:** Use `wouter` for client-side routing.
-- **Data Fetching:** Use tRPC for all backend communications.
-- **Types:** Use TypeScript for all new code. Define clear interfaces/types for component props.
+## 5. Project Organization
+```text
+.
+├── client/          # React Frontend (Vite)
+│   ├── src/_core/   # Core logic & providers
+│   ├── src/components/
+│   │   ├── ui/      # Shared UI primitives
+│   │   └── v2/      # Imported high-fidelity components
+│   └── src/pages/   # Application views
+├── server/          # Node.js Backend (tRPC)
+├── engine/          # Rust Engine (Bams) - Raw SQL, Sync, Agents
+├── shared/          # Shared TS types & Constants
+└── drizzle/         # SQL Migrations (Legacy/Reference)
+```
+
+## 6. Coding Standards
+- **SQL:** No ORMs in the new engine. Use **Raw SQL** in Rust for maximum performance and SQLite/Postgres compatibility.
+- **Naming:** CamelCase for variables/functions, PascalCase for components.
+- **Safety:** Always verify ownership via `userId` in every SQL query.
+- **Cleanliness:** Remove unused dependencies (e.g., `mysql2`, `drizzle-orm` once migration is complete).
+
+## 7. Figma Integration (MCP)
+- Use Figma design tokens to map directly to CSS variables in `index.css`.
+- Components should be mapped to the `@lobehub/ui` equivalents where possible during the transition.

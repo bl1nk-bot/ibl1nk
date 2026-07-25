@@ -21,3 +21,24 @@
 - Router: `server/v1_router.ts`
 - Project API: `server/v1/projects.ts`
 - Modal: `server/_core/modal.ts`
+
+---
+
+## 2026-07-25 — Legacy cleanup & Doc update
+
+### สิ่งที่ทำ (Done)
+- ✅ **Cleanup:** ลบ `.omg/` directory (19 ไฟล์) — migrated to `.qwen/` system
+- ✅ **Cleanup:** ลบ `skills/word-counter/SKILL.md` — unused skill
+- ✅ **Add .claude/:** เพิ่ม `.claude/` config directory (19 ไฟล์ — hooks, rules, memory, state)
+- ✅ **Commit + Push + PR:** PR #85 — `chore: cleanup remaining legacy omg files and word-counter skill` + `chore: add .claude config directory`
+- ✅ **Remote URL:** อัปเดต remote จาก `billlzzz26/ibl1nk` → `bl1nk-bot/ibl1nk`
+- ✅ **Doc update:** อัปเดต `QWEN.md` — directory structure, session lifecycle, plugin architecture
+
+### สิ่งที่ยังค้าง (Pending)
+- ⬜ รอ PR #85 review
+- ⬜ Phase 2 Testing (unit tests, integration tests)
+- ⬜ Phase 3-7 (Craft/Obsidian sync, AI analysis, Slack, Plugin integration, Deployment)
+
+### Evidence
+- PR: https://github.com/bl1nk-bot/ibl1nk/pull/85
+- Commits: `4ba4d23`, `4f3b713` (on `learn-09-04-2026`)

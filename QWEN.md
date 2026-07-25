@@ -29,39 +29,32 @@ ibl1nk/
 │   └── src/             # Components, pages, hooks
 ├── server/              # Express + tRPC backend
 │   ├── _core/           # Core server setup (index.ts, oauth, context, vite)
+│   ├── v1/              # REST API v1 (projects.ts)
+│   ├── v1_router.ts     # V1 router mount
 │   ├── routers/         # tRPC routers (API endpoints)
 │   └── _core/pluginsdk/ # Plugin SDK implementation (7 files)
+├── engine/              # Rust engine (Bams) — raw SQL, sync, agents
 ├── shared/              # Shared types & utilities
 ├── drizzle/             # Database schema & migrations
 │   ├── schema.ts        # Drizzle schema definitions
 │   └── migrations/      # SQL migration files
-├── packages/            # Internal packages
-│   └── plugin-sdk/      # Plugin SDK package (incomplete — no src/)
 ├── plugins/             # Built-in plugins
+│   ├── plugin-dev/      # Meta-plugin for agent/skill/command development
 │   ├── command-creator/ # Skill for creating commands
 │   ├── ibl1nk/          # Main ibl1nk plugin skill
 │   └── ...              # Other plugins
-├── conductor/           # Conductor workflow files
-│   ├── index.md         # Conductor index
-│   ├── standards/       # Plugin architecture standards
-│   └── templates/       # Plugin config & component templates
 ├── tests/               # Test files
 │   └── pluginsdk/       # Plugin SDK tests
 ├── docs/                # Documentation
 │   ├── QWEN.md          # Qwen Code guidelines (project-specific)
-│   └── work-log.csv     # Task tracking with emoji status
-├── .omg/                # OmG extension config
-│   ├── MEMORY.md        # Project memory & learned rules
-│   ├── hooks.json       # Workflow hooks (session/task lifecycle)
-│   └── rules/learned/   # 6 learned behavioral rules
+│   ├── WORK-LOG.md      # Markdown work log
+│   ├── work-log.csv     # Task tracking with emoji status
+│   └── design/          # Design docs (block-engine, dashboard, editor)
+├── .claude/             # Claude Code config (hooks, rules, memory, state)
 ├── resources/           # Config files & schemas
 ├── scripts/             # Utility scripts
 └── skills/              # Available skills
 ```
-
----
-
-## Key Commands
 
 ### Development
 ```bash
@@ -106,8 +99,8 @@ npm run format        # Format code with Prettier
 
 ## Workflow & Conventions
 
-### Session Lifecycle (from `.omg/hooks.json`)
-1. **Session Start:** Read `.omg/MEMORY.md` → Read `todo.md`
+### Session Lifecycle (from `.claude/hooks.json`)
+1. **Session Start:** Read `.claude/MEMORY.md` → Read `todo.md`
 2. **Task Received:** Append to `todo.md` (never overwrite)
 3. **Task Complete:** Update todo → Verify → Biome lint → Vitest → Build → Write WORK-LOG
 
@@ -128,7 +121,7 @@ npm run format        # Format code with Prettier
 - Each plugin needs `bl1nk.jsonc` config in its directory
 - Plugin SDK lives in `server/_core/pluginsdk/` (7 files)
 - Tests in `tests/pluginsdk/` (4 test files)
-- **Note:** `packages/plugin-sdk/` is incomplete (tests exist but no `src/` — do not use)
+- New plugin development scaffold: `plugins/plugin-dev/` (meta-plugin)
 
 ---
 
