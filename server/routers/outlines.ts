@@ -173,12 +173,6 @@ export const outlinesRouter = router({
   // Story Overview
   storyOverview: protectedProcedure
     .input(z.object({ outlineId: z.number() }))
-    .query(async ({ input }) => {
-      const [outline, chapters, characters] = await Promise.all([
-        getOutlineById(input.outlineId),
-        getChaptersByOutlineId(input.outlineId),
-        getCharactersByOutlineId(input.outlineId)
-      ]);
     .query(async ({ ctx, input }) => {
       const outline = await getOutlineById(input.outlineId, ctx.user.id);
       if (!outline) {
@@ -187,8 +181,13 @@ export const outlinesRouter = router({
           message: 'ไม่พบโครงเรื่องนี้ (20002)',
         });
       }
-      const chapters = await getChaptersByOutlineId(input.outlineId);
-      const characters = await getCharactersByOutlineId(input.outlineId);
+
+      // Optimization: Fetch chapters and characters concurrently using Promise.all after verifying outline access
+      // Impact: Reduces overall response latency by parallelizing remaining independent database queries
+      const [chapters, characters] = await Promise.all([
+        getChaptersByOutlineId(input.outlineId),
+        getCharactersByOutlineId(input.outlineId)
+      ]);
 
       return {
         outline,
