@@ -4,10 +4,11 @@ import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
+import { registerMcpHttpRoutes } from "../mcp/httpTransport";
 import { appRouter } from "../routers";
-import v1Router from "../v1_router";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { runSystemDiagnostics, logDevOpsStartupReport } from "./diagnostics";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -31,21 +32,47 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
-  // Configure body parser with larger size limit for file uploads
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+  // 🛡️ Security Hardening: Disable Express fingerprinting header
+  app.disable("x-powered-by");
+
+  // 🛡️ Security Hardening: Apply Essential HTTP Security Headers
+  app.use((_req, res, next) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "SAMEORIGIN");
+    res.setHeader("X-XSS-Protection", "1; mode=block");
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    res.setHeader(
+      "Permissions-Policy",
+      "camera=(), microphone=(), geolocation=()"
+    );
+    next();
+  });
+
+  // Configure body parser with safe limit
+  app.use(express.json({ limit: "25mb" }));
+  app.use(express.urlencoded({ limit: "25mb", extended: true }));
+
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
-  // ibl1nk REST API v1
-  app.use("/v1", v1Router);
+
+  // Model Context Protocol (MCP) Server endpoints under /api/mcp
+  registerMcpHttpRoutes(app);
+
   // tRPC API
   app.use(
     "/api/trpc",
     createExpressMiddleware({
       router: appRouter,
       createContext,
+      onError({ error, path }) {
+        if (error.code === "INTERNAL_SERVER_ERROR") {
+          console.error(`[API Error on ${path}]:`, error.message);
+        }
+      },
     })
   );
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
@@ -60,8 +87,15 @@ async function startServer() {
     console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
   }
 
-  server.listen(port, () => {
+  server.listen(port, async () => {
     console.log(`Server running on http://localhost:${port}/`);
+    // Run and print detailed DevOps Diagnostics & Warning Report
+    try {
+      const diag = await runSystemDiagnostics();
+      logDevOpsStartupReport(diag);
+    } catch (e) {
+      console.warn("Could not generate startup diagnostics:", e);
+    }
   });
 }
 

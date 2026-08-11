@@ -1,12 +1,7 @@
-## 2024-05-18 - Replacing Sequential DB Fetching with Promise.all
-**Learning:** In trpc procedures (like `storyOverview`), sequentially `await`ing independent database queries (e.g., getting outline, chapters, and characters) causes unnecessary blocking, compounding request time.
-**Action:** Always fetch independent datasets concurrently using `Promise.all` to reduce overall latency and execute queries in parallel.
-## 2024-05-30 - Avoid dynamic imports in hot path DB operations
-**Learning:** Dynamic imports for operators like `or`, `and`, `gte` inside frequent database query functions (e.g., `getCharacterRelationships`, `getWritingProgressForUser`) can create measurable overhead due to module resolution in hot paths.
-**Action:** Always prefer static top-level imports for database query operators in files handling core database operations.
-## 2024-06-04 - Avoid dynamic imports in frequently called DB query functions
-**Learning:** Using dynamic imports (e.g. `const { and } = await import("drizzle-orm");`) inside query functions like `getCharacterRelationships` creates unnecessary module resolution overhead and slows down database query execution.
-**Action:** Always prefer top-level static imports for ORM query builder operators to avoid the overhead of dynamically resolving the import on every query execution.
-## 2024-06-06 - Dynamic Import Bottleneck in Drizzle ORM
-**Learning:** Frequent queries like `getCharacterRelationships` and `getWritingProgressForUser` were using dynamic imports (`await import("drizzle-orm")`) for query operators (`or`, `and`, `gte`). This causes performance bottlenecks and module resolution overhead, particularly for endpoints accessed often.
-**Action:** Always prefer top-level static imports for Drizzle ORM operators (`and`, `or`, `eq`, `gte`, etc.) in frequently called database query functions to eliminate module resolution overhead and optimize response times.
+## 2026-05-15 - Reusing DOM Nodes for HTML Parsing
+
+**Learning:** Using `DOMParser` prevents security issues from executing scripts. Using `.innerHTML` on a created `div` does not escape meta-characters and leaves the code vulnerable to XSS.
+**Action:** Use `new DOMParser().parseFromString(html, "text/html")` instead of `element.innerHTML` when extracting text securely.
+
+**Learning:** Calling `document.createElement('div')` repeatedly inside loop callbacks (like `.map`, `.filter`, or Fuse.js indexing `getFn`) is highly expensive and creates significant performance bottlenecks due to repeated DOM allocation. Furthermore, misusing the comma operator directly in `getFn` can result in empty strings.
+**Action:** When extracting plain text from HTML, allocate a single `document.createElement('div')` outside of loops and re-use it (e.g., modifying its `innerHTML` and reading `textContent`) rather than constantly instantiating new elements.

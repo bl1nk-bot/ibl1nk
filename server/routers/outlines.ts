@@ -1,20 +1,39 @@
-import { z } from 'zod';
-import { TRPCError } from '@trpc/server';
-import { protectedProcedure, router } from '../_core/trpc';
+/**
+ * ============================================================================
+ * Outlines, Chapters & Scenes Router (Human-First Story Studio)
+ * ============================================================================
+ *
+ * 🔄 Data Flow Pathway:
+ * 1. UI Request: Outlines.tsx Dual-Pane Scene Manager triggers tRPC query/mutation
+ * 2. Auth & Ownership Guard: protectedProcedure verifies ctx.user.id session
+ * 3. IDOR Authorization: getOutlineByIdForUser / getChapterByIdForUser validates resource ownership
+ * 4. Storage Engine: Writes to MySQL/TiDB (or MemoryStore fallback) via server/db.ts
+ * 5. State Synchronization: Returns verified result to React Query cache & UI
+ */
+
+import { z } from "zod";
+import { protectedProcedure, router } from "../_core/trpc";
 import {
   getUserOutlines,
   getOutlineById,
+  getOutlineByIdForUser,
   createOutline,
   updateOutline,
+  updateOutlineForUser,
+  deleteOutlineForUser,
   getChaptersByOutlineId,
   createChapter,
   updateChapter,
+  deleteChapterForUser,
+  getChapterByIdForUser,
   getScenesByChapterId,
   createScene,
   updateScene,
+  deleteSceneForUser,
+  getSceneByIdForUser,
   getCharactersByOutlineId,
   getCharacterRelationships,
-} from '../db';
+} from "../db";
 
 export const outlinesRouter = router({
   // Outline Procedures
@@ -25,13 +44,8 @@ export const outlinesRouter = router({
   get: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
-      const outline = await getOutlineById(input.id, ctx.user.id);
-      if (!outline) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'ไม่พบโครงเรื่องนี้ (20001)',
-        });
-      }
+      const outline = await getOutlineByIdForUser(input.id, ctx.user.id);
+      if (!outline) throw new Error("Outline not found");
       return outline;
     }),
 
@@ -51,7 +65,7 @@ export const outlinesRouter = router({
         description: input.description,
         craftDocumentId: input.craftDocumentId,
         craftCollectionId: input.craftCollectionId,
-        status: 'draft',
+        status: "draft",
       });
     }),
 
@@ -61,12 +75,16 @@ export const outlinesRouter = router({
         id: z.number(),
         title: z.string().optional(),
         description: z.string().optional(),
-        status: z.enum(['draft', 'in_progress', 'completed', 'archived']).optional(),
+        status: z
+          .enum(["draft", "in_progress", "completed", "archived"])
+          .optional(),
         wordCount: z.number().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      return updateOutline(input.id, ctx.user.id, {
+      const outline = await getOutlineByIdForUser(input.id, ctx.user.id);
+      if (!outline) throw new Error("Outline not found");
+      return updateOutlineForUser(input.id, ctx.user.id, {
         title: input.title,
         description: input.description,
         status: input.status,
@@ -74,11 +92,29 @@ export const outlinesRouter = router({
       });
     }),
 
+  delete: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const outline = await getOutlineByIdForUser(input.id, ctx.user.id);
+      if (!outline) throw new Error("Outline not found");
+      return deleteOutlineForUser(input.id, ctx.user.id);
+    }),
+
   // Chapter Procedures
   chapters: protectedProcedure
     .input(z.object({ outlineId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
+      const outline = await getOutlineByIdForUser(input.outlineId, ctx.user.id);
+      if (!outline) throw new Error("Outline not found");
       return getChaptersByOutlineId(input.outlineId);
+    }),
+
+  deleteChapter: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const chapter = await getChapterByIdForUser(input.id, ctx.user.id);
+      if (!chapter) throw new Error("Chapter not found");
+      return deleteChapterForUser(input.id, ctx.user.id);
     }),
 
   createChapter: protectedProcedure
@@ -88,17 +124,21 @@ export const outlinesRouter = router({
         title: z.string().min(1),
         description: z.string().optional(),
         chapterNumber: z.number().optional(),
-        status: z.enum(['planning', 'writing', 'reviewing', 'completed']).optional(),
+        status: z
+          .enum(["planning", "writing", "reviewing", "completed"])
+          .optional(),
         order: z.number().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const outline = await getOutlineByIdForUser(input.outlineId, ctx.user.id);
+      if (!outline) throw new Error("Outline not found");
       return createChapter({
         outlineId: input.outlineId,
         title: input.title,
         description: input.description,
         chapterNumber: input.chapterNumber,
-        status: (input.status as any) || 'planning',
+        status: (input.status as any) || "planning",
         order: input.order || 0,
       });
     }),
@@ -109,11 +149,15 @@ export const outlinesRouter = router({
         id: z.number(),
         title: z.string().optional(),
         description: z.string().optional(),
-        status: z.enum(['planning', 'writing', 'reviewing', 'completed']).optional(),
+        status: z
+          .enum(["planning", "writing", "reviewing", "completed"])
+          .optional(),
         wordCount: z.number().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const chapter = await getChapterByIdForUser(input.id, ctx.user.id);
+      if (!chapter) throw new Error("Chapter not found");
       return updateChapter(input.id, {
         title: input.title,
         description: input.description,
@@ -125,7 +169,9 @@ export const outlinesRouter = router({
   // Scene Procedures
   scenes: protectedProcedure
     .input(z.object({ chapterId: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
+      const chapter = await getChapterByIdForUser(input.chapterId, ctx.user.id);
+      if (!chapter) throw new Error("Chapter not found");
       return getScenesByChapterId(input.chapterId);
     }),
 
@@ -136,17 +182,21 @@ export const outlinesRouter = router({
         title: z.string().min(1),
         description: z.string().optional(),
         sceneNumber: z.number().optional(),
-        status: z.enum(['planning', 'writing', 'reviewing', 'completed']).optional(),
+        status: z
+          .enum(["planning", "writing", "reviewing", "completed"])
+          .optional(),
         order: z.number().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const chapter = await getChapterByIdForUser(input.chapterId, ctx.user.id);
+      if (!chapter) throw new Error("Chapter not found");
       return createScene({
         chapterId: input.chapterId,
         title: input.title,
         description: input.description,
         sceneNumber: input.sceneNumber,
-        status: (input.status as any) || 'planning',
+        status: (input.status as any) || "planning",
         order: input.order || 0,
       });
     }),
@@ -157,11 +207,15 @@ export const outlinesRouter = router({
         id: z.number(),
         title: z.string().optional(),
         description: z.string().optional(),
-        status: z.enum(['planning', 'writing', 'reviewing', 'completed']).optional(),
+        status: z
+          .enum(["planning", "writing", "reviewing", "completed"])
+          .optional(),
         wordCount: z.number().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const scene = await getSceneByIdForUser(input.id, ctx.user.id);
+      if (!scene) throw new Error("Scene not found");
       return updateScene(input.id, {
         title: input.title,
         description: input.description,
@@ -170,23 +224,20 @@ export const outlinesRouter = router({
       });
     }),
 
+  deleteScene: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const scene = await getSceneByIdForUser(input.id, ctx.user.id);
+      if (!scene) throw new Error("Scene not found");
+      return deleteSceneForUser(input.id, ctx.user.id);
+    }),
+
   // Story Overview
   storyOverview: protectedProcedure
     .input(z.object({ outlineId: z.number() }))
-    .query(async ({ input }) => {
-      const [outline, chapters, characters] = await Promise.all([
-        getOutlineById(input.outlineId),
-        getChaptersByOutlineId(input.outlineId),
-        getCharactersByOutlineId(input.outlineId)
-      ]);
     .query(async ({ ctx, input }) => {
-      const outline = await getOutlineById(input.outlineId, ctx.user.id);
-      if (!outline) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'ไม่พบโครงเรื่องนี้ (20002)',
-        });
-      }
+      const outline = await getOutlineByIdForUser(input.outlineId, ctx.user.id);
+      if (!outline) throw new Error("Outline not found");
       const chapters = await getChaptersByOutlineId(input.outlineId);
       const characters = await getCharactersByOutlineId(input.outlineId);
 
@@ -197,7 +248,10 @@ export const outlinesRouter = router({
         stats: {
           totalChapters: chapters.length,
           totalCharacters: characters.length,
-          totalWordCount: chapters.reduce((sum, ch) => sum + (ch.wordCount || 0), 0),
+          totalWordCount: chapters.reduce(
+            (sum, ch) => sum + (ch.wordCount || 0),
+            0
+          ),
         },
       };
     }),

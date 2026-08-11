@@ -1,6 +1,7 @@
 # TypeScript/React Style Guide
 
 ## Based on: Claude Writer Dashboard Tech Stack
+
 - TypeScript 5.9 (strict mode)
 - React 19
 - Tailwind CSS 4
@@ -8,6 +9,7 @@
 - Drizzle ORM
 
 ## General Principles
+
 - **Strict TypeScript** - เปิด `strict: true` เสมอ
 - **Type Safety First** - หลีกเลี่ยง `any`, ใช้ type inference เมื่อชัดเจน
 - **Functional Components** - ใช้ functional components with hooks
@@ -16,6 +18,7 @@
 ## Naming Conventions
 
 ### Files
+
 ```
 ✅ PascalCase สำหรับ React components:  CharacterGraphView.tsx
 ✅ camelCase สำหรับ utilities:          parseNoteLinks.ts, formatDate.ts
@@ -24,6 +27,7 @@
 ```
 
 ### Variables & Functions
+
 ```typescript
 ✅ camelCase สำหรับ variables และ functions
 const wordCount = 0
@@ -39,6 +43,7 @@ const MAX_CHAT_EXCHANGES = 10
 ```
 
 ### Components
+
 ```typescript
 ✅ PascalCase สำหรับ component names
 function CharacterTracker() { ... }
@@ -58,6 +63,7 @@ function CharacterCard({ character, onUpdate }: CharacterProps) {
 ## TypeScript Best Practices
 
 ### Type Inference vs Explicit Types
+
 ```typescript
 ✅ ปล่อยให้ type inference ทำงานเมื่อชัดเจน
 const characters = await getCharactersByOutlineId(outlineId) // inferred
@@ -73,6 +79,7 @@ const [characters, setCharacters] = useState<Character[]>([])
 ```
 
 ### Avoid `any`
+
 ```typescript
 ❌ หลีกเลี่ยง any
 const data: any = await fetchData()
@@ -87,6 +94,7 @@ const element = ref.current as HTMLDivElement
 ```
 
 ### Nullable Handling
+
 ```typescript
 ✅ ใช้ optional chaining
 const name = character?.name ?? 'Unknown'
@@ -103,6 +111,7 @@ function isCharacter(obj: unknown): obj is Character {
 ## React Patterns
 
 ### Component Structure
+
 ```typescript
 ✅ จัดลำดับในไฟล์: imports → types/constants → component → exports
 import { useState } from 'react'
@@ -116,40 +125,42 @@ interface CharacterCardProps {
 export function CharacterCard({ character, onSelect }: CharacterCardProps) {
   // 1. State hooks
   const [isExpanded, setIsExpanded] = useState(false)
-  
+
   // 2. Custom hooks
   const { relationships } = useCharacterRelationships(character.id)
-  
+
   // 3. Derived state
   const hasRelationships = relationships.length > 0
-  
+
   // 4. Event handlers
   const handleClick = () => onSelect(character.id)
-  
+
   // 5. Render
   return ( ... )
 }
 ```
 
 ### Custom Hooks
+
 ```typescript
 ✅ แยก logic ออกจาก UI เป็น custom hooks
 function useCharacterRelationships(characterId: number) {
   const [relationships, setRelationships] = useState<CharacterRelationship[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  
+
   useEffect(() => {
     setIsLoading(true)
     trpc.characters.relationships.query({ characterId })
       .then(setRelationships)
       .finally(() => setIsLoading(false))
   }, [characterId])
-  
+
   return { relationships, isLoading }
 }
 ```
 
 ### Event Handlers
+
 ```typescript
 ✅ ใช้ arrow functions สำหรับ handlers
 const handleClick = useCallback(() => {
@@ -164,26 +175,27 @@ const handleNoteDelete = (noteId: number) => { ... }
 ## Tailwind CSS Patterns
 
 ### Class Organization
+
 ```typescript
 ✅ จัดกลุ่ม classes ตามวัตถุประสงค์
 <div className="
   // Layout
   flex flex-col gap-4
-  
+
   // Sizing
   w-full max-w-md
-  
+
   // Spacing
   p-4 my-2
-  
+
   // Visual
   bg-white dark:bg-gray-800
   rounded-lg shadow-sm
-  
+
   // Interactive
   hover:shadow-md
   transition-shadow duration-200
-  
+
   // Responsive
   md:flex-row
   lg:max-w-lg
@@ -191,6 +203,7 @@ const handleNoteDelete = (noteId: number) => { ... }
 ```
 
 ### Mobile-First Responsive
+
 ```typescript
 ✅ เริ่มจาก mobile แล้วขยายขึ้น
 <div className="
@@ -202,6 +215,7 @@ const handleNoteDelete = (noteId: number) => { ... }
 ```
 
 ### Dark Mode
+
 ```typescript
 ✅ ใช้ dark: modifier สม่ำเสมอ
 <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
@@ -210,6 +224,7 @@ const handleNoteDelete = (noteId: number) => { ... }
 ## tRPC Patterns
 
 ### Router Structure
+
 ```typescript
 ✅ แยก routers ตาม domain
 export const charactersRouter = router({
@@ -218,7 +233,7 @@ export const charactersRouter = router({
     .query(async ({ input }) => {
       return getCharactersByOutlineId(input.outlineId)
     }),
-  
+
   create: protectedProcedure
     .input(characterCreateSchema)
     .mutation(async ({ ctx, input }) => {
@@ -231,6 +246,7 @@ export const charactersRouter = router({
 ```
 
 ### Input Validation
+
 ```typescript
 ✅ ใช้ Zod schema สำหรับทุก input
 const characterCreateSchema = z.object({
@@ -245,6 +261,7 @@ type CharacterCreateInput = z.infer<typeof characterCreateSchema>
 ```
 
 ### Error Handling
+
 ```typescript
 ✅ ใช้ user-friendly error messages
 if (!outline) {
@@ -270,6 +287,7 @@ try {
 ## Database (Drizzle) Patterns
 
 ### Schema Definition
+
 ```typescript
 ✅ ใช้ camelCase สำหรับ columns
 export const characters = mysqlTable("characters", {
@@ -285,6 +303,7 @@ export type InsertCharacter = typeof characters.$inferInsert
 ```
 
 ### Queries
+
 ```typescript
 ✅ ใช้ parameterized queries ผ่าน Drizzle
 export async function getCharactersByOutlineId(outlineId: number) {
@@ -304,13 +323,14 @@ export async function createCharacterWithRelationships(data: InsertCharacter) {
 ## Testing Patterns
 
 ### Unit Tests
+
 ```typescript
 ✅ อธิบาย what และ why
 describe('parseNoteLinks', () => {
   it('should extract wiki-style links from content', () => {
     const content = 'See [[Character A]] and [[Location B]]'
     const links = parseNoteLinks(content)
-    
+
     expect(links).toEqual([
       { targetTitle: 'Character A' },
       { targetTitle: 'Location B' },
@@ -320,11 +340,12 @@ describe('parseNoteLinks', () => {
 ```
 
 ### React Component Tests
+
 ```typescript
 ✅ ทดสอบ behavior ไม่ใช่ implementation
 it('displays character name and role', () => {
   render(<CharacterCard character={mockCharacter} onSelect={mockOnSelect} />)
-  
+
   expect(screen.getByText('Aria')).toBeInTheDocument()
   expect(screen.getByText('Protagonist')).toBeInTheDocument()
 })
@@ -332,7 +353,7 @@ it('displays character name and role', () => {
 ✅ ทดสอบ user interactions
 it('calls onSelect when clicked', async () => {
   render(<CharacterCard character={mockCharacter} onSelect={mockOnSelect} />)
-  
+
   await userEvent.click(screen.getByRole('button'))
   expect(mockOnSelect).toHaveBeenCalledWith(mockCharacter.id)
 })
@@ -341,24 +362,26 @@ it('calls onSelect when clicked', async () => {
 ## Code Organization
 
 ### Import Order
+
 ```typescript
 // 1. External libraries
-import { useState, useEffect } from 'react'
-import { z } from 'zod'
+import { useState, useEffect } from "react";
+import { z } from "zod";
 
 // 2. Internal modules (absolute paths)
-import { trpc } from '@/lib/trpc'
-import { Character } from '@shared/types'
+import { trpc } from "@/lib/trpc";
+import { Character } from "@shared/types";
 
 // 3. Relative imports (same directory)
-import { CharacterCard } from './CharacterCard'
-import { useCharacterData } from './useCharacterData'
+import { CharacterCard } from "./CharacterCard";
+import { useCharacterData } from "./useCharacterData";
 
 // 4. Type-only imports (when needed)
-import type { CharacterRelationship } from '@shared/types'
+import type { CharacterRelationship } from "@shared/types";
 ```
 
 ### Export Patterns
+
 ```typescript
 ✅ Named exports เป็นหลัก
 export function CharacterCard() { ... }

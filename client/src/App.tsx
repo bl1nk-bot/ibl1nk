@@ -5,13 +5,11 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
 import DashboardMobile from "./pages/DashboardMobile";
 import Outlines from "./pages/Outlines";
-import Characters from "./pages/Characters";
 import CharactersWithViews from "./pages/CharactersWithViews";
 import Settings from "./pages/Settings";
-import NoteTaskApp from "./pages/NoteTaskApp";
+import AgentSessions from "./pages/AgentSessions";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -21,8 +19,8 @@ function Router() {
       <Route path="/dashboard" component={DashboardMobile} />
       <Route path="/outlines" component={Outlines} />
       <Route path="/characters" component={CharactersWithViews} />
+      <Route path="/agents" component={AgentSessions} />
       <Route path="/settings" component={Settings} />
-      <Route path="/workspace" component={NoteTaskApp} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
