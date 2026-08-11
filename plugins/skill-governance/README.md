@@ -17,7 +17,6 @@ adapter. Improvement is proposal-first and limited to user-owned writable skills
 - The ibl1nk app loads `opencode.json`, using the OpenCode V2 `mcp.servers` local-server shape.
 - The MCP process uses the agent host's existing session. It has no model-provider API-key setting.
 
-
 ## Quick test
 
 ```bash

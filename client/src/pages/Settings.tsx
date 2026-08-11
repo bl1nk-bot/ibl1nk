@@ -439,7 +439,11 @@ function CodexAccountCard() {
   const utils = trpc.useUtils();
   const [refreshing, setRefreshing] = useState(false);
   const statusQuery = trpc.agentAuth.codexStatus.useQuery(undefined, {
-    refetchInterval: 2000,
+    refetchInterval: query =>
+      query.state.data?.login?.phase === "starting" ||
+      query.state.data?.login?.phase === "waiting"
+        ? 2000
+        : false,
   });
   const startLogin = trpc.agentAuth.startCodexLogin.useMutation({
     onSuccess: () => utils.agentAuth.codexStatus.invalidate(),
@@ -472,8 +476,8 @@ function CodexAccountCard() {
               Codex account
             </CardTitle>
             <CardDescription>
-              Connect your ChatGPT account through the official Codex login.
-              The app does not request an API key or store your Codex token.
+              Connect your ChatGPT account through the official Codex login. The
+              app does not request an API key or store your Codex token.
             </CardDescription>
           </div>
           <Badge variant={status?.connected ? "default" : "secondary"}>
@@ -548,11 +552,7 @@ function CodexAccountCard() {
               Disconnect Codex
             </Button>
           )}
-          <Button
-            variant="ghost"
-            disabled={refreshing}
-            onClick={handleRefresh}
-          >
+          <Button variant="ghost" disabled={refreshing} onClick={handleRefresh}>
             <RefreshCw
               className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
             />

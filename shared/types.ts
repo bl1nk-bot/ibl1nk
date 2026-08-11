@@ -1,3 +1,4 @@
+// ponytail: shared type barrel ไม่มี runtime import และซ้ำแหล่งหลัก; upgrade: เก็บเมื่อกำหนดเป็น canonical source มิฉะนั้นลบ
 /**
  * Unified type exports
  * Import shared types from this single entry point.

@@ -1,3 +1,4 @@
+// ponytail: template adapter ไม่มี runtime caller; upgrade: เก็บเมื่อ endpoint จริงเรียกใช้ มิฉะนั้นลบ
 /**
  * Voice transcription helper using internal Speech-to-Text service
  *

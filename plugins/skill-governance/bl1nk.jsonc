@@ -5,14 +5,14 @@
   "contextFile": "AGENTS.md",
   "components": {
     "skills": ["skills/*/SKILL.md"],
-    "tools": ["scripts/*.py", "mcp/*.py"]
+    "tools": ["scripts/*.py", "mcp/*.py"],
   },
   "env": {
-    "SKILL_GOVERNANCE_DB": null
+    "SKILL_GOVERNANCE_DB": null,
   },
   "dependencies": [],
   "metadata": {
     "author": "ibl1nk",
-    "license": "MIT"
-  }
+    "license": "MIT",
+  },
 }
