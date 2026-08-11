@@ -2096,9 +2096,7 @@ const _NoteTaskAppWithRouter = () => {
       }
     } catch (error: any) {
       const errorMessage = error.message || "เกิดข้อผิดพลาดในการสื่อสารกับ AI";
-      setAiResponse(
-        `<p class="text-red-400 font-semibold">AI Error: ${errorMessage}</p>`
-      );
+      setAiResponse(`AI Error: ${errorMessage}`);
       setErrorAi(errorMessage);
     } finally {
       setIsLoadingAi(false);
@@ -2144,17 +2142,7 @@ const _NoteTaskAppWithRouter = () => {
         if (titleMatch && titleMatch[1])
           noteTitleSuggestion = titleMatch[1].trim();
       } else {
-        const parsedContent = window.marked
-          ? window.marked.parse(aiResponse)
-          : aiResponse;
-        // Fix TS error since parsedContent could be Promise<string> if marked is async. Assume it is a string here as it was used synchronously before.
-        const contentStr =
-          typeof parsedContent === "string"
-            ? parsedContent
-            : (parsedContent as any as string);
-        const doc = new DOMParser().parseFromString(contentStr, "text/html");
-        const plainTextResponse =
-          doc.body.textContent || doc.body.innerText || "";
+        const plainTextResponse = aiResponse || "";
         const firstLine = plainTextResponse.split("\n")[0].substring(0, 50);
         if (firstLine.trim()) noteTitleSuggestion = firstLine.trim();
       }
