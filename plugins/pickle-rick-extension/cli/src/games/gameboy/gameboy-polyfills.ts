@@ -12,21 +12,29 @@ class ImageDataPolyfill {
 
   constructor(width: number, height: number);
   constructor(data: Uint8ClampedArray, width: number, height?: number);
-  constructor(dataOrWidth: Uint8ClampedArray | number, widthOrHeight: number, height?: number) {
+  constructor(
+    dataOrWidth: Uint8ClampedArray | number,
+    widthOrHeight: number,
+    height?: number
+  ) {
     imageDataCreateCount++;
     if (typeof dataOrWidth === "number") {
       this.width = dataOrWidth;
       this.height = widthOrHeight;
       this.data = new Uint8ClampedArray(this.width * this.height * 4);
       if (imageDataCreateCount <= 5) {
-        console.log(`[Polyfill] ImageData created #${imageDataCreateCount}: ${this.width}x${this.height}, data length: ${this.data.length}`);
+        console.log(
+          `[Polyfill] ImageData created #${imageDataCreateCount}: ${this.width}x${this.height}, data length: ${this.data.length}`
+        );
       }
     } else {
       this.data = dataOrWidth;
       this.width = widthOrHeight;
-      this.height = height ?? (dataOrWidth.length / 4 / widthOrHeight);
+      this.height = height ?? dataOrWidth.length / 4 / widthOrHeight;
       if (imageDataCreateCount <= 5) {
-        console.log(`[Polyfill] ImageData created from existing data #${imageDataCreateCount}: ${this.width}x${this.height}`);
+        console.log(
+          `[Polyfill] ImageData created from existing data #${imageDataCreateCount}: ${this.width}x${this.height}`
+        );
       }
     }
   }
@@ -41,9 +49,15 @@ class AudioContextPolyfill {
     addModule: () => Promise.resolve(),
   };
 
-  resume() { return Promise.resolve(); }
-  suspend() { return Promise.resolve(); }
-  close() { return Promise.resolve(); }
+  resume() {
+    return Promise.resolve();
+  }
+  suspend() {
+    return Promise.resolve();
+  }
+  close() {
+    return Promise.resolve();
+  }
   createGain() {
     return {
       gain: { value: 1, setValueAtTime: () => {} },
@@ -103,7 +117,10 @@ if (typeof globalThis.window === "undefined") {
 }
 
 // Polyfill navigator with gamepad support
-if (typeof globalThis.navigator === "undefined" || !(globalThis.navigator as any).getGamepads) {
+if (
+  typeof globalThis.navigator === "undefined" ||
+  !(globalThis.navigator as any).getGamepads
+) {
   (globalThis as any).navigator = {
     ...(globalThis as any).navigator,
     getGamepads: () => [],
@@ -114,8 +131,13 @@ if (typeof globalThis.navigator === "undefined" || !(globalThis.navigator as any
 
 // Polyfill requestAnimationFrame
 if (typeof globalThis.requestAnimationFrame === "undefined") {
-  (globalThis as any).requestAnimationFrame = (callback: FrameRequestCallback): number => {
-    return setTimeout(() => callback(performance.now()), 16) as unknown as number;
+  (globalThis as any).requestAnimationFrame = (
+    callback: FrameRequestCallback
+  ): number => {
+    return setTimeout(
+      () => callback(performance.now()),
+      16
+    ) as unknown as number;
   };
 }
 if (typeof globalThis.cancelAnimationFrame === "undefined") {
@@ -147,18 +169,20 @@ class CanvasRenderingContext2DPolyfill {
           parseInt(hex.slice(0, 2), 16),
           parseInt(hex.slice(2, 4), 16),
           parseInt(hex.slice(4, 6), 16),
-          255
+          255,
         ];
       }
     }
     // Parse rgb/rgba
-    const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+    const rgbMatch = color.match(
+      /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/
+    );
     if (rgbMatch) {
       return [
         parseInt(rgbMatch[1]),
         parseInt(rgbMatch[2]),
         parseInt(rgbMatch[3]),
-        rgbMatch[4] ? Math.floor(parseFloat(rgbMatch[4]) * 255) : 255
+        rgbMatch[4] ? Math.floor(parseFloat(rgbMatch[4]) * 255) : 255,
       ];
     }
     return [0, 0, 0, 255];
@@ -178,7 +202,12 @@ class CanvasRenderingContext2DPolyfill {
       for (let x = 0; x < sw; x++) {
         const srcX = sx + x;
         const srcY = sy + y;
-        if (srcX >= 0 && srcX < this.canvas.width && srcY >= 0 && srcY < this.canvas.height) {
+        if (
+          srcX >= 0 &&
+          srcX < this.canvas.width &&
+          srcY >= 0 &&
+          srcY < this.canvas.height
+        ) {
           const srcIdx = (srcY * this.canvas.width + srcX) * 4;
           const dstIdx = (y * sw + x) * 4;
           imageData.data[dstIdx] = this.pixels[srcIdx];
@@ -197,7 +226,12 @@ class CanvasRenderingContext2DPolyfill {
       for (let x = 0; x < imageData.width; x++) {
         const dstX = dx + x;
         const dstY = dy + y;
-        if (dstX >= 0 && dstX < this.canvas.width && dstY >= 0 && dstY < this.canvas.height) {
+        if (
+          dstX >= 0 &&
+          dstX < this.canvas.width &&
+          dstY >= 0 &&
+          dstY < this.canvas.height
+        ) {
           const srcIdx = (y * imageData.width + x) * 4;
           const dstIdx = (dstY * this.canvas.width + dstX) * 4;
           this.pixels[dstIdx] = imageData.data[srcIdx];
@@ -213,7 +247,12 @@ class CanvasRenderingContext2DPolyfill {
     const [r, g, b, a] = this.parseColor(this.fillStyle);
     for (let py = y; py < y + h; py++) {
       for (let px = x; px < x + w; px++) {
-        if (px >= 0 && px < this.canvas.width && py >= 0 && py < this.canvas.height) {
+        if (
+          px >= 0 &&
+          px < this.canvas.width &&
+          py >= 0 &&
+          py < this.canvas.height
+        ) {
           const idx = (py * this.canvas.width + px) * 4;
           this.pixels[idx] = r;
           this.pixels[idx + 1] = g;
@@ -227,7 +266,12 @@ class CanvasRenderingContext2DPolyfill {
   clearRect(x: number, y: number, w: number, h: number) {
     for (let py = y; py < y + h; py++) {
       for (let px = x; px < x + w; px++) {
-        if (px >= 0 && px < this.canvas.width && py >= 0 && py < this.canvas.height) {
+        if (
+          px >= 0 &&
+          px < this.canvas.width &&
+          py >= 0 &&
+          py < this.canvas.height
+        ) {
           const idx = (py * this.canvas.width + px) * 4;
           this.pixels[idx] = 0;
           this.pixels[idx + 1] = 0;
@@ -240,7 +284,9 @@ class CanvasRenderingContext2DPolyfill {
 
   drawImage() {}
   fillText() {}
-  measureText() { return { width: 0 }; }
+  measureText() {
+    return { width: 0 };
+  }
   save() {}
   restore() {}
   scale() {}
@@ -257,7 +303,9 @@ class CanvasRenderingContext2DPolyfill {
   clip() {}
   setTransform() {}
   resetTransform() {}
-  getTransform() { return { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }; }
+  getTransform() {
+    return { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
+  }
 }
 
 class CanvasPolyfill {
@@ -279,7 +327,9 @@ class CanvasPolyfill {
     return null;
   }
 
-  toDataURL() { return ""; }
+  toDataURL() {
+    return "";
+  }
   toBlob() {}
   addEventListener() {}
   removeEventListener() {}

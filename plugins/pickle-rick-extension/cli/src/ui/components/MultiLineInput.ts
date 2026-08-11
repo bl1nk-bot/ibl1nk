@@ -17,7 +17,10 @@ export enum MultiLineInputEvents {
   SUBMIT = "submit",
 }
 
-export interface MultiLineInputOptions extends Omit<InputRenderableOptions, "value"> {
+export interface MultiLineInputOptions extends Omit<
+  InputRenderableOptions,
+  "value"
+> {
   /** Initial text value (can include newlines) */
   value?: string;
   /** Minimum height in lines (default: 1) */
@@ -35,7 +38,7 @@ export interface MultiLineInputOptions extends Omit<InputRenderableOptions, "val
  * - Enter alone submits the input
  * - Respects minHeight and maxHeight constraints
  * - Emits events: input, change, submit
- * 
+ *
  * Extends InputRenderable for compatibility with file picker and other utilities.
  */
 export class MultiLineInputRenderable extends InputRenderable {
@@ -47,7 +50,7 @@ export class MultiLineInputRenderable extends InputRenderable {
     // Convert newlines to empty string for initial parent call
     // We'll restore them after initialization
     const sanitizedValue = (options.value ?? "").replace(/[\n\r]/g, "");
-    
+
     super(ctx, {
       ...options,
       value: sanitizedValue,
@@ -92,8 +95,11 @@ export class MultiLineInputRenderable extends InputRenderable {
    */
   private adjustHeight(): void {
     const lineCount = this.virtualLineCount;
-    const newHeight = Math.max(this._minHeight, Math.min(lineCount, this._maxHeight));
-    
+    const newHeight = Math.max(
+      this._minHeight,
+      Math.min(lineCount, this._maxHeight)
+    );
+
     // Only update if height actually changed
     if (this.height !== newHeight) {
       this.height = newHeight;
@@ -115,12 +121,12 @@ export class MultiLineInputRenderable extends InputRenderable {
 
     // Let parent handle other keys (Enter without shift will submit)
     const handled = super.handleKeyPress(key);
-    
+
     // After any text modification, adjust height
     if (handled) {
       this.adjustHeight();
     }
-    
+
     return handled;
   }
 
@@ -140,7 +146,7 @@ export class MultiLineInputRenderable extends InputRenderable {
   public override handlePaste(event: PasteEvent): void {
     const currentLength = this.plainText.length;
     const remaining = this.maxLength - currentLength;
-    
+
     if (remaining <= 0) return;
 
     const toInsert = event.text.substring(0, remaining);
@@ -157,7 +163,7 @@ export class MultiLineInputRenderable extends InputRenderable {
   public override insertText(text: string): void {
     const currentLength = this.plainText.length;
     const remaining = this.maxLength - currentLength;
-    
+
     if (remaining <= 0) return;
 
     const toInsert = text.substring(0, remaining);

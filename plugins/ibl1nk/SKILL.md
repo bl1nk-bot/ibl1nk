@@ -292,12 +292,14 @@ const overview = await trpc.outlines.storyOverview.query({
 ## Best Practices
 
 ### 1. Engineering Standards
+
 - **IDOR Protection:** Every database query and tRPC procedure MUST verify data ownership using `userId`.
 - **Standardized Errors:** Use `TRPCError` with bilingual messages (Thai/English) and specific numeric codes.
 - **TDD Workflow:** Write tests for database logic and routers before implementation. Aim for >80% coverage.
 - **Modular UI:** Split large components into smaller, single-purpose components and custom hooks.
 
 ### 2. General Usage
+
 - **Regular Syncing:** Sync Obsidian vault daily to keep content up-to-date
 - **Consistent Naming:** Use consistent character and chapter naming across tools
 - **Analysis Frequency:** Run content analysis after completing each chapter

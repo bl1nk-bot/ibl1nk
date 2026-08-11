@@ -19,7 +19,8 @@ export const ENV = {
   telegramChatId: process.env.TELEGRAM_CHAT_ID ?? "",
 
   /* API v1 & Advanced Tooling Configuration */
-  apiAuthSecret: process.env.API_AUTH_SECRET ?? process.env.JWT_SECRET ?? "dev_api_secret",
+  apiAuthSecret:
+    process.env.API_AUTH_SECRET ?? process.env.JWT_SECRET ?? "dev_api_secret",
   memoryRoot: process.env.MEMORY_ROOT ?? "/memories",
   sandboxTimeout: parseInt(process.env.SANDBOX_TIMEOUT ?? "30000", 10),
   sandboxMemoryLimit: parseInt(process.env.SANDBOX_MEMORY_LIMIT ?? "128", 10), // MB

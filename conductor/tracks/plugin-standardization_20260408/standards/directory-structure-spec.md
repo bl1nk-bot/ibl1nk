@@ -72,38 +72,41 @@ plugins/<plugin-name>/
 
 ## Required Files/Directories
 
-| Path | Type | Description |
-|------|------|-------------|
-| `bl1nk.jsonc` | File | ⭐ Plugin configuration (required) |
-| `<CONTEXT>.md` | File | ⭐ Context file for AI agents (required) |
-| `README.md` | File | ⭐ Human-readable documentation (required) |
-| `tests/` | Directory | ⭐ Test files (required) |
+| Path           | Type      | Description                                |
+| -------------- | --------- | ------------------------------------------ |
+| `bl1nk.jsonc`  | File      | ⭐ Plugin configuration (required)         |
+| `<CONTEXT>.md` | File      | ⭐ Context file for AI agents (required)   |
+| `README.md`    | File      | ⭐ Human-readable documentation (required) |
+| `tests/`       | Directory | ⭐ Test files (required)                   |
 
 ## Optional Directories
 
-| Directory | Description | When to Use |
-|-----------|-------------|-------------|
-| `agents/` | Agent definitions | Plugin มี agent roles/personalities |
-| `commands/` | Command definitions | Plugin มี commands ที่เรียกได้ |
-| `skills/` | Skill definitions | Plugin มี skills ที่ activate ได้ |
-| `tools/` | Tool implementations | Plugin มี tools (scripts, binaries) |
-| `hooks/` | Event-driven scripts | Plugin มี event hooks |
-| `scripts/` | Shared scripts | Plugin มี shared scripts |
-| `resources/` | Assets | Plugin มี images, data, etc. |
-| `themes/` | Theme files | Plugin มี custom themes |
-| `references/` | Reference docs | Plugin มี reference documentation |
+| Directory     | Description          | When to Use                         |
+| ------------- | -------------------- | ----------------------------------- |
+| `agents/`     | Agent definitions    | Plugin มี agent roles/personalities |
+| `commands/`   | Command definitions  | Plugin มี commands ที่เรียกได้      |
+| `skills/`     | Skill definitions    | Plugin มี skills ที่ activate ได้   |
+| `tools/`      | Tool implementations | Plugin มี tools (scripts, binaries) |
+| `hooks/`      | Event-driven scripts | Plugin มี event hooks               |
+| `scripts/`    | Shared scripts       | Plugin มี shared scripts            |
+| `resources/`  | Assets               | Plugin มี images, data, etc.        |
+| `themes/`     | Theme files          | Plugin มี custom themes             |
+| `references/` | Reference docs       | Plugin มี reference documentation   |
 
 ## Naming Conventions
 
 ### Files
+
 - **kebab-case** สำหรับทุกไฟล์
 - ตัวอย่าง: `my-command.md`, `skill-name/`, `agent-role.md`
 
 ### Directories
+
 - **kebab-case** สำหรับทุก directory
 - ตัวอย่าง: `skills/my-skill/`, `commands/sub-command/`
 
 ### Tests
+
 - **test suffix**: `<name>.test.ts` หรือ `<name>.spec.ts`
 - **Structure**: Mirror source structure in tests/
 
@@ -112,6 +115,7 @@ plugins/<plugin-name>/
 ### จากโครงสร้างเดิม -> มาตรฐานใหม่
 
 #### Case 1: Plugin มี SKILL.md ที่ root
+
 ```
 Before:
 plugin/
@@ -135,6 +139,7 @@ plugin/
 ```
 
 #### Case 2: Plugin มี commands/ และ skills/ อยู่แล้ว
+
 ```
 Before:
 plugin/
@@ -162,6 +167,7 @@ plugin/
 ```
 
 #### Case 3: Plugin มี agents/ อยู่แล้ว
+
 ```
 Before:
 plugin/

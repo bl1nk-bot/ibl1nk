@@ -34,7 +34,11 @@ export class LogView {
   private onNewLines?: () => void;
   private lastUpdateTime: number = 0;
 
-  constructor(renderer: CliRenderer, logFilePath: string, onNewLines?: () => void) {
+  constructor(
+    renderer: CliRenderer,
+    logFilePath: string,
+    onNewLines?: () => void
+  ) {
     this.renderer = renderer;
     this.logFilePath = logFilePath;
     this.onNewLines = onNewLines;
@@ -84,7 +88,11 @@ export class LogView {
 
     let color = THEME.text;
 
-    if (trimmed.startsWith("[Phase") || trimmed.startsWith("[Iteration") || trimmed.startsWith("Phase")) {
+    if (
+      trimmed.startsWith("[Phase") ||
+      trimmed.startsWith("[Iteration") ||
+      trimmed.startsWith("Phase")
+    ) {
       color = THEME.accent;
     } else if (trimmed.startsWith(">>")) {
       color = THEME.blue;
@@ -109,16 +117,20 @@ export class LogView {
       if (stats.size > 0) {
         const content = await fsp.readFile(this.logFilePath, "utf8");
         const rawLines = content.split("\n");
-        
-        const linesToProcess = rawLines[rawLines.length - 1] === "" 
-          ? rawLines.slice(0, -1) 
-          : rawLines;
+
+        const linesToProcess =
+          rawLines[rawLines.length - 1] === ""
+            ? rawLines.slice(0, -1)
+            : rawLines;
 
         const lastLines = linesToProcess.slice(-this.MAX_LINES);
         this.addRawLines(lastLines);
       }
     } catch (error) {
-      if (error instanceof Error && (error as NodeJS.ErrnoException).code !== "ENOENT") {
+      if (
+        error instanceof Error &&
+        (error as NodeJS.ErrnoException).code !== "ENOENT"
+      ) {
         this.addRawLines([`[Error reading log: ${error.message}]`]);
       }
     }
@@ -169,17 +181,17 @@ export class LogView {
       if (stats.size > this.lastSize) {
         const bufferSize = stats.size - this.lastSize;
         const buffer = Buffer.alloc(bufferSize);
-        
+
         await this.fileHandle.read(buffer, 0, bufferSize, this.lastSize);
 
         const content = buffer.toString();
         this.lastSize = stats.size;
-        
+
         const rawLines = content.split("\n");
         if (rawLines.length > 0 && rawLines[rawLines.length - 1] === "") {
           rawLines.pop();
         }
-        
+
         this.addRawLines(rawLines);
       } else if (stats.size < this.lastSize) {
         this.lastSize = stats.size;
@@ -195,7 +207,10 @@ export class LogView {
   }
 
   private stripAnsi(text: string): string {
-    return text.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, "");
+    return text.replace(
+      /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
+      ""
+    );
   }
 
   private addRawLines(newLines: string[]) {
@@ -208,19 +223,19 @@ export class LogView {
     if (this.lines.length > this.MAX_LINES) {
       this.lines = this.lines.slice(-this.MAX_LINES);
     }
-    
+
     // Clear existing timeout and force immediate update if it's been > 500ms
     const now = Date.now();
     const timeSinceLastUpdate = now - this.lastUpdateTime;
-    
+
     if (this.updateTimeout) {
       clearTimeout(this.updateTimeout);
       this.updateTimeout = null;
     }
-    
+
     // Use shorter timeout for more frequent updates, or immediate if it's been a while
     const timeoutDuration = timeSinceLastUpdate > 500 ? 0 : 50;
-    
+
     this.updateTimeout = setTimeout(() => {
       this.updateRenderable();
       this.onNewLines?.();
@@ -232,18 +247,19 @@ export class LogView {
     if (this.isDestroyed) return;
     const now = Date.now();
     this.lastUpdateTime = now;
-    
+
     // For very long logs, only render the last RENDER_CHUNK_SIZE lines to improve performance
-    const linesToRender = this.lines.length > this.RENDER_CHUNK_SIZE 
-      ? this.lines.slice(-this.RENDER_CHUNK_SIZE)
-      : this.lines;
-    
+    const linesToRender =
+      this.lines.length > this.RENDER_CHUNK_SIZE
+        ? this.lines.slice(-this.RENDER_CHUNK_SIZE)
+        : this.lines;
+
     const chunks: TextChunk[] = linesToRender.map((line, i) => ({
       __isChunk: true,
       text: line.content + (i === linesToRender.length - 1 ? "" : "\n"),
       fg: parseColor(line.color),
     }));
-    
+
     // Add a truncation indicator if we're not showing all lines
     if (this.lines.length > this.RENDER_CHUNK_SIZE) {
       const hiddenCount = this.lines.length - this.RENDER_CHUNK_SIZE;
@@ -253,7 +269,7 @@ export class LogView {
         fg: parseColor(THEME.dim),
       });
     }
-    
+
     this.textRenderable.content = new StyledText(chunks);
     if (this.scrollBox) {
       this.scrollBox.scrollTo({ x: 0, y: this.scrollBox.scrollHeight });

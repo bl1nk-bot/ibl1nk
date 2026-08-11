@@ -37,13 +37,21 @@ export async function launchSnake(
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
-    border: options.width && !options.height ? ["left"] : options.height && !options.width ? ["bottom"] : undefined,
+    border:
+      options.width && !options.height
+        ? ["left"]
+        : options.height && !options.width
+          ? ["bottom"]
+          : undefined,
     borderColor: THEME.darkAccent,
   });
   renderer.root.add(container);
 
   // Calculate actual available dimensions
-  const parseSize = (size: number | string | "auto" | undefined, terminalSize: number): number => {
+  const parseSize = (
+    size: number | string | "auto" | undefined,
+    terminalSize: number
+  ): number => {
     if (typeof size === "number") return size;
     if (typeof size === "string" && size.endsWith("%")) {
       const pct = parseFloat(size) / 100;
@@ -59,8 +67,11 @@ export async function launchSnake(
   const availableHeight = termHeight - 6;
   // Increase width ratio to compensate for character aspect ratio (approx 1:2)
   const gameWidth = Math.max(20, Math.min(80, Math.floor(termWidth * 0.7)));
-  const gameHeight = Math.max(10, Math.min(availableHeight, Math.floor(availableHeight * 0.75)));
-  
+  const gameHeight = Math.max(
+    10,
+    Math.min(availableHeight, Math.floor(availableHeight * 0.75))
+  );
+
   let game: SnakeGame;
   try {
     game = new SnakeGame(gameWidth, gameHeight);
@@ -212,7 +223,11 @@ export async function launchSnake(
   const renderGame = () => {
     const children = board.getChildren();
     for (const child of children) {
-      if (child.id.startsWith("snake-") || child.id === "food" || child.id === "overlay") {
+      if (
+        child.id.startsWith("snake-") ||
+        child.id === "food" ||
+        child.id === "overlay"
+      ) {
         board.remove(child.id);
       }
     }
@@ -249,7 +264,7 @@ export async function launchSnake(
     if (isPaused || game.getGameOver()) {
       const msg = game.getGameOver() ? " GAME OVER " : " PAUSED ";
       const subMsg = game.getGameOver() ? " [R]estart | [ESC] Quit " : "";
-      
+
       const overlay = new BoxRenderable(renderer, {
         id: "overlay",
         width: "100%",
@@ -264,19 +279,23 @@ export async function launchSnake(
         backgroundColor: RGBA.fromInts(0, 0, 0, 180),
       });
 
-      overlay.add(new TextRenderable(renderer, {
-        id: "overlay-msg",
-        content: msg,
-        fg: THEME.white,
-        attributes: TextAttributes.BOLD,
-      }));
+      overlay.add(
+        new TextRenderable(renderer, {
+          id: "overlay-msg",
+          content: msg,
+          fg: THEME.white,
+          attributes: TextAttributes.BOLD,
+        })
+      );
 
       if (subMsg) {
-        overlay.add(new TextRenderable(renderer, {
-          id: "overlay-sub",
-          content: subMsg,
-          fg: THEME.dim,
-        }));
+        overlay.add(
+          new TextRenderable(renderer, {
+            id: "overlay-sub",
+            content: subMsg,
+            fg: THEME.dim,
+          })
+        );
       }
 
       board.add(overlay);

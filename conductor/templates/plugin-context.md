@@ -14,30 +14,35 @@
 This plugin provides the following components:
 
 ### Agents
+
 - **[Agent Name]** (`agents/<name>.md`) - Role/persona description
   - **Purpose**: What this agent does
   - **Triggers**: When it activates
   - **Capabilities**: What it can do
 
 ### Commands
+
 - **[Command Name]** (`commands/<name>.toml`) - Command description
   - **Usage**: How to invoke
   - **Parameters**: Expected inputs
   - **Examples**: Usage examples
 
 ### Skills
+
 - **[Skill Name]** (`skills/<name>/SKILL.md`) - Skill description
   - **Expertise**: What domain this skill covers
   - **Triggers**: When to use this skill (1-5 triggers)
   - **Guidelines**: How to perform the skill
 
 ### Tools
+
 - **[Tool Name]** (`tools/<name>` or `scripts/<name>`) - Tool description
   - **Interface**: How it's invoked (CLI, MCP, etc.)
   - **Inputs/Outputs**: Expected data format
   - **Dependencies**: External requirements
 
 ### Hooks
+
 - **[Hook Name]** (`hooks/<name>.json`) - Event-driven script
   - **Event**: When it triggers (BeforeAgent, AfterModel, etc.)
   - **Action**: What it does
@@ -46,26 +51,30 @@ This plugin provides the following components:
 ## Usage
 
 ### Getting Started
+
 1. Step one
 2. Step two
 3. Step three
 
 ### Configuration
+
 ```jsonc
 {
   // Example configuration
-  "setting": "value"
+  "setting": "value",
 }
 ```
 
 ### Examples
 
 #### Example 1: Basic Usage
+
 ```
 # Show how to use the plugin in a simple scenario
 ```
 
 #### Example 2: Advanced Usage
+
 ```
 # Show more complex usage patterns
 ```
@@ -73,11 +82,13 @@ This plugin provides the following components:
 ## Integration Points
 
 ### External Services
+
 - **Service Name**: How this plugin integrates
 - **API Endpoints**: What APIs it calls
 - **Authentication**: How it authenticates
 
 ### Internal Systems
+
 - **Database**: What tables/collections it uses
 - **tRPC Routers**: What API endpoints it exposes
 - **Frontend**: What UI components it provides
@@ -85,6 +96,7 @@ This plugin provides the following components:
 ## Testing
 
 ### Test Structure
+
 ```
 tests/
 ├── unit/          # Unit tests for isolated functions
@@ -94,6 +106,7 @@ tests/
 ```
 
 ### Running Tests
+
 ```bash
 # Command to run tests
 npm test
@@ -106,17 +119,20 @@ npm run test:e2e
 ```
 
 ### Coverage
+
 - **Required Coverage**: ≥80%
 - **Current Coverage**: XX%
 
 ## Troubleshooting
 
 ### Common Issues
+
 1. **Issue**: Description
    - **Cause**: What causes it
    - **Solution**: How to fix it
 
 ### Debug Mode
+
 ```bash
 # How to enable debug logging
 ```
@@ -124,6 +140,7 @@ npm run test:e2e
 ## Changelog
 
 ### Version 0.1.0 (YYYY-MM-DD)
+
 - Initial release
 - Feature A
 - Feature B

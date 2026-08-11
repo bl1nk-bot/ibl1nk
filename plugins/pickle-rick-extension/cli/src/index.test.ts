@@ -2,16 +2,20 @@ import { expect, test, describe, mock } from "bun:test";
 
 mock.module("commander", () => ({
   program: {
-    name: mock(() => ({ description: mock(() => ({ version: mock(() => ({ 
-      action: mock(() => ({ parse: mock(() => {}) })) 
-    })) })) })),
+    name: mock(() => ({
+      description: mock(() => ({
+        version: mock(() => ({
+          action: mock(() => ({ parse: mock(() => {}) })),
+        })),
+      })),
+    })),
     command: mock(() => ({
       description: mock(() => ({
-        action: mock(() => {})
-      }))
+        action: mock(() => {}),
+      })),
     })),
-    parse: mock(() => {})
-  }
+    parse: mock(() => {}),
+  },
 }));
 
 import "./index.js";

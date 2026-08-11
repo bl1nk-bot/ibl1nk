@@ -1,5 +1,9 @@
 import { mock, expect, test, describe, beforeEach } from "bun:test";
-import { createMockRenderer, createMockSession, type MockRenderer } from "./test-utils.ts";
+import {
+  createMockRenderer,
+  createMockSession,
+  type MockRenderer,
+} from "./test-utils.ts";
 import type { CliRenderer } from "@opentui/core";
 
 const mockDashboardDialog = {
@@ -13,8 +17,10 @@ const mockDashboardDialog = {
 
 mock.module("./DashboardDialog.js", () => ({
   DashboardDialog: class {
-    constructor() { return mockDashboardDialog; }
-  }
+    constructor() {
+      return mockDashboardDialog;
+    }
+  },
 }));
 
 describe("DialogSidebar", () => {
@@ -32,20 +38,20 @@ describe("DialogSidebar", () => {
   test("should delegate to DashboardDialog", async () => {
     const { DialogSidebar } = await import("./DialogSidebar.ts");
     const ds = new DialogSidebar(mockRenderer as unknown as CliRenderer);
-    
+
     const mockSession = createMockSession({ id: "test" });
     ds.update(mockSession);
-    
+
     expect(mockDashboardDialog.update).toHaveBeenCalledWith(mockSession);
   });
 
   test("should handle show/hide", async () => {
     const { DialogSidebar } = await import("./DialogSidebar.ts");
     const ds = new DialogSidebar(mockRenderer as unknown as CliRenderer);
-    
+
     ds.show();
     expect(mockDashboardDialog.show).toHaveBeenCalled();
-    
+
     ds.hide();
     expect(mockDashboardDialog.hide).toHaveBeenCalled();
   });
@@ -53,7 +59,7 @@ describe("DialogSidebar", () => {
   test("should check isOpen", async () => {
     const { DialogSidebar } = await import("./DialogSidebar.ts");
     const ds = new DialogSidebar(mockRenderer as unknown as CliRenderer);
-    
+
     mockDashboardDialog.isOpen.mockReturnValue(true);
     expect(ds.isOpen()).toBe(true);
   });

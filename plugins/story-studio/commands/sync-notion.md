@@ -12,6 +12,7 @@
 ```
 
 ### Parameters (ทั้งหมด optional)
+
 - `--mode push` — ส่งข้อมูลจาก context.json → Notion (default)
 - `--mode pull` — ดึงข้อมูลจาก Notion → context.json
 - `--target <database>` — sync เฉพาะ database (episodes / characters / plot_points / marketing_assets)
@@ -19,6 +20,7 @@
 ## ข้อมูลที่ต้องการ
 
 ก่อนใช้คำสั่งนี้ ผู้ใช้ต้องมี:
+
 - **Notion Integration Token** — จาก https://www.notion.so/my-integrations
 - **Database IDs** — ทั้ง 4 databases (กรอกใน `notion-schema.json`)
 

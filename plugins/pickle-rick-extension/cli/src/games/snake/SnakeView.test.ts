@@ -13,7 +13,7 @@ describe("SnakeView", () => {
   test("should launch snake", () => {
     const onExit = mock(() => {});
     const options = {};
-    // This will probably fail if it tries to run the game loop, 
+    // This will probably fail if it tries to run the game loop,
     // but we can at least check it doesn't crash on init
     try {
       launchSnake(mockRenderer, onExit, options);

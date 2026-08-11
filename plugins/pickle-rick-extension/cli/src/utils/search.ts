@@ -16,10 +16,10 @@ export function fuzzyScore(text: string, query: string): number {
   if (!query) return 1;
   const target = text.toLowerCase();
   const pattern = query.toLowerCase();
-  
+
   let score = 0;
   let queryIdx = 0;
-  
+
   // Check for exact substring match first (highest priority)
   if (target.includes(pattern)) {
     score += 100;
@@ -35,7 +35,12 @@ export function fuzzyScore(text: string, query: string): number {
       queryIdx++;
       if (queryIdx === 1) {
         // Bonus for matching first char at start of segment
-        if (i === 0 || target[i-1] === "/" || target[i-1] === "_" || target[i-1] === "-") {
+        if (
+          i === 0 ||
+          target[i - 1] === "/" ||
+          target[i - 1] === "_" ||
+          target[i - 1] === "-"
+        ) {
           score += 10;
         }
       }
@@ -54,9 +59,13 @@ export async function recursiveSearch(
   query: string,
   options: SearchOptions = {}
 ): Promise<SearchResult> {
-  const { limit = 20000, timeoutMs = 250, ignore = ["node_modules", ".git", "dist", ".DS_Store"] } = options;
+  const {
+    limit = 20000,
+    timeoutMs = 250,
+    ignore = ["node_modules", ".git", "dist", ".DS_Store"],
+  } = options;
   const start = Date.now();
-  const results: { path: string, score: number }[] = [];
+  const results: { path: string; score: number }[] = [];
   let fileCount = 0;
   let truncated = false;
 

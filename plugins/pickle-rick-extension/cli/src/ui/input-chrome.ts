@@ -6,7 +6,10 @@ import {
   KeyEvent,
 } from "@opentui/core";
 import { createMultiGradientText, capitalizeProvider } from "../utils/index.js";
-import { getConfiguredProvider, getConfiguredModel } from "../services/providers/index.js";
+import {
+  getConfiguredProvider,
+  getConfiguredModel,
+} from "../services/providers/index.js";
 import { THEME } from "./theme.js";
 
 const DOUBLE_TAP_THRESHOLD = 1000; // ms
@@ -15,7 +18,9 @@ const DOUBLE_TAP_THRESHOLD = 1000; // ms
  * Builds a vertical decorative bar string of the specified height
  * Accepts number or percentage string (percentage strings default to 5)
  */
-export function buildVerticalBar(height: number | `${number}%` | undefined): string {
+export function buildVerticalBar(
+  height: number | `${number}%` | undefined
+): string {
   const h = typeof height === "number" ? height : 5;
   if (h <= 0) return "";
   return Array.from({ length: h }, () => "┃").join("\n");

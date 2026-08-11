@@ -1,15 +1,25 @@
-import { RGBA, StyledText, type TextChunk, parseColor, rgbToHex } from "@opentui/core";
+import {
+  RGBA,
+  StyledText,
+  type TextChunk,
+  parseColor,
+  rgbToHex,
+} from "@opentui/core";
 
 export function lerpColor(c1: RGBA, c2: RGBA, t: number): RGBA {
   return RGBA.fromValues(
     c1.r + (c2.r - c1.r) * t,
     c1.g + (c2.g - c1.g) * t,
     c1.b + (c2.b - c1.b) * t,
-    c1.a + (c2.a - c1.a) * t,
+    c1.a + (c2.a - c1.a) * t
   );
 }
 
-export function lerpColorHex(color1: string, color2: string, factor: number): string {
+export function lerpColorHex(
+  color1: string,
+  color2: string,
+  factor: number
+): string {
   const c1 = parseColor(color1);
   const c2 = parseColor(color2);
   const r = c1.r + (c2.r - c1.r) * factor;
@@ -19,7 +29,11 @@ export function lerpColorHex(color1: string, color2: string, factor: number): st
   return rgbToHex(RGBA.fromValues(r, g, b, a));
 }
 
-export function createGradientText(text: string, startColor: RGBA, endColor: RGBA): StyledText {
+export function createGradientText(
+  text: string,
+  startColor: RGBA,
+  endColor: RGBA
+): StyledText {
   return createMultiGradientText(text, [startColor, endColor]);
 }
 
@@ -28,7 +42,10 @@ export function createGradientText(text: string, startColor: RGBA, endColor: RGB
  * @param text The text to stylize.
  * @param colors An array of RGBA colors acting as stops.
  */
-export function createMultiGradientText(text: string, colors: RGBA[]): StyledText {
+export function createMultiGradientText(
+  text: string,
+  colors: RGBA[]
+): StyledText {
   if (text.length === 0 || colors.length === 0) {
     return new StyledText([]);
   }
@@ -91,5 +108,8 @@ export function capitalizeProvider(name: string): string {
     droid: "Droid",
     copilot: "Copilot",
   };
-  return specialCases[name.toLowerCase()] || name.charAt(0).toUpperCase() + name.slice(1);
+  return (
+    specialCases[name.toLowerCase()] ||
+    name.charAt(0).toUpperCase() + name.slice(1)
+  );
 }

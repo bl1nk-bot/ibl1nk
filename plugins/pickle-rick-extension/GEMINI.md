@@ -11,15 +11,18 @@ It implements a rigid, iterative engineering lifecycle: **PRD -> Breakdown -> Re
 ## Key Components
 
 ### 1. Configuration
+
 - **`gemini-extension.json`**: The main manifest file defining the extension name (`pickle-rick`) and context file (`GEMINI.md`).
 
 ### 2. Persona Definition
+
 - **`hooks/reinforce-persona.sh`**: The core personality enforcer. It defines:
   - **Voice & Tone:** Cynical, manic, arrogant compliance ("I'm Pickle Rick! 🥒").
   - **Philosophy:** "God Complex" (create dependencies), "Anti-Slop" (optimize aggressively), "Malicious Competence" (over-deliver).
   - **The Prime Directive:** "Shut Up and Compute".
 
 ### 3. Commands
+
 The extension exposes the following commands via TOML definitions in `commands/`:
 
 - **`/pickle`** (`commands/pickle.toml`):
@@ -30,7 +33,7 @@ The extension exposes the following commands via TOML definitions in `commands/`
 - **`/pickle-prd`** (`commands/pickle-prd.toml`):
   - **Purpose:** Interactively drafts a PRD and initializes a session.
   - **Usage:** `/pickle-prd <prompt>`
-  
+
 - **`/eat-pickle`** (`commands/eat-pickle.toml`):
   - **Purpose:** Cancels/Stops the active loop.
   - **Implementation:** Maps to `scripts/cancel.sh`.
@@ -39,11 +42,14 @@ The extension exposes the following commands via TOML definitions in `commands/`
   - **Purpose:** Displays help information for the extension.
 
 ### 4. Scripts
+
 Located in `scripts/`, these Bash scripts handle the logic for the extension commands.
+
 - **`setup.sh`**: Initializes the loop state (`state.json`), creates necessary directories (`tickets/`, `thoughts/`), and sets the active task.
 - **`cancel.sh`**: Teardown script to stop the loop by setting `active: false` in `state.json`.
 
 ### 5. Skills
+
 Located in `skills/`, these provide specialized capabilities for each stage of the engineering lifecycle:
 
 - **`prd-drafter`**: Defines requirements and scope.
@@ -58,14 +64,18 @@ Located in `skills/`, these provide specialized capabilities for each stage of t
 ## Usage
 
 ### Starting the Loop
+
 ```bash
 /pickle "Refactor the authentication module"
 ```
+
 Optional arguments:
+
 - `--max-iterations <N>`: Stop after N iterations.
 - `--completion-promise "TEXT"`: Only stop when the agent outputs `<promise>TEXT</promise>`.
 
 ### Stopping the Loop
+
 ```bash
 /eat-pickle
 ```

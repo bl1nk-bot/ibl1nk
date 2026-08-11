@@ -37,16 +37,16 @@ plugins/<plugin-name>/
 ```jsonc
 {
   // Required fields
-  "name": "plugin-name",           // Unique plugin identifier (kebab-case)
-  "version": "0.1.0",              // Semantic version
+  "name": "plugin-name", // Unique plugin identifier (kebab-case)
+  "version": "0.1.0", // Semantic version
   "description": "Short description of what this plugin does",
-  
+
   // Required - context file
-  "contextFile": "CONTEXT.md",     // Name of machine-readable context file
-  
+  "contextFile": "CONTEXT.md", // Name of machine-readable context file
+
   // Optional - display name
-  "displayName": "Plugin Name",    // Human-readable name
-  
+  "displayName": "Plugin Name", // Human-readable name
+
   // Components - paths are relative to plugin directory
   "components": {
     "agents": ["agents/*.md"],
@@ -54,27 +54,29 @@ plugins/<plugin-name>/
     "skills": ["skills/*/SKILL.md"],
     "tools": ["tools/*"],
     "hooks": ["hooks/*.json"],
-    "themes": ["themes/*"]
+    "themes": ["themes/*"],
   },
-  
+
   // Optional - dependencies
   "dependencies": [],
-  
+
   // Optional - required environment variables
   "env": {
     "required": [],
-    "optional": []
-  }
+    "optional": [],
+  },
 }
 ```
 
 ## Context File Standard
 
 ### Naming
+
 - ใช้ `<PLUGIN>.md` หรือ `CONTEXT.md`
 - ตัวอย่าง: `AGENT-BROWSER.md`, `PICKLE-RICK.md`, `CONTEXT.md`
 
 ### Format
+
 ใช้ Markdown with YAML frontmatter:
 
 ```markdown
@@ -87,18 +89,23 @@ description: Short description
 # Plugin Name
 
 ## Overview
+
 Brief description of plugin purpose
 
 ## Components
+
 List of available components (agents, commands, skills, tools, hooks)
 
 ## Usage
+
 How to use the plugin and its components
 
 ## Configuration
+
 Required and optional configuration
 
 ## Examples
+
 Usage examples
 ```
 
@@ -109,6 +116,7 @@ Usage examples
 ไฟล์กำหนดบทบาท/อาชีพของ AI agent
 
 **Required Frontmatter:**
+
 ```yaml
 ---
 name: agent-name
@@ -117,6 +125,7 @@ description: What this agent does
 ```
 
 **Content:**
+
 - Role definition
 - Capabilities
 - Workflow instructions
@@ -127,6 +136,7 @@ description: What this agent does
 ไฟล์กำหนดคำสั่งอัตโนมัติ
 
 **TOML Format:**
+
 ```toml
 description = "What this command does"
 prompt = """
@@ -135,6 +145,7 @@ Instructions for the AI to execute
 ```
 
 **Markdown Format:**
+
 ```markdown
 ---
 name: command-name
@@ -151,6 +162,7 @@ Instructions for execution...
 ไฟล์กำหนดความเชี่ยวชาญเฉพาะทาง
 
 **Required Frontmatter:**
+
 ```markdown
 ---
 name: skill-name
@@ -159,6 +171,7 @@ description: What this skill does
 ```
 
 **Content:**
+
 - Skill description
 - When to use (triggers)
 - How to use (instructions)
@@ -169,6 +182,7 @@ description: What this skill does
 ไฟล์ script หรือ executable ที่ใช้ทำงานอัตโนมัติ
 
 **Requirements:**
+
 - ต้อง executable หรือเรียกผ่าน interpreter ได้
 - ควรมี usage documentation ใน README.md หรือ tools/README.md
 - รองรับ stdin/stdout หรือ JSON-RPC interface
@@ -178,6 +192,7 @@ description: What this skill does
 Event-driven scripts ที่ทำงานตามเหตุการณ์
 
 **hooks.json Structure:**
+
 ```json
 {
   "hooks": {
@@ -201,6 +216,7 @@ Event-driven scripts ที่ทำงานตามเหตุการณ�
 ```
 
 **Supported Events:**
+
 - `BeforeAgent` - ก่อน agent เริ่มทำงาน
 - `BeforeModel` - ก่อน model inference
 - `AfterAgent` - หลัง agent เสร็จงาน
@@ -216,6 +232,7 @@ UI theme definitions
 ทุก path ใน `bl1nk.jsonc` เป็น **relative to plugin directory**
 
 **Example:**
+
 ```
 plugins/my-plugin/
 ├── bl1nk.jsonc          # name: "my-plugin"
@@ -236,6 +253,7 @@ command = "python ${pluginPath}/scripts/hook.py"
 ```
 
 **Supported Variables:**
+
 - `${pluginPath}` - Absolute path to plugin directory
 - `${pluginName}` - Plugin name from bl1nk.jsonc
 - Environment variables จาก system (e.g., `$HOME`, `$PATH`)
@@ -243,17 +261,20 @@ command = "python ${pluginPath}/scripts/hook.py"
 ## Validation Rules
 
 ### Required
+
 1. `bl1nk.jsonc` ต้องมี
 2. Context file ต้องมี
 3. `name` ใน bl1nk.jsonc ต้องตรงกับ directory name (kebab-case)
 4. `version` ต้องเป็น semver
 
 ### Optional
+
 1. Components directories มีเฉพาะที่มี components จริง
 2. README.md มีสำหรับ human docs
 3. Tests มีสำหรับ quality assurance
 
 ### Forbidden
+
 1. ห้ามใช้ absolute paths ใน bl1nk.jsonc
 2. ห้ามใช้ `..` เพื่อ escape plugin directory
 3. ห้าม reference files นอก plugin directory
@@ -261,16 +282,19 @@ command = "python ${pluginPath}/scripts/hook.py"
 ## Migration Notes
 
 ### From gemini-extension.json
+
 - ย้าย `name`, `version` ไป bl1nk.jsonc
 - ย้าย `contextFileName` ไป `contextFile` ใน bl1nk.jsonc
 - เก็บ gemini-extension.json ไว้ชั่วคราวถ้ายังต้องการ backward compatibility
 
 ### From SKILL.md (root-level)
+
 - SKILL.md ที่ root เป็น skill เดียวของ plugin
 - ย้ายไป `skills/<plugin-name>/SKILL.md` ถ้ามี components อื่นด้วย
 - หรือเก็บไว้ที่ root ถ้าเป็น single-skill plugin
 
 ### From .claude-plugin/
+
 - ย้าย config ไป bl1nk.jsonc
 - ลบ .claude-plugin/ directory
 
@@ -288,6 +312,7 @@ command = "python ${pluginPath}/scripts/hook.py"
 ## Examples
 
 ### Minimal Plugin
+
 ```
 plugins/minimal/
 ├── bl1nk.jsonc
@@ -295,16 +320,18 @@ plugins/minimal/
 ```
 
 **bl1nk.jsonc:**
+
 ```jsonc
 {
   "name": "minimal",
   "version": "1.0.0",
   "description": "A minimal plugin",
-  "contextFile": "CONTEXT.md"
+  "contextFile": "CONTEXT.md",
 }
 ```
 
 ### Full Plugin
+
 ```
 plugins/full-plugin/
 ├── bl1nk.jsonc

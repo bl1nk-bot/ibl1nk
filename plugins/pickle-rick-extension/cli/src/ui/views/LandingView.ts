@@ -11,8 +11,16 @@ import { THEME } from "../theme.js";
 import { setupFilePicker, FilePickerState } from "../file-picker-utils.js";
 import { getCurrentBranch } from "../../services/git/branch.js";
 import { isGameboyActive } from "../../games/gameboy/GameboyView.js";
-import { MultiLineInputRenderable, MultiLineInputEvents } from "../components/MultiLineInput.js";
-import { buildVerticalBar, createInputContainerMouseHandler, createProviderMetadataRow, createCtrlCExitHandler } from "../input-chrome.js";
+import {
+  MultiLineInputRenderable,
+  MultiLineInputEvents,
+} from "../components/MultiLineInput.js";
+import {
+  buildVerticalBar,
+  createInputContainerMouseHandler,
+  createProviderMetadataRow,
+  createCtrlCExitHandler,
+} from "../input-chrome.js";
 
 /**
  * Creates the landing view for the Pickle Rick CLI.
@@ -80,7 +88,8 @@ export async function createLandingView(
   const input = new MultiLineInputRenderable(renderer, {
     id: "landing-input",
     flexGrow: 1,
-    placeholder: "I turned myself into a TUI, Morty! *Belch* Ask me anything...",
+    placeholder:
+      "I turned myself into a TUI, Morty! *Belch* Ask me anything...",
     textColor: THEME.text,
     focusedTextColor: THEME.text,
     minHeight: 1,
@@ -97,11 +106,17 @@ export async function createLandingView(
 
   const { row: metadataRow } = createProviderMetadataRow(renderer, "landing");
 
-  inputContainer.add(new BoxRenderable(renderer, { id: "landing-spacer1", height: 1 }));
+  inputContainer.add(
+    new BoxRenderable(renderer, { id: "landing-spacer1", height: 1 })
+  );
   inputContainer.add(inputRow);
-  inputContainer.add(new BoxRenderable(renderer, { id: "landing-spacer2", height: 1 }));
+  inputContainer.add(
+    new BoxRenderable(renderer, { id: "landing-spacer2", height: 1 })
+  );
   inputContainer.add(metadataRow);
-  inputContainer.add(new BoxRenderable(renderer, { id: "landing-spacer3", height: 1 }));
+  inputContainer.add(
+    new BoxRenderable(renderer, { id: "landing-spacer3", height: 1 })
+  );
 
   // Bottom footer bar with cwd and version
   const footerBar = new BoxRenderable(renderer, {
@@ -132,7 +147,7 @@ export async function createLandingView(
   footerBar.add(footerVersion);
 
   // Fetch branch asynchronously
-  getCurrentBranch().then((branch) => {
+  getCurrentBranch().then(branch => {
     if (branch) {
       footerCwd.content = `${cwd}:${branch}`;
       renderer.requestRender();
@@ -164,12 +179,18 @@ export async function createLandingView(
   });
   footerHints.add(hintsText);
 
-  inputContainer.onMouse = createInputContainerMouseHandler(inputContainer, input);
+  inputContainer.onMouse = createInputContainerMouseHandler(
+    inputContainer,
+    input
+  );
 
   const pickerState: FilePickerState = { activePicker: null };
 
   input.on(MultiLineInputEvents.INPUT, (value: string) => {
-    const minHeight = typeof inputContainer.minHeight === "number" ? inputContainer.minHeight : 5;
+    const minHeight =
+      typeof inputContainer.minHeight === "number"
+        ? inputContainer.minHeight
+        : 5;
     const inputHeight = typeof input.height === "number" ? input.height : 1;
     const nextHeight = Math.max(minHeight, inputHeight + INPUT_CHROME_LINES);
     if (inputContainer.height !== nextHeight) {
@@ -180,7 +201,8 @@ export async function createLandingView(
   });
 
   input.on(MultiLineInputEvents.SUBMIT, (value: string) => {
-    if (pickerState.activePicker || pickerState.justClosed || isGameboyActive()) return;
+    if (pickerState.activePicker || pickerState.justClosed || isGameboyActive())
+      return;
     onEnter(value, mode);
   });
 
@@ -188,7 +210,8 @@ export async function createLandingView(
     renderer,
     hintText: hintsText,
     originalContent: "ctrl+c exit",
-    shouldSkip: () => !root.visible || !!pickerState.activePicker || isGameboyActive(),
+    shouldSkip: () =>
+      !root.visible || !!pickerState.activePicker || isGameboyActive(),
   });
 
   renderer.keyInput.on("keypress", (key: KeyEvent) => {

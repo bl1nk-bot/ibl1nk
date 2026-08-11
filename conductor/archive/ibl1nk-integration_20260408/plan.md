@@ -1,15 +1,17 @@
 # Implementation Plan: ibl1nk Integration
 
 ## Phase 1: Project Rename & Cleanup
+
 <<<<<<< HEAD:conductor/archive/ibl1nk-integration_20260408/plan.md
+
 - [x] Task: Rename Project to `ibl1nk`
-    - [x] Update `package.json` and `pnpm-lock.yaml`
-    - [x] Update `vite.config.ts` and `vitest.config.ts`
-    - [x] Search and replace `claude-writer` with `ibl1nk` in imports, comments, and strings
+  - [x] Update `package.json` and `pnpm-lock.yaml`
+  - [x] Update `vite.config.ts` and `vitest.config.ts`
+  - [x] Search and replace `claude-writer` with `ibl1nk` in imports, comments, and strings
 - [x] Task: Remove Firebase Dependencies
-    - [x] Uninstall `firebase`, `firebase-admin`, and related packages
-    - [x] Remove all Firebase configuration files and imports from the codebase
-=======
+  - [x] Uninstall `firebase`, `firebase-admin`, and related packages
+  - [x] Remove all Firebase configuration files and imports from the codebase
+        \=======
 
 - [ ] Task: Rename Project to `ibl1nk`
   - [ ] Update `package.json` and `pnpm-lock.yaml`
@@ -18,7 +20,9 @@
 - [ ] Task: Remove Firebase Dependencies
   - [ ] Uninstall `firebase`, `firebase-admin`, and related packages
   - [ ] Remove all Firebase configuration files and imports from the codebase
->>>>>>> bolt-dom-reuse-opt-15838323242688533797:conductor/tracks/ibl1nk-integration_20260408/plan.md
+
+> > > > > > > bolt-dom-reuse-opt-15838323242688533797:conductor/tracks/ibl1nk-integration_20260408/plan.md
+
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Rename & Cleanup' (Protocol in workflow.md)
 
 ## Phase 2: Database Schema & Backend Routers
@@ -59,4 +63,5 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Frontend Integration & NoteTaskApp Migration' (Protocol in workflow.md)
 
 ## Phase: Review Fixes
+
 - [x] Task: Apply review suggestions a753a2e

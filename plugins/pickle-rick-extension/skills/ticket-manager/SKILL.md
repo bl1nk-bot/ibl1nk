@@ -100,9 +100,11 @@ assignee: [User Name]
 # Description
 
 ## Problem to solve
+
 [Clear statement of the user problem or need]
 
 ## Solution
+
 [Proposed approach or solution outline]
 
 # Discussion/Comments
@@ -172,7 +174,7 @@ assignee: [User Name]
    - Should we include more/less implementation detail?
 
    **CRITICAL RULE**: If the user asks for a ticket and only gives implementation details,
-   you MUST ask: *"To write a good ticket, please explain the problem you're trying to solve from a user perspective"*.
+   you MUST ask: _"To write a good ticket, please explain the problem you're trying to solve from a user perspective"_.
 
    Note: Ticket will be created in "Triage" status by default.
 
@@ -224,23 +226,23 @@ When tasked with breaking down a PRD or large task:
 1.  **Identify Session Root**: Execute `run_shell_command("~/.gemini/extensions/pickle-rick/scripts/get_session.sh")`.
 
 2.  **Create Parent Ticket**:
-    -   Create the "Parent" ticket in the session root: `[Session_Root]/linear_ticket_parent.md`.
-    -   Status: "Backlog" or "Research Needed".
-    -   Title: "[Epic] [Feature Name]".
-    -   Links: Add link to PRD.
+    - Create the "Parent" ticket in the session root: `[Session_Root]/linear_ticket_parent.md`.
+    - Status: "Backlog" or "Research Needed".
+    - Title: "[Epic] [Feature Name]".
+    - Links: Add link to PRD.
 
 3.  **Create Child Tickets**:
-    -   Break the PRD into atomic implementation tasks (e.g., "Research", "Backend API", "Frontend UI", "Integration").
-    -   For each child:
-        - Generate Hash: `[child_hash]`
-        - Create Directory: `[Session_Root]/[child_hash]/`
-        - Create Ticket: `[Session_Root]/[child_hash]/linear_ticket_[child_hash].md`
-    -   **Linkage**: In the `links` section of each child ticket, add:
-        ```yaml
-        links:
-          - url: ../linear_ticket_parent.md
-            title: Parent Ticket
-        ```
+    - Break the PRD into atomic implementation tasks (e.g., "Research", "Backend API", "Frontend UI", "Integration").
+    - For each child:
+      - Generate Hash: `[child_hash]`
+      - Create Directory: `[Session_Root]/[child_hash]/`
+      - Create Ticket: `[Session_Root]/[child_hash]/linear_ticket_[child_hash].md`
+    - **Linkage**: In the `links` section of each child ticket, add:
+      ```yaml
+      links:
+        - url: ../linear_ticket_parent.md
+          title: Parent Ticket
+      ```
 
 4.  **Confirm**: List the created tickets to the user.
 
@@ -316,7 +318,9 @@ Remember: The goal is to help a future reader (including yourself) quickly
 understand what matters about this update.
 
 ## Next Step
+
 **Start the Loop**:
+
 1. List all created child tickets in `[Session_Root]`.
 2. Select the highest priority ticket that is **NOT** 'Done'.
 3. Call `activate_skill("code-researcher")` for that ticket.

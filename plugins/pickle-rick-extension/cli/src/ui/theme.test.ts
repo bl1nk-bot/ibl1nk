@@ -4,11 +4,21 @@ import { THEME } from "./theme.js";
 describe("UI Theme", () => {
   test("THEME should contain all required palette keys", () => {
     const requiredKeys = [
-      "bg", "surface", "footer", "text", "dim", "accent", 
-      "darkAccent", "blue", "white", "green", "error", 
-      "warning", "orange"
+      "bg",
+      "surface",
+      "footer",
+      "text",
+      "dim",
+      "accent",
+      "darkAccent",
+      "blue",
+      "white",
+      "green",
+      "error",
+      "warning",
+      "orange",
     ];
-    
+
     for (const [key, value] of Object.entries(THEME)) {
       expect(requiredKeys).toContain(key);
       expect(typeof value).toBe("string");

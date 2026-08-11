@@ -26,7 +26,10 @@ class SessionTracker {
   /**
    * Update status/iteration metadata for a tracked session
    */
-  public updateSession(sessionId: string, partial: Partial<TrackedSession>): void {
+  public updateSession(
+    sessionId: string,
+    partial: Partial<TrackedSession>
+  ): void {
     const existing = this.sessions.get(sessionId);
     if (!existing) return;
     this.sessions.set(sessionId, { ...existing, ...partial });

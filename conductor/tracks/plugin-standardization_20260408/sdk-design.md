@@ -81,7 +81,12 @@ class ValidationError extends PluginConfigError {
 
 ```typescript
 // Main entry point
-import { loadPlugin, validateConfig, resolvePaths, substituteEnv } from '@ibl1nk/plugin-sdk';
+import {
+  loadPlugin,
+  validateConfig,
+  resolvePaths,
+  substituteEnv,
+} from "@ibl1nk/plugin-sdk";
 
 // Load and validate plugin config
 async function loadPlugin(pluginDir: string): Promise<ResolvedConfig>;
@@ -90,13 +95,19 @@ async function loadPlugin(pluginDir: string): Promise<ResolvedConfig>;
 function validateConfig(config: Bl1nkConfig): ValidationResult;
 
 // Resolve relative paths to absolute
-function resolvePaths(config: Bl1nkConfig, pluginDir: string): ResolvedConfig['components'];
+function resolvePaths(
+  config: Bl1nkConfig,
+  pluginDir: string
+): ResolvedConfig["components"];
 
 // Substitute environment variables in strings
 function substituteEnv(str: string, extraVars?: Record<string, string>): string;
 
 // Check if required env vars are set
-function checkEnv(config: Bl1nkConfig): { missing: string[]; present: string[] };
+function checkEnv(config: Bl1nkConfig): {
+  missing: string[];
+  present: string[];
+};
 
 // List all plugins in plugins directory
 async function listPlugins(pluginsDir: string): Promise<string[]>;
@@ -110,20 +121,20 @@ async function loadAllPlugins(pluginsDir: string): Promise<ResolvedConfig[]>;
 ### Basic Usage
 
 ```typescript
-import { loadPlugin } from '@ibl1nk/plugin-sdk';
+import { loadPlugin } from "@ibl1nk/plugin-sdk";
 
-const plugin = await loadPlugin('./plugins/agent-browser');
-console.log(plugin.config.name);           // "agent-browser"
-console.log(plugin.contextFilePath);       // "/abs/path/to/CONTEXT.md"
-console.log(plugin.components.skills);     // ["/abs/path/to/skills/*/SKILL.md"]
+const plugin = await loadPlugin("./plugins/agent-browser");
+console.log(plugin.config.name); // "agent-browser"
+console.log(plugin.contextFilePath); // "/abs/path/to/CONTEXT.md"
+console.log(plugin.components.skills); // ["/abs/path/to/skills/*/SKILL.md"]
 ```
 
 ### Validation Only
 
 ```typescript
-import { validateConfig } from '@ibl1nk/plugin-sdk';
+import { validateConfig } from "@ibl1nk/plugin-sdk";
 
-const result = validateConfig({ name: 'test', version: '1.0.0' });
+const result = validateConfig({ name: "test", version: "1.0.0" });
 if (!result.valid) {
   console.error(result.errors);
 }
@@ -132,19 +143,19 @@ if (!result.valid) {
 ### Path Resolution
 
 ```typescript
-import { resolvePaths } from '@ibl1nk/plugin-sdk';
+import { resolvePaths } from "@ibl1nk/plugin-sdk";
 
-const components = resolvePaths(config, '/plugins/my-plugin');
+const components = resolvePaths(config, "/plugins/my-plugin");
 // Returns absolute paths for all component patterns
 ```
 
 ### Environment Variable Substitution
 
 ```typescript
-import { substituteEnv } from '@ibl1nk/plugin-sdk';
+import { substituteEnv } from "@ibl1nk/plugin-sdk";
 
-const cmd = substituteEnv('python ${pluginPath}/scripts/hook.py', {
-  pluginPath: '/plugins/my-plugin'
+const cmd = substituteEnv("python ${pluginPath}/scripts/hook.py", {
+  pluginPath: "/plugins/my-plugin",
 });
 // Returns: "python /plugins/my-plugin/scripts/hook.py"
 ```
@@ -152,41 +163,45 @@ const cmd = substituteEnv('python ${pluginPath}/scripts/hook.py', {
 ### Environment Variable Check
 
 ```typescript
-import { checkEnv } from '@ibl1nk/plugin-sdk';
+import { checkEnv } from "@ibl1nk/plugin-sdk";
 
 const { missing, present } = checkEnv(config);
 if (missing.length > 0) {
-  throw new Error(`Missing env vars: ${missing.join(', ')}`);
+  throw new Error(`Missing env vars: ${missing.join(", ")}`);
 }
 ```
 
 ## Error Handling
 
 ### Config Not Found
+
 ```typescript
 // Throws PluginConfigError
-await loadPlugin('./plugins/nonexistent');
+await loadPlugin("./plugins/nonexistent");
 // Error: "bl1nk.jsonc not found in ./plugins/nonexistent"
 ```
 
 ### Invalid Schema
+
 ```typescript
 // Throws ValidationError
-validateConfig({ name: 'test' }); // missing version, description, contextFile
+validateConfig({ name: "test" }); // missing version, description, contextFile
 // Error: "Invalid config: missing fields: version, description, contextFile"
 ```
 
 ### Path Resolution Failure
+
 ```typescript
 // Throws PathResolutionError
-resolvePaths({ components: { skills: ['nonexistent/*'] } }, '/plugins/test');
+resolvePaths({ components: { skills: ["nonexistent/*"] } }, "/plugins/test");
 // Error: "Path not found: /plugins/test/nonexistent/*"
 ```
 
 ### Missing Environment Variables
+
 ```typescript
 // Returns { missing: ['API_KEY'], present: [] }
-checkEnv({ env: { required: ['API_KEY'] } });
+checkEnv({ env: { required: ["API_KEY"] } });
 ```
 
 ## Implementation Structure

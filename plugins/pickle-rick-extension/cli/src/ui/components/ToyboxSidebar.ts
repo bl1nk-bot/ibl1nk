@@ -10,7 +10,10 @@ import {
 import { THEME } from "../theme.js";
 import { formatDuration } from "../../utils/index.js";
 import { launchSnake } from "../../games/snake/SnakeView.js";
-import { sessionTracker, type TrackedSession } from "../../utils/session-tracker.js";
+import {
+  sessionTracker,
+  type TrackedSession,
+} from "../../utils/session-tracker.js";
 import { loadState } from "../../services/config/state.js";
 
 export class ToyboxSidebar {
@@ -93,10 +96,10 @@ export class ToyboxSidebar {
 
   public async show() {
     if (this.isVisible) return;
-    
+
     this.isVisible = true;
     this.root.visible = true;
-    
+
     // Animate in
     createTimeline().add(this.root, {
       right: 0,
@@ -172,7 +175,7 @@ export class ToyboxSidebar {
     try {
       // Get tracked sessions (created from this UI instance)
       const trackedSessions = sessionTracker.getTrackedSessions();
-      
+
       if (trackedSessions.length === 0) {
         const emptyState = new TextRenderable(this.renderer, {
           id: "empty-sessions",
@@ -187,14 +190,15 @@ export class ToyboxSidebar {
 
       // Get current status for each tracked session
       const sessionsWithStatus = await Promise.all(
-        trackedSessions.map(async (trackedSession) => {
+        trackedSessions.map(async trackedSession => {
           const state = await loadState(trackedSession.sessionDir);
           // Always prefer fresh state from disk over cached status
-          const status = state && state.active && state.step !== "done"
-            ? `${state.step.toUpperCase()} (Iteration ${state.iteration})`
-            : state?.step === "done"
-              ? "Done"
-              : trackedSession.status ?? "Starting...";
+          const status =
+            state && state.active && state.step !== "done"
+              ? `${state.step.toUpperCase()} (Iteration ${state.iteration})`
+              : state?.step === "done"
+                ? "Done"
+                : (trackedSession.status ?? "Starting...");
           const iteration = state?.iteration ?? trackedSession.iteration ?? 0;
 
           return {
@@ -211,7 +215,6 @@ export class ToyboxSidebar {
         const sessionCard = this.createSessionCard(session, i);
         this.content.add(sessionCard);
       }
-
     } catch (error) {
       const errorText = new TextRenderable(this.renderer, {
         id: "error-text",
@@ -224,7 +227,10 @@ export class ToyboxSidebar {
     }
   }
 
-  private createSessionCard(session: TrackedSession & { status: string }, index: number): BoxRenderable {
+  private createSessionCard(
+    session: TrackedSession & { status: string },
+    index: number
+  ): BoxRenderable {
     const shortId = session.id.substring(0, 8);
     const cardId = `${index}-${shortId}`;
 
@@ -251,7 +257,7 @@ export class ToyboxSidebar {
 
     const isActive = session.status.toLowerCase() !== "done";
     const statusColor = isActive ? THEME.green : THEME.accent;
-    
+
     const statusIndicator = new TextRenderable(this.renderer, {
       id: `status-indicator-${cardId}`,
       content: isActive ? "🟢" : "✅",
@@ -263,23 +269,22 @@ export class ToyboxSidebar {
       content: session.status.toUpperCase(),
       fg: statusColor,
       attributes: TextAttributes.BOLD,
-
     });
 
     statusRow.add(statusIndicator);
     statusRow.add(statusText);
 
     // Session prompt (truncated)
-    const promptText = session.prompt.length > 50 
-      ? session.prompt.substring(0, 47) + "..."
-      : session.prompt;
-    
+    const promptText =
+      session.prompt.length > 50
+        ? session.prompt.substring(0, 47) + "..."
+        : session.prompt;
+
     const promptRenderable = new TextRenderable(this.renderer, {
       id: `prompt-${cardId}`,
       content: promptText,
       fg: THEME.text,
       marginBottom: 1,
-
     });
 
     // Session metadata
@@ -291,12 +296,11 @@ export class ToyboxSidebar {
     });
 
     const timeAgo = formatDuration(Date.now() - session.createdAt);
-    
+
     const timeText = new TextRenderable(this.renderer, {
       id: `time-${cardId}`,
       content: `Started ${timeAgo} ago`,
       fg: THEME.dim,
-
     });
 
     const sessionIdText = new TextRenderable(this.renderer, {

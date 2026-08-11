@@ -10,7 +10,7 @@ mock.module("../theme.js", () => ({
     darkAccent: "#003300",
     text: "#ffffff",
     white: "#ffffff",
-  }
+  },
 }));
 
 describe("Dialog", () => {
@@ -22,7 +22,10 @@ describe("Dialog", () => {
 
   test("should initialize with title", async () => {
     const { Dialog } = await import("./Dialog.ts");
-    const dialog = new Dialog(mockRenderer as unknown as CliRenderer, "Test Title");
+    const dialog = new Dialog(
+      mockRenderer as unknown as CliRenderer,
+      "Test Title"
+    );
     expect(dialog).toBeDefined();
     expect(dialog.isOpen()).toBe(false);
     expect(dialog.root).toBeDefined();
@@ -30,7 +33,10 @@ describe("Dialog", () => {
 
   test("should show and hide", async () => {
     const { Dialog } = await import("./Dialog.ts");
-    const dialog = new Dialog(mockRenderer as unknown as CliRenderer, "Test Title");
+    const dialog = new Dialog(
+      mockRenderer as unknown as CliRenderer,
+      "Test Title"
+    );
 
     dialog.show();
     expect(dialog.isOpen()).toBe(true);
@@ -43,7 +49,10 @@ describe("Dialog", () => {
 
   test("should have setOptions method", async () => {
     const { Dialog } = await import("./Dialog.ts");
-    const dialog = new Dialog(mockRenderer as unknown as CliRenderer, "Test Title");
+    const dialog = new Dialog(
+      mockRenderer as unknown as CliRenderer,
+      "Test Title"
+    );
 
     expect(typeof dialog.setOptions).toBe("function");
   });

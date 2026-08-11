@@ -7,7 +7,8 @@ description: |
 globs: "**/*"
 severity: critical
 learned_at: 2026-04-09
-trigger_keywords: ["สร้างไฟล์", "create file", "เขียนไฟล์", "add file", "new file"]
+trigger_keywords:
+  ["สร้างไฟล์", "create file", "เขียนไฟล์", "add file", "new file"]
 ---
 
 ## กฎ

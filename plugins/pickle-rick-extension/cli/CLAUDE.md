@@ -62,6 +62,7 @@ Pickle Rick CLI is an autonomous coding agent orchestrator with a TUI (Terminal 
 ### Task State Machine
 
 The agent progresses through phases:
+
 - **prd**: Draft Product Requirements Document
 - **breakdown**: Create atomic tickets from PRD
 - **research/plan/implement/refactor**: Execute individual tickets
@@ -70,6 +71,7 @@ The agent progresses through phases:
 ### Git Worktree Isolation
 
 Sessions execute in isolated worktrees:
+
 - Created at `.pickle/worktrees/session-<name>/`
 - Project state synced via rsync (excluding `.git`, `.pickle`)
 - Session context mirrored inside worktree for sandbox bypass

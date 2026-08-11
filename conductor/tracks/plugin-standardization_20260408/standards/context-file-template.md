@@ -26,9 +26,11 @@ Context file คือไฟล์ markdown ที่ทำให้ AI agents/m
 ## Project Overview
 
 <Paragraph explaining:
+
 - What problem this plugin solves
 - Main use cases
 - Target users/agents
+
 >
 ```
 
@@ -38,17 +40,19 @@ Context file คือไฟล์ markdown ที่ทำให้ AI agents/m
 ## Key Components
 
 ### 1. <Component Name>
+
 - **Location**: `<path/to/component>`
 - **Purpose**: <What it does>
 - **Usage**: <How to use it>
 
 ### 2. <Component Name>
+
 ...
 ```
 
 ### 4. Usage (Required)
 
-```markdown
+````markdown
 ## Usage
 
 ### Basic Usage
@@ -58,6 +62,7 @@ Context file คือไฟล์ markdown ที่ทำให้ AI agents/m
 ```bash
 <command or example>
 ```
+````
 
 ### Advanced Usage
 
@@ -66,7 +71,8 @@ Context file คือไฟล์ markdown ที่ทำให้ AI agents/m
 ```bash
 <advanced command or workflow>
 ```
-```
+
+````
 
 ### 5. Configuration (If Applicable)
 
@@ -85,17 +91,18 @@ Context file คือไฟล์ markdown ที่ทำให้ AI agents/m
 ```env
 API_KEY=your-api-key-here
 ENDPOINT_URL=https://api.example.com
-```
+````
 
 ### Optional Settings
 
 ```jsonc
 {
-  "timeout": 30000,  // default: 30s
-  "retries": 3       // default: 3
+  "timeout": 30000, // default: 30s
+  "retries": 3, // default: 3
 }
 ```
-```
+
+````
 
 ### 6. Examples (Required)
 
@@ -109,7 +116,7 @@ ENDPOINT_URL=https://api.example.com
 ### Example 2: <Another Use Case>
 
 <Another example>
-```
+````
 
 ## Optional Sections
 
@@ -151,7 +158,7 @@ ENDPOINT_URL=https://api.example.com
 
 ## Complete Template
 
-```markdown
+````markdown
 # <Plugin Name>
 
 <Brief description>
@@ -163,6 +170,7 @@ ENDPOINT_URL=https://api.example.com
 ## Key Components
 
 ### 1. <Component Name>
+
 - **Location**: `<path>`
 - **Purpose**: <What it does>
 - **Usage**: <How to use>
@@ -174,6 +182,7 @@ ENDPOINT_URL=https://api.example.com
 ```bash
 <example>
 ```
+````
 
 ### Advanced Usage
 
@@ -201,6 +210,7 @@ ENDPOINT_URL=https://api.example.com
 ### Good Example: GEMINI.md (pickle-rick-extension)
 
 ✅ มี:
+
 - Project Overview
 - Key Components (Commands, Scripts, Skills)
 - Usage examples
@@ -209,6 +219,7 @@ ENDPOINT_URL=https://api.example.com
 ### Good Example: SKILL.md (agent-browser)
 
 ✅ มี:
+
 - Core workflow
 - Essential commands
 - Common patterns

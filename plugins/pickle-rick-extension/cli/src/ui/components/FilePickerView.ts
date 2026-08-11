@@ -41,7 +41,7 @@ export class FilePickerView extends BoxRenderable {
 
   private renderItems() {
     // Clear existing
-    this.itemRenderables.forEach((r) => this.remove(r.id));
+    this.itemRenderables.forEach(r => this.remove(r.id));
     this.itemRenderables = [];
 
     // Limit to 10 items to match the high-fidelity design
@@ -72,28 +72,32 @@ export class FilePickerView extends BoxRenderable {
     // Add decorative bars like the input box, matching the actual height
     const barHeight = displayItems.length;
     const barContent = "┃\n".repeat(barHeight).trimEnd();
-    
+
     // Remove old bars if they exist
     this.remove("picker-decorative-bar-l");
     this.remove("picker-decorative-bar-r");
 
     if (barHeight > 0) {
-      this.add(new TextRenderable(this.renderer, {
-        id: "picker-decorative-bar-l",
-        content: barContent,
-        fg: THEME.accent,
-        position: "absolute",
-        left: 0,
-        top: 0,
-      }));
-      this.add(new TextRenderable(this.renderer, {
-        id: "picker-decorative-bar-r",
-        content: barContent,
-        fg: THEME.accent,
-        position: "absolute",
-        right: 0,
-        top: 0,
-      }));
+      this.add(
+        new TextRenderable(this.renderer, {
+          id: "picker-decorative-bar-l",
+          content: barContent,
+          fg: THEME.accent,
+          position: "absolute",
+          left: 0,
+          top: 0,
+        })
+      );
+      this.add(
+        new TextRenderable(this.renderer, {
+          id: "picker-decorative-bar-r",
+          content: barContent,
+          fg: THEME.accent,
+          position: "absolute",
+          right: 0,
+          top: 0,
+        })
+      );
     }
   }
 
@@ -104,7 +108,11 @@ export class FilePickerView extends BoxRenderable {
       this.navigate(-1);
     } else if (key.name === "down") {
       this.navigate(1);
-    } else if (key.name === "return" || key.name === "enter" || key.name === "tab") {
+    } else if (
+      key.name === "return" ||
+      key.name === "enter" ||
+      key.name === "tab"
+    ) {
       // Ensure we only select from the items we actually have
       const realIndex = this.selectedIndex;
       if (this.items[realIndex]) {
@@ -127,7 +135,7 @@ export class FilePickerView extends BoxRenderable {
     const oldIndex = this.selectedIndex;
     const maxIndex = Math.min(this.items.length, 10) - 1;
     let newIndex = this.selectedIndex + delta;
-    
+
     if (newIndex < 0) newIndex = maxIndex;
     if (newIndex > maxIndex) newIndex = 0;
 
@@ -143,7 +151,7 @@ export class FilePickerView extends BoxRenderable {
 
     const isSelected = index === this.selectedIndex;
     container.backgroundColor = isSelected ? "#ffcc80" : "transparent";
-    
+
     const text = container.getChildren()[0] as TextRenderable;
     if (text) {
       text.fg = isSelected ? "#050f05" : THEME.text;

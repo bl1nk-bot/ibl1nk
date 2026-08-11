@@ -1,7 +1,7 @@
 import { expect, test, describe, mock } from "bun:test";
 
 mock.module("../execution/worker-executor.js", () => ({
-  runWorker: mock(async () => {})
+  runWorker: mock(async () => {}),
 }));
 
 import { runWorker } from "./worker.js";

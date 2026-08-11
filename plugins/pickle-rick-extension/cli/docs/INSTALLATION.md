@@ -5,6 +5,7 @@
 ### Required
 
 - **[Bun](https://bun.sh/)** v1.0.0 or later - JavaScript runtime
+
   ```bash
   curl -fsSL https://bun.sh/install | bash
   ```
@@ -14,6 +15,7 @@
 ### AI Provider (at least one)
 
 - **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** (default)
+
   ```bash
   npm install -g @anthropic-ai/gemini-cli
   ```
@@ -33,17 +35,20 @@ After installation, the `pickle` command will be available globally.
 ### From Source
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-username/pickle-rick-cli.git
    cd pickle-rick-cli
    ```
 
 2. Install dependencies:
+
    ```bash
    bun install
    ```
 
 3. Link globally (optional):
+
    ```bash
    bun link
    ```
@@ -100,6 +105,7 @@ pickle --help
 ### "command not found: pickle"
 
 If installed via npm, ensure your npm global bin directory is in your PATH:
+
 ```bash
 export PATH="$PATH:$(npm config get prefix)/bin"
 ```
@@ -107,6 +113,7 @@ export PATH="$PATH:$(npm config get prefix)/bin"
 ### Bun not found
 
 Install Bun first:
+
 ```bash
 curl -fsSL https://bun.sh/install | bash
 ```
@@ -116,6 +123,7 @@ Then restart your terminal or source your shell profile.
 ### Permission denied
 
 Make sure the bin.js file is executable:
+
 ```bash
 chmod +x ./bin.js
 ```

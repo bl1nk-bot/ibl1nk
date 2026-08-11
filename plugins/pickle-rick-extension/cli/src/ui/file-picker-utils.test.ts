@@ -4,7 +4,9 @@ import type { InputRenderable, BoxRenderable } from "@opentui/core";
 import type { FilePickerState } from "./file-picker-utils.js";
 
 // Mock search utility
-const mockRecursiveSearch = mock(async () => ({ files: ["test.ts", "other.ts"] }));
+const mockRecursiveSearch = mock(async () => ({
+  files: ["test.ts", "other.ts"],
+}));
 mock.module("../utils/search.js", () => ({
   recursiveSearch: mockRecursiveSearch,
 }));
@@ -20,7 +22,7 @@ describe("File Picker Utils", () => {
 
   beforeEach(() => {
     mockRenderer = createMockRenderer();
-    
+
     mockInput = {
       value: "",
       syntaxStyle: null,
@@ -30,19 +32,24 @@ describe("File Picker Utils", () => {
       on: mock(() => {}),
       deleteCharBackward: mock(() => false),
     } as any;
-    
+
     mockContainer = {
       add: mock(() => {}),
       remove: mock(() => {}),
     } as any;
-    
+
     state = {
       activePicker: null,
     };
   });
 
   test("setupFilePicker should register syntax highlighting and override delete", () => {
-    const cleanup = setupFilePicker(mockRenderer, mockInput, mockContainer, state);
+    const cleanup = setupFilePicker(
+      mockRenderer,
+      mockInput,
+      mockContainer,
+      state
+    );
     expect(mockInput.syntaxStyle).not.toBeNull();
     expect(typeof mockInput.deleteCharBackward).toBe("function");
     cleanup();
@@ -50,18 +57,20 @@ describe("File Picker Utils", () => {
 
   test("should trigger search when @ is typed", async () => {
     setupFilePicker(mockRenderer, mockInput, mockContainer, state);
-    
+
     // @ts-ignore - accessing mock properties
     const inputCalls = mockInput.on.mock.calls;
-    const onInput = inputCalls.find((c: [string, Function]) => c[0] === "input")[1];
-    
+    const onInput = inputCalls.find(
+      (c: [string, Function]) => c[0] === "input"
+    )[1];
+
     await onInput("Checking @");
     expect(mockRecursiveSearch).toHaveBeenCalled();
   });
 
   test("atomic deletion logic", () => {
     setupFilePicker(mockRenderer, mockInput, mockContainer, state);
-    
+
     mockInput.value = "File is @test.ts";
     // Should delete @test.ts atomically
     const deleted = mockInput.deleteCharBackward();

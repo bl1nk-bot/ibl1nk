@@ -1,6 +1,9 @@
 import { ENV } from "../env";
 
-export async function sendTelegramNotification(title: string, content: string): Promise<boolean> {
+export async function sendTelegramNotification(
+  title: string,
+  content: string
+): Promise<boolean> {
   const token = ENV.telegramBotToken;
   const chatId = ENV.telegramChatId;
 
@@ -27,7 +30,9 @@ export async function sendTelegramNotification(title: string, content: string): 
 
     if (!response.ok) {
       const detail = await response.text();
-      console.warn(`[Telegram] Failed to send notification: ${response.status} ${response.statusText} - ${detail}`);
+      console.warn(
+        `[Telegram] Failed to send notification: ${response.status} ${response.statusText} - ${detail}`
+      );
       return false;
     }
 

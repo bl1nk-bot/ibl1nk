@@ -69,10 +69,7 @@
       "type": "object",
       "description": "Environment variable definitions",
       "additionalProperties": {
-        "oneOf": [
-          { "type": "string" },
-          { "type": "null" }
-        ]
+        "oneOf": [{ "type": "string" }, { "type": "null" }]
       }
     },
     "dependencies": {

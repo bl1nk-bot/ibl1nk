@@ -9,6 +9,7 @@
 ## Current State
 
 **Plugins ปัจจุบัน (5 ตัว)**:
+
 1. **agent-browser** - SKILL.md, references/, templates/
 2. **ibl1nk** - SKILL.md, references/, scripts/
 3. **pickle-rick-extension** - gemini-extension.json, GEMINI.md, commands/, hooks/, skills/, scripts/
@@ -17,15 +18,15 @@
 
 ## Plugin Components (ต้องครบถ้วนในแต่ละ plugin)
 
-| Component | Description | Required Fields | Location |
-|-----------|-------------|-----------------|----------|
-| **Agent** | บทบาท/อาชีพ | `name`, `description` | `agents/*.md` |
-| **Command** | คำสั่งอัตโนมัติ | `description` | `commands/*.toml` หรือ `*.md` |
-| **Skill** | ความเชี่ยวชาญ | `name`, `description` (1-5 triggers) | `skills/*/SKILL.md` |
-| **Tool** | Shell/script/MCP | JSON-RPC หรือ stdio interface | `tools/` หรือ `scripts/` |
-| **Hook** | Event-driven scripts | Event trigger config | `hooks/` |
-| **Context** | Machine-readable docs | เหมือน GEMINI.md | `<PLUGIN>.md` |
-| **Theme** | UI customization | Theme config | `themes/` |
+| Component   | Description           | Required Fields                      | Location                      |
+| ----------- | --------------------- | ------------------------------------ | ----------------------------- |
+| **Agent**   | บทบาท/อาชีพ           | `name`, `description`                | `agents/*.md`                 |
+| **Command** | คำสั่งอัตโนมัติ       | `description`                        | `commands/*.toml` หรือ `*.md` |
+| **Skill**   | ความเชี่ยวชาญ         | `name`, `description` (1-5 triggers) | `skills/*/SKILL.md`           |
+| **Tool**    | Shell/script/MCP      | JSON-RPC หรือ stdio interface        | `tools/` หรือ `scripts/`      |
+| **Hook**    | Event-driven scripts  | Event trigger config                 | `hooks/`                      |
+| **Context** | Machine-readable docs | เหมือน GEMINI.md                     | `<PLUGIN>.md`                 |
+| **Theme**   | UI customization      | Theme config                         | `themes/`                     |
 
 ## Standardization Requirements
 
@@ -36,15 +37,15 @@
   "name": "plugin-name",
   "version": "0.1.0",
   "description": "Plugin description",
-  "contextFile": "CONTEXT.md",  // Context file name
+  "contextFile": "CONTEXT.md", // Context file name
   "components": {
     "agents": ["agents/*.md"],
     "commands": ["commands/*.toml"],
     "skills": ["skills/*/SKILL.md"],
     "tools": ["tools/*"],
     "hooks": ["hooks/*.json"],
-    "themes": ["themes/*"]
-  }
+    "themes": ["themes/*"],
+  },
 }
 ```
 

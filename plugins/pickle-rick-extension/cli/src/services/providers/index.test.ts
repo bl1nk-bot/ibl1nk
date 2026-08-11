@@ -9,9 +9,9 @@ mock.module("../config/settings.js", () => ({
   loadSettings: async () => ({
     model: {
       provider: "gemini",
-      model: "gemini-3-flash"
-    }
-  })
+      model: "gemini-3-flash",
+    },
+  }),
 }));
 
 describe("Providers Index", () => {

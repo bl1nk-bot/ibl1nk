@@ -39,6 +39,7 @@ Pickle Rick CLI is an autonomous coding agent orchestrator with a TUI (Terminal 
 ### 1. Entry Point (`src/index.ts`)
 
 CLI commands using Commander.js:
+
 - Default action launches TUI dashboard
 - `pickle` command runs agent with optional prompt or resume
 - `sessions` lists past sessions
@@ -129,7 +130,7 @@ project/
 Output from AI providers is parsed as JSON lines:
 
 ```typescript
-provider.execute(prompt, (chunk) => {
+provider.execute(prompt, chunk => {
   // Real-time streaming callback
   updateSpinner(chunk);
 });
@@ -140,7 +141,7 @@ provider.execute(prompt, (chunk) => {
 TUI spinners update via callbacks:
 
 ```typescript
-const executor = new SequentialExecutor(state, provider, (progress) => {
+const executor = new SequentialExecutor(state, provider, progress => {
   spinner.update(progress.message);
 });
 ```
@@ -157,6 +158,7 @@ state = await loadState(sessionPath);
 ### Completion Detection
 
 Detected via markers in output:
+
 - `<promise>I AM DONE</promise>`
 - `[STOP_TURN]`
 

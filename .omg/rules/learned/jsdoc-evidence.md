@@ -14,6 +14,7 @@ trigger_keywords: ["แก้โค้ด", "แก้ไข", "add JSDoc", "doc
 
 1. ทุก `.ts` file ที่แตะ → เพิ่ม JSDoc header ด้านบนสุด
 2. Format:
+
 ```typescript
 /**
  * @module <module-name>
@@ -23,6 +24,7 @@ trigger_keywords: ["แก้โค้ด", "แก้ไข", "add JSDoc", "doc
  * @status completed | partial | not-started
  */
 ```
+
 3. Function สำคัญ → เพิ่ม `@param`, `@returns`, `@throws`
 4. ยังไม่ได้ทำ → ใช้ `@todo` แทน `@done`
 

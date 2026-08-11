@@ -24,18 +24,18 @@
 
 All 8 hooks map to exactly one primary lane:
 
-| Hook | Lane | Status |
-|------|------|--------|
-| `session-start` | P0-safety | ✅ |
-| `task-received` | P0-safety | ✅ |
-| `agent-blocked` | P0-safety | ✅ |
-| `task-complete` (parent) | P1-quality | ✅ |
-| `task-complete` (steps 1-2) | P1-quality | ✅ |
-| `task-complete` (steps 3-6) | P2-optimization | ✅ |
-| `agent-finished-early` | P1-quality | ✅ |
-| `loop-stall` | P1-quality | ✅ |
-| `risk-spike` | P1-quality | ✅ |
-| `context-drift` | P2-optimization | ✅ |
+| Hook                        | Lane            | Status |
+| --------------------------- | --------------- | ------ |
+| `session-start`             | P0-safety       | ✅     |
+| `task-received`             | P0-safety       | ✅     |
+| `agent-blocked`             | P0-safety       | ✅     |
+| `task-complete` (parent)    | P1-quality      | ✅     |
+| `task-complete` (steps 1-2) | P1-quality      | ✅     |
+| `task-complete` (steps 3-6) | P2-optimization | ✅     |
+| `agent-finished-early`      | P1-quality      | ✅     |
+| `loop-stall`                | P1-quality      | ✅     |
+| `risk-spike`                | P1-quality      | ✅     |
+| `context-drift`             | P2-optimization | ✅     |
 
 **Note:** `blocker-repeat` is listed in `derived_signals: true` but has no corresponding hook definition.
 
@@ -58,37 +58,37 @@ risk-spike ──→ calculate + warn ──→ suggest review (debounce 10s)
 
 ### 3. Ordering Determinism & Idempotency ✅
 
-| Hook | Order Deterministic? | Idempotency Key? |
-|------|---------------------|------------------|
-| `session-start` | ✅ Yes (fires once per session) | ✅ `session-${sessionId}` |
-| `task-received` | ✅ Yes (per task) | ✅ `task-${sessionId}-${taskHash}` |
-| `task-complete` | ✅ Yes (explicit steps 1-6) | N/A (sequential pipeline) |
-| `agent-blocked` | ✅ Yes (single trigger) | ✅ `blocked-${sessionId}-${blockerHash}` |
-| `agent-finished-early` | ✅ Yes (single trigger) | ✅ `early-finish-${sessionId}-${taskHash}` |
-| `context-drift` | ✅ Yes (threshold + debounce) | ✅ `drift-${sessionId}` |
-| `loop-stall` | ✅ Yes (count-based 2x) | ✅ `loop-${sessionId}-${blockerHash}` |
-| `risk-spike` | ✅ Yes (sliding window) | ✅ `risk-${sessionId}` |
+| Hook                   | Order Deterministic?            | Idempotency Key?                           |
+| ---------------------- | ------------------------------- | ------------------------------------------ |
+| `session-start`        | ✅ Yes (fires once per session) | ✅ `session-${sessionId}`                  |
+| `task-received`        | ✅ Yes (per task)               | ✅ `task-${sessionId}-${taskHash}`         |
+| `task-complete`        | ✅ Yes (explicit steps 1-6)     | N/A (sequential pipeline)                  |
+| `agent-blocked`        | ✅ Yes (single trigger)         | ✅ `blocked-${sessionId}-${blockerHash}`   |
+| `agent-finished-early` | ✅ Yes (single trigger)         | ✅ `early-finish-${sessionId}-${taskHash}` |
+| `context-drift`        | ✅ Yes (threshold + debounce)   | ✅ `drift-${sessionId}`                    |
+| `loop-stall`           | ✅ Yes (count-based 2x)         | ✅ `loop-${sessionId}-${blockerHash}`      |
+| `risk-spike`           | ✅ Yes (sliding window)         | ✅ `risk-${sessionId}`                     |
 
 **8/8 hooks have idempotency keys or deterministic ordering.** ✅
 
 ### 4. Timeout & Debounce Budgets ✅
 
-| Lane | Config Timeout | Config Debounce | Hook Timeouts | Within Budget? |
-|------|---------------|-----------------|---------------|----------------|
-| P0-safety | 15,000ms | 0ms | 10s, 10s, 15s | ✅ Yes |
-| P1-quality | 60,000ms | 2,000ms | 220s (pipeline), 20s, 10s, 10s | ⚠️ `task-complete` pipeline 220s > 60s lane budget |
-| P2-optimization | 60,000ms | 5,000ms | 30s+60s+60s+15s=165s, 10s | ⚠️ `task-complete` steps total 165s > 60s lane budget |
+| Lane            | Config Timeout | Config Debounce | Hook Timeouts                  | Within Budget?                                        |
+| --------------- | -------------- | --------------- | ------------------------------ | ----------------------------------------------------- |
+| P0-safety       | 15,000ms       | 0ms             | 10s, 10s, 15s                  | ✅ Yes                                                |
+| P1-quality      | 60,000ms       | 2,000ms         | 220s (pipeline), 20s, 10s, 10s | ⚠️ `task-complete` pipeline 220s > 60s lane budget    |
+| P2-optimization | 60,000ms       | 5,000ms         | 30s+60s+60s+15s=165s, 10s      | ⚠️ `task-complete` steps total 165s > 60s lane budget |
 
 **Note:** `task-complete` parent timeout (220,000ms) exceeds P1 lane budget (60,000ms). This is acceptable because the pipeline spans both P1 and P2 lanes. Individual step timeouts are within their respective lane budgets.
 
 ### 5. Lifecycle Symmetry ✅
 
-| Agent Path | Terminal Outcome | Double-Fire Risk? |
-|------------|------------------|-------------------|
-| session-start → task-received → task-complete | `completed` | ❌ No (idempotency + sequential steps) |
-| session-start → task-received → agent-blocked | `blocked` → wait for user | ❌ No (escalation stops further execution) |
-| session-start → task-received → agent-finished-early | `incomplete` → report gaps | ❌ No (single validation pass) |
-| context-drift / loop-stall / risk-spike | `warning` → continue or pause | ❌ No (debounce prevents re-fire) |
+| Agent Path                                           | Terminal Outcome              | Double-Fire Risk?                          |
+| ---------------------------------------------------- | ----------------------------- | ------------------------------------------ |
+| session-start → task-received → task-complete        | `completed`                   | ❌ No (idempotency + sequential steps)     |
+| session-start → task-received → agent-blocked        | `blocked` → wait for user     | ❌ No (escalation stops further execution) |
+| session-start → task-received → agent-finished-early | `incomplete` → report gaps    | ❌ No (single validation pass)             |
+| context-drift / loop-stall / risk-spike              | `warning` → continue or pause | ❌ No (debounce prevents re-fire)          |
 
 **Blocked continuations re-enter P0-safety:** `agent-blocked` escalates to user → user provides new input → re-enters `task-received` (P0-safety). ✅
 
@@ -96,17 +96,17 @@ risk-spike ──→ calculate + warn ──→ suggest review (debounce 10s)
 
 ### 6. Team-Safety Policy ✅
 
-| Hook | Side-Effect? | disabledInWorkerSessions? | requiresConfirmation? |
-|------|-------------|--------------------------|----------------------|
-| `session-start` | No (read-only) | N/A | N/A |
-| `task-received` | Yes (append todo.md) | No (intentional — task tracking needed) | N/A (idempotent) |
-| `agent-blocked` | Yes (update_taskboard) | No (needed in all sessions) | No (auto-escalation) |
-| `context-drift` | Yes (reload_memory) | No (safe — read-only reload) | No (auto-detection) |
-| `loop-stall` | Yes (break_loop) | No (needed in all sessions) | No (auto-detection) |
-| `risk-spike` | Yes (warn + suggest) | ✅ Yes | No (warning only) |
-| `task-complete:3` (lint) | Yes (file mutation) | ✅ Yes | No (auto-fix) |
-| `task-complete:5` (build) | Yes (build artifact) | ✅ Yes | ✅ Yes |
-| `agent-finished-early` | Yes (update_taskboard) | ✅ Yes | No (validation only) |
+| Hook                      | Side-Effect?           | disabledInWorkerSessions?               | requiresConfirmation? |
+| ------------------------- | ---------------------- | --------------------------------------- | --------------------- |
+| `session-start`           | No (read-only)         | N/A                                     | N/A                   |
+| `task-received`           | Yes (append todo.md)   | No (intentional — task tracking needed) | N/A (idempotent)      |
+| `agent-blocked`           | Yes (update_taskboard) | No (needed in all sessions)             | No (auto-escalation)  |
+| `context-drift`           | Yes (reload_memory)    | No (safe — read-only reload)            | No (auto-detection)   |
+| `loop-stall`              | Yes (break_loop)       | No (needed in all sessions)             | No (auto-detection)   |
+| `risk-spike`              | Yes (warn + suggest)   | ✅ Yes                                  | No (warning only)     |
+| `task-complete:3` (lint)  | Yes (file mutation)    | ✅ Yes                                  | No (auto-fix)         |
+| `task-complete:5` (build) | Yes (build artifact)   | ✅ Yes                                  | ✅ Yes                |
+| `agent-finished-early`    | Yes (update_taskboard) | ✅ Yes                                  | No (validation only)  |
 
 **All high-risk hooks properly guarded.** ✅
 
@@ -114,24 +114,24 @@ risk-spike ──→ calculate + warn ──→ suggest review (debounce 10s)
 
 ## Findings
 
-| Severity | Finding | Evidence | Fix |
-| --- | --- | --- | --- |
-| **minor** | `blocker-repeat` in derived_signals but no hook defined | `derived_signals.blocker-repeat: true` but no `blocker-repeat` entry in `hooks` object | Either add hook definition or set to `false` in derived_signals |
-| **minor** | `task-complete` parent timeout (220s) exceeds P1 lane budget (60s) | `lanes.P1-quality.timeout_ms: 60000` vs `task-complete.timeout_ms: 220000` | Acceptable — pipeline spans P1+P2, individual steps are within lane budgets. Document exception. |
+| Severity  | Finding                                                            | Evidence                                                                               | Fix                                                                                              |
+| --------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **minor** | `blocker-repeat` in derived_signals but no hook defined            | `derived_signals.blocker-repeat: true` but no `blocker-repeat` entry in `hooks` object | Either add hook definition or set to `false` in derived_signals                                  |
+| **minor** | `task-complete` parent timeout (220s) exceeds P1 lane budget (60s) | `lanes.P1-quality.timeout_ms: 60000` vs `task-complete.timeout_ms: 220000`             | Acceptable — pipeline spans P1+P2, individual steps are within lane budgets. Document exception. |
 
 ---
 
 ## Native Events Coverage
 
-| Event | Defined? | Status |
-|-------|----------|--------|
-| `session-start` | ✅ `session-start` | Active |
-| `stage-transition` | ❌ | Not defined (covered by `task-complete`) |
-| `pre-verify` | ❌ | Not defined (covered by `task-complete` step 2) |
-| `post-verify` | ❌ | Not defined (covered by `task-complete` pipeline) |
-| `checkpoint-save` | ❌ | Not defined (optional feature) |
-| `blocker-raised` | ✅ `agent-blocked` | Active |
-| `session-stop` | ❌ | Not defined (optional feature) |
+| Event              | Defined?           | Status                                            |
+| ------------------ | ------------------ | ------------------------------------------------- |
+| `session-start`    | ✅ `session-start` | Active                                            |
+| `stage-transition` | ❌                 | Not defined (covered by `task-complete`)          |
+| `pre-verify`       | ❌                 | Not defined (covered by `task-complete` step 2)   |
+| `post-verify`      | ❌                 | Not defined (covered by `task-complete` pipeline) |
+| `checkpoint-save`  | ❌                 | Not defined (optional feature)                    |
+| `blocker-raised`   | ✅ `agent-blocked` | Active                                            |
+| `session-stop`     | ❌                 | Not defined (optional feature)                    |
 
 **4/7 native events have direct hooks. 3 are covered by existing pipeline steps.**
 
@@ -155,9 +155,9 @@ risk-spike ──→ calculate + warn ──→ suggest review (debounce 10s)
 
 ## Next Command
 
-| Priority | Action | Effect |
-|----------|--------|--------|
-| **p2** | `fix blocker-repeat gap` | Add hook definition or set to `false` |
-| **p2** | `add session-stop hook` | Optional: cleanup on session end |
-| **p0** | `commit hooks v5` | Commit pipeline format to repo |
-| **p1** | `re-validate` | Re-run validation after any changes |
+| Priority | Action                   | Effect                                |
+| -------- | ------------------------ | ------------------------------------- |
+| **p2**   | `fix blocker-repeat gap` | Add hook definition or set to `false` |
+| **p2**   | `add session-stop hook`  | Optional: cleanup on session end      |
+| **p0**   | `commit hooks v5`        | Commit pipeline format to repo        |
+| **p1**   | `re-validate`            | Re-run validation after any changes   |

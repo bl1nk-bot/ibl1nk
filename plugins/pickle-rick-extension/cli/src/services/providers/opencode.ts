@@ -56,8 +56,6 @@ interface OpencodeEvent {
   };
 }
 
-
-
 export class OpencodeProvider extends BaseProvider {
   name = "OpenCode";
   cliCommand = "opencode";
@@ -94,7 +92,7 @@ export class OpencodeProvider extends BaseProvider {
   async execute(
     prompt: string,
     workDir: string,
-    options?: ProviderOptions,
+    options?: ProviderOptions
   ): Promise<AIResult> {
     return this.executeStreaming(prompt, workDir, () => {}, options);
   }
@@ -103,7 +101,7 @@ export class OpencodeProvider extends BaseProvider {
     prompt: string,
     workDir: string,
     onProgress: (step: string, content?: string) => void,
-    options?: ProviderOptions,
+    options?: ProviderOptions
   ): Promise<AIResult> {
     const promptFile = join(workDir, ".opencode-prompt.txt");
     await writeFile(promptFile, prompt, "utf-8");
@@ -137,7 +135,7 @@ export class OpencodeProvider extends BaseProvider {
         command,
         shellArgs,
         workDir,
-        (line) => {
+        line => {
           outputLines.push(line);
           try {
             const event: OpencodeEvent = JSON.parse(line);
@@ -180,7 +178,7 @@ export class OpencodeProvider extends BaseProvider {
           } catch {
             // Ignore JSON parsing errors
           }
-        },
+        }
       );
 
       // Check for errors in raw output
@@ -192,7 +190,7 @@ export class OpencodeProvider extends BaseProvider {
 
       // If exit code is bad but no error found, use raw output
       if (exitCode !== 0 && !error) {
-        const rawLines = outputLines.filter((l) => !l.trim().startsWith("{"));
+        const rawLines = outputLines.filter(l => !l.trim().startsWith("{"));
         error =
           rawLines.join("\n") ||
           `Unknown execution error (exit code ${exitCode})`;
@@ -213,7 +211,8 @@ export class OpencodeProvider extends BaseProvider {
         response: accumulatedResponse || "Task completed",
         inputTokens,
         outputTokens,
-        error: exitCode !== 0 ? `Process exited with code ${exitCode}` : undefined,
+        error:
+          exitCode !== 0 ? `Process exited with code ${exitCode}` : undefined,
         sessionId,
       };
     } finally {

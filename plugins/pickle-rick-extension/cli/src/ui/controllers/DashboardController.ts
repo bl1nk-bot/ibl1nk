@@ -1,4 +1,19 @@
-import { BoxRenderable, CliRenderer, Renderable, TextRenderable, TextAttributes, TabSelectRenderable, InputRenderable, InputRenderableEvents, RenderableEvents, KeyEvent, RGBA, createTimeline, MouseEvent, TabSelectRenderableEvents } from "@opentui/core";
+import {
+  BoxRenderable,
+  CliRenderer,
+  Renderable,
+  TextRenderable,
+  TextAttributes,
+  TabSelectRenderable,
+  InputRenderable,
+  InputRenderableEvents,
+  RenderableEvents,
+  KeyEvent,
+  RGBA,
+  createTimeline,
+  MouseEvent,
+  TabSelectRenderableEvents,
+} from "@opentui/core";
 import { TabSelectOption } from "@opentui/core";
 import { SessionChip } from "../components/SessionChip.js";
 import { SessionData } from "../../types/tasks.js";
@@ -10,11 +25,20 @@ import { isSessionActive } from "../../utils/index.js";
 import { FilePickerView } from "../components/FilePickerView.js";
 import { recursiveSearch } from "../../utils/search.js";
 import { setupFilePicker, FilePickerState } from "../file-picker-utils.js";
-import { sessionTracker, type TrackedSession } from "../../utils/session-tracker.js";
+import {
+  sessionTracker,
+  type TrackedSession,
+} from "../../utils/session-tracker.js";
 import { DashboardDialog } from "../dialogs/DashboardDialog.js";
 import { DiffViewDialog } from "../dialogs/DiffViewDialog.js";
 import { PRPreviewDialog } from "../dialogs/PRPreviewDialog.js";
-import { cleanupPickleWorktree, syncWorktreeToOriginal, createPullRequest, isGhAvailable, getGitStatusInfo } from "../../services/git/index.js";
+import {
+  cleanupPickleWorktree,
+  syncWorktreeToOriginal,
+  createPullRequest,
+  isGhAvailable,
+  getGitStatusInfo,
+} from "../../services/git/index.js";
 import { isGameboyActive } from "../../games/gameboy/GameboyView.js";
 import { execCommand } from "../../services/providers/base.js";
 
@@ -69,10 +93,16 @@ export class DashboardController {
       const height = this.ui?.inputContainer?.height;
       return typeof height === "number" ? height : 5;
     };
-    setupFilePicker(this.renderer, this.ui.input, this.ui.inputContainer as BoxRenderable, this.pickerState, {
-      bottom: resolveBottom,
-      width: "100%",
-    });
+    setupFilePicker(
+      this.renderer,
+      this.ui.input,
+      this.ui.inputContainer as BoxRenderable,
+      this.pickerState,
+      {
+        bottom: resolveBottom,
+        width: "100%",
+      }
+    );
   }
 
   private cleanupPicker() {
@@ -97,13 +127,13 @@ export class DashboardController {
 
     // Initialize diff view dialog
     this.diffViewDialog = new DiffViewDialog(renderer, {
-      onMerge: async (session) => {
+      onMerge: async session => {
         await this.mergeWorktree(session);
       },
-      onCreatePR: async (session) => {
+      onCreatePR: async session => {
         this.openPRPreview(session);
       },
-      onReject: async (session) => {
+      onReject: async session => {
         await this.rejectWorktree(session);
       },
       onClose: () => {
@@ -170,13 +200,17 @@ export class DashboardController {
     // No history initialization needed
   }
 
-  private addChip(session: SessionData, container: BoxRenderable, prepend: boolean = false): SessionChip {
+  private addChip(
+    session: SessionData,
+    container: BoxRenderable,
+    prepend: boolean = false
+  ): SessionChip {
     const chip = new SessionChip(
       this.renderer,
       session,
-      (s) => this.selectSession(s),
-      (s) => this.cancelSession(s),
-      (s) => this.openDiffView(s)
+      s => this.selectSession(s),
+      s => this.cancelSession(s),
+      s => this.openDiffView(s)
     );
     container.add(chip);
     if (prepend) {
@@ -192,9 +226,9 @@ export class DashboardController {
     if (executor) {
       executor.stop();
     }
-    
+
     sessionData.status = "CANCELLED";
-    
+
     const chip = this.chips.find(c => c.session.id === sessionData.id);
     if (chip) {
       chip.update(sessionData);
@@ -212,9 +246,11 @@ export class DashboardController {
       // Check if any "game" container is in renderer.root
       // This MUST happen before any other key handling to avoid leakage
       const rootChildren = this.renderer.root.getChildren();
-      const hasGame = rootChildren.some(c => c.id === "snake-container" || c.id === "doom-container");
+      const hasGame = rootChildren.some(
+        c => c.id === "snake-container" || c.id === "doom-container"
+      );
       const hasGameboy = isGameboyActive();
-      
+
       // Show dashboard dialog with Ctrl+S - only when input is focused
       if (key.ctrl && key.name === "s") {
         if (hasGameboy || hasGame || this.isInToybox) return;
@@ -230,8 +266,10 @@ export class DashboardController {
         }
         // Open the last selected session if available, otherwise the most recent
         const targetSession =
-          (this.selectedSession ? this.chips.find(c => c.session.id === this.selectedSession!.id)?.session : undefined) ||
-          this.chips[0]?.session;
+          (this.selectedSession
+            ? this.chips.find(c => c.session.id === this.selectedSession!.id)
+                ?.session
+            : undefined) || this.chips[0]?.session;
 
         if (targetSession) {
           this.dashboardDialog.update(targetSession);
@@ -259,7 +297,12 @@ export class DashboardController {
       const chip = this.chips[this.focusedChipIndex];
       if (!chip) return;
 
-      if (key.name === "return" || key.name === "linefeed" || key.name === "enter" || key.name === "space") {
+      if (
+        key.name === "return" ||
+        key.name === "linefeed" ||
+        key.name === "enter" ||
+        key.name === "space"
+      ) {
         this.selectSession(chip.session);
       } else if (key.name === "up") {
         this.navigateChips(-1);
@@ -271,7 +314,7 @@ export class DashboardController {
 
   private selectSession(session: SessionData, silent: boolean = false) {
     const index = this.chips.findIndex(c => c.session.id === session.id);
-    
+
     this.chips.forEach(c => c.resetHover());
 
     if (index !== -1) {
@@ -291,18 +334,20 @@ export class DashboardController {
     // Always update the selected session
     this.selectedSession = session;
     if (this.ui) {
-      this.ui.metadataLabel.content = session.isPrdMode ? "Pickle PRD" : "Pickle";
+      this.ui.metadataLabel.content = session.isPrdMode
+        ? "Pickle PRD"
+        : "Pickle";
     }
-    
+
     // Update dashboard dialog
     this.dashboardDialog.update(session);
-    
+
     // Only show dialog when not in silent mode and it's a chip click (Ctrl+S or mouse click)
     // Don't show dialog when creating a new session (silent = true)
     if (!silent) {
       this.dashboardDialog.show();
     }
-    
+
     this.renderer.requestRender();
   }
 
@@ -314,7 +359,8 @@ export class DashboardController {
     }
 
     this.focusedChipIndex += delta;
-    if (this.focusedChipIndex < 0) this.focusedChipIndex = this.chips.length - 1;
+    if (this.focusedChipIndex < 0)
+      this.focusedChipIndex = this.chips.length - 1;
     if (this.focusedChipIndex >= this.chips.length) this.focusedChipIndex = 0;
 
     this.chips[this.focusedChipIndex].focus();
@@ -345,7 +391,7 @@ export class DashboardController {
   public async ask(query: string): Promise<string> {
     if (!this.ui) return "n";
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const originalPlaceholder = this.ui!.input.placeholder;
       const originalValue = this.ui!.input.value;
 
@@ -364,8 +410,6 @@ export class DashboardController {
     });
   }
 
-
-
   public toggleToybox() {
     if (!this.ui) return;
 
@@ -378,7 +422,7 @@ export class DashboardController {
 
   private showDashboard() {
     if (!this.ui) return;
-    
+
     this.isInToybox = false;
     this.ui.dashboardView.visible = true;
     this.ui.toyboxView.visible = false;
@@ -392,7 +436,7 @@ export class DashboardController {
     if (!this.isHomeHidden) {
       this.setHomeViewVisible(true);
     }
-    
+
     this.ui.input.focus();
     this.updateFooter();
     this.renderer.requestRender();
@@ -408,7 +452,9 @@ export class DashboardController {
     this.ui.separator.visible = false;
 
     if (!this.toybox && this.ui.toyboxView instanceof BoxRenderable) {
-      this.ui.toyboxView.getChildren().forEach((child) => this.ui!.toyboxView.remove(child.id));
+      this.ui.toyboxView
+        .getChildren()
+        .forEach(child => this.ui!.toyboxView.remove(child.id));
       this.toybox = new ToyboxView(
         this.renderer,
         this.ui.toyboxView,
@@ -416,7 +462,7 @@ export class DashboardController {
         () => this.showDashboard()
       );
     }
-    
+
     if (this.toybox) {
       this.toybox.enable();
     }
@@ -439,15 +485,18 @@ export class DashboardController {
     this.isHomeHidden = true;
   }
 
-  public startDashboardSession(prompt: string, mode: "pickle" | "pickle-prd" = "pickle") {
+  public startDashboardSession(
+    prompt: string,
+    mode: "pickle" | "pickle-prd" = "pickle"
+  ) {
     if (!this.ui) return;
 
     this.ui.landingView.parent?.remove(this.ui.landingView.id);
     this.ui.mainContent.visible = true;
     this.ui.globalFooter.visible = true;
-    
+
     this.spawnSession(prompt, mode);
-    
+
     this.ui.input.focus();
   }
 
@@ -495,10 +544,10 @@ export class DashboardController {
 
     const executor = new WorkerExecutorClient();
     this.activeExecutors.set(session.id, executor);
-    
-    executor.onInput((q) => this.ask(q));
 
-    executor.onProgress((report) => {
+    executor.onInput(q => this.ask(q));
+
+    executor.onProgress(report => {
       let status = `Iteration ${report.iteration}`;
       if (report.taskTitle) status += `: ${report.taskTitle}`;
       if (report.step) status += ` (${report.step})`;
@@ -510,34 +559,37 @@ export class DashboardController {
         status,
         iteration: report.iteration,
       });
-      
+
       if (this.selectedSession?.id === session.id) {
         this.dashboardDialog.update(session);
       }
       this.renderer.requestRender();
     });
 
-    executor.run(state).then((result) => {
-      this.activeExecutors.delete(session.id);
-      if (session.status.toLowerCase().includes("cancelled")) return;
-      session.status = "Done";
-      // Store worktree info if available
-      if (result?.worktreeInfo) {
-        session.worktreeInfo = result.worktreeInfo;
-      }
-      chip.update(session);
-      if (this.selectedSession?.id === session.id) {
-        this.dashboardDialog.update(session);
-      }
-    }).catch((err) => {
-      this.activeExecutors.delete(session.id);
-      if (session.status.toLowerCase().includes("cancelled")) return;
-      session.status = `ERROR: ${err.message}`;
-      chip.update(session);
-      if (this.selectedSession?.id === session.id) {
-        this.dashboardDialog.update(session);
-      }
-    });
+    executor
+      .run(state)
+      .then(result => {
+        this.activeExecutors.delete(session.id);
+        if (session.status.toLowerCase().includes("cancelled")) return;
+        session.status = "Done";
+        // Store worktree info if available
+        if (result?.worktreeInfo) {
+          session.worktreeInfo = result.worktreeInfo;
+        }
+        chip.update(session);
+        if (this.selectedSession?.id === session.id) {
+          this.dashboardDialog.update(session);
+        }
+      })
+      .catch(err => {
+        this.activeExecutors.delete(session.id);
+        if (session.status.toLowerCase().includes("cancelled")) return;
+        session.status = `ERROR: ${err.message}`;
+        chip.update(session);
+        if (this.selectedSession?.id === session.id) {
+          this.dashboardDialog.update(session);
+        }
+      });
   }
 
   private openDiffView(session: SessionData) {
@@ -594,7 +646,11 @@ export class DashboardController {
     }
   }
 
-  private async createPullRequest(session: SessionData, title: string, body: string) {
+  private async createPullRequest(
+    session: SessionData,
+    title: string,
+    body: string
+  ) {
     if (!session.worktreeInfo || !session.workingDir) return;
 
     const { branchName, baseBranch, worktreeDir } = session.worktreeInfo;
@@ -606,19 +662,19 @@ export class DashboardController {
 
       // Clean up worktree (don't sync since we're using PR)
       await cleanupPickleWorktree(worktreeDir, originalDir);
-      
+
       // Clear worktree info after PR creation
       session.worktreeInfo = undefined;
-      
+
       // Update chip to remove review button
       const chip = this.chips.find(c => c.session.id === session.id);
       if (chip) {
         chip.update(session);
       }
-      
+
       // Hide PR dialog
       this.prPreviewDialog.hide();
-      
+
       this.renderer.requestRender();
     } catch (error) {
       console.error("Failed to create PR:", error);

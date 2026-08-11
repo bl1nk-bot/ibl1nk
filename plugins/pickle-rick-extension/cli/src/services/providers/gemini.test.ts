@@ -7,20 +7,20 @@ mock.module("node:fs/promises", () => ({
     if (path.includes("/existent/.gemini/settings.json")) {
       return JSON.stringify({
         model: {
-          name: "gemini-3-flash-preview"
-        }
+          name: "gemini-3-flash-preview",
+        },
       });
     }
     throw new Error("File not found");
   },
   writeFile: async () => {},
-  unlink: async () => {}
+  unlink: async () => {},
 }));
 
 // Mocking os
 let mockHome = "/existent";
 mock.module("node:os", () => ({
-  homedir: () => mockHome
+  homedir: () => mockHome,
 }));
 
 describe("GeminiProvider", () => {

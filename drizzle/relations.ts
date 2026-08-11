@@ -88,40 +88,48 @@ export const charactersRelations = relations(characters, ({ one, many }) => ({
     references: [outlines.id],
   }),
   relationships: many(characterRelationships, { relationName: "character1" }),
-  relationshipsAsTarget: many(characterRelationships, { relationName: "character2" }),
-}));
-
-export const characterRelationshipsRelations = relations(characterRelationships, ({ one }) => ({
-  character1: one(characters, {
-    fields: [characterRelationships.character1Id],
-    references: [characters.id],
-    relationName: "character1",
-  }),
-  character2: one(characters, {
-    fields: [characterRelationships.character2Id],
-    references: [characters.id],
+  relationshipsAsTarget: many(characterRelationships, {
     relationName: "character2",
   }),
 }));
 
-export const contentAnalysisRelations = relations(contentAnalysis, ({ one }) => ({
-  user: one(users, {
-    fields: [contentAnalysis.userId],
-    references: [users.id],
-  }),
-  outline: one(outlines, {
-    fields: [contentAnalysis.outlineId],
-    references: [outlines.id],
-  }),
-  chapter: one(chapters, {
-    fields: [contentAnalysis.chapterId],
-    references: [chapters.id],
-  }),
-  scene: one(scenes, {
-    fields: [contentAnalysis.sceneId],
-    references: [scenes.id],
-  }),
-}));
+export const characterRelationshipsRelations = relations(
+  characterRelationships,
+  ({ one }) => ({
+    character1: one(characters, {
+      fields: [characterRelationships.character1Id],
+      references: [characters.id],
+      relationName: "character1",
+    }),
+    character2: one(characters, {
+      fields: [characterRelationships.character2Id],
+      references: [characters.id],
+      relationName: "character2",
+    }),
+  })
+);
+
+export const contentAnalysisRelations = relations(
+  contentAnalysis,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [contentAnalysis.userId],
+      references: [users.id],
+    }),
+    outline: one(outlines, {
+      fields: [contentAnalysis.outlineId],
+      references: [outlines.id],
+    }),
+    chapter: one(chapters, {
+      fields: [contentAnalysis.chapterId],
+      references: [chapters.id],
+    }),
+    scene: one(scenes, {
+      fields: [contentAnalysis.sceneId],
+      references: [scenes.id],
+    }),
+  })
+);
 
 export const obsidianSyncRelations = relations(obsidianSync, ({ one }) => ({
   user: one(users, {
@@ -130,43 +138,55 @@ export const obsidianSyncRelations = relations(obsidianSync, ({ one }) => ({
   }),
 }));
 
-export const writingProgressRelations = relations(writingProgress, ({ one }) => ({
-  user: one(users, {
-    fields: [writingProgress.userId],
-    references: [users.id],
-  }),
-  outline: one(outlines, {
-    fields: [writingProgress.outlineId],
-    references: [outlines.id],
-  }),
-}));
+export const writingProgressRelations = relations(
+  writingProgress,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [writingProgress.userId],
+      references: [users.id],
+    }),
+    outline: one(outlines, {
+      fields: [writingProgress.outlineId],
+      references: [outlines.id],
+    }),
+  })
+);
 
-export const slackIntegrationRelations = relations(slackIntegration, ({ one }) => ({
-  user: one(users, {
-    fields: [slackIntegration.userId],
-    references: [users.id],
-  }),
-}));
+export const slackIntegrationRelations = relations(
+  slackIntegration,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [slackIntegration.userId],
+      references: [users.id],
+    }),
+  })
+);
 
-export const craftCredentialsRelations = relations(craftCredentials, ({ one }) => ({
-  user: one(users, {
-    fields: [craftCredentials.userId],
-    references: [users.id],
-  }),
-}));
+export const craftCredentialsRelations = relations(
+  craftCredentials,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [craftCredentials.userId],
+      references: [users.id],
+    }),
+  })
+);
 
-export const plotOutlineNodesRelations = relations(plotOutlineNodes, ({ one, many }) => ({
-  outline: one(outlines, {
-    fields: [plotOutlineNodes.outlineId],
-    references: [outlines.id],
-  }),
-  parent: one(plotOutlineNodes, {
-    fields: [plotOutlineNodes.parentId],
-    references: [plotOutlineNodes.id],
-    relationName: "plotHierarchy",
-  }),
-  children: many(plotOutlineNodes, { relationName: "plotHierarchy" }),
-}));
+export const plotOutlineNodesRelations = relations(
+  plotOutlineNodes,
+  ({ one, many }) => ({
+    outline: one(outlines, {
+      fields: [plotOutlineNodes.outlineId],
+      references: [outlines.id],
+    }),
+    parent: one(plotOutlineNodes, {
+      fields: [plotOutlineNodes.parentId],
+      references: [plotOutlineNodes.id],
+      relationName: "plotHierarchy",
+    }),
+    children: many(plotOutlineNodes, { relationName: "plotHierarchy" }),
+  })
+);
 
 export const notesRelations = relations(notes, ({ one }) => ({
   user: one(users, {

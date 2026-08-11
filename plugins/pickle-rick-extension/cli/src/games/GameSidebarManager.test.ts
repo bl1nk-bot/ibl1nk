@@ -10,7 +10,7 @@ mock.module("../ui/components/ToyboxSidebar.js", () => {
       show = mock(() => {});
       hide = mock(() => {});
       constructor() {}
-    }
+    },
   };
 });
 
@@ -23,7 +23,7 @@ describe("GameSidebarManager", () => {
       root: {
         add: mock(() => {}),
         remove: mock(() => {}),
-      }
+      },
     };
     manager = new GameSidebarManager(mockRenderer);
   });
@@ -34,12 +34,12 @@ describe("GameSidebarManager", () => {
 
   test("should handle Ctrl+S to toggle sidebar when enabled", () => {
     manager.enable();
-    
+
     // First press: Open
     const handled1 = manager.handleKey({ name: "s", ctrl: true } as any);
     expect(handled1).toBe(true);
     expect(mockRenderer.root.add).toHaveBeenCalled(); // Should add sidebar to root
-    
+
     // Check toggle logic (mock behavior for isOpen is false by default, so it calls show)
     // We can't verify 'show' called on the specific instance easily without capturing it,
     // but verifying root.add proves instantiation.
@@ -55,7 +55,7 @@ describe("GameSidebarManager", () => {
   test("should hide sidebar on disable", () => {
     manager.enable();
     manager.toggleSidebar(); // Create and show
-    
+
     manager.disable();
     // Should call hide on sidebar
     // Again, verifying side effects is tricky with class mocks unless we spy on prototype.

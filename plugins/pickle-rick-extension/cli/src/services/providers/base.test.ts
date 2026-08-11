@@ -1,13 +1,30 @@
 import { expect, test, describe } from "bun:test";
-import { parseStreamJsonResult, checkForErrors, detectStepFromOutput, commandExists, execCommand } from "./base.js";
+import {
+  parseStreamJsonResult,
+  checkForErrors,
+  detectStepFromOutput,
+  commandExists,
+  execCommand,
+} from "./base.js";
 
 describe("Providers Base Utils", () => {
   describe("parseStreamJsonResult", () => {
     test("should extract response and tokens from message and result types", () => {
       const output = [
-        JSON.stringify({ type: "message", role: "assistant", content: "Hello " }),
-        JSON.stringify({ type: "message", role: "assistant", content: "World" }),
-        JSON.stringify({ type: "result", usage: { input_tokens: 10, output_tokens: 20 } })
+        JSON.stringify({
+          type: "message",
+          role: "assistant",
+          content: "Hello ",
+        }),
+        JSON.stringify({
+          type: "message",
+          role: "assistant",
+          content: "World",
+        }),
+        JSON.stringify({
+          type: "result",
+          usage: { input_tokens: 10, output_tokens: 20 },
+        }),
       ].join("\n");
 
       const result = parseStreamJsonResult(output);
@@ -17,7 +34,11 @@ describe("Providers Base Utils", () => {
     });
 
     test("should handle missing tokens gracefully", () => {
-      const output = JSON.stringify({ type: "message", role: "assistant", content: "Hello" });
+      const output = JSON.stringify({
+        type: "message",
+        role: "assistant",
+        content: "Hello",
+      });
       const result = parseStreamJsonResult(output);
       expect(result.response).toBe("Hello");
       expect(result.inputTokens).toBe(0);
@@ -27,7 +48,10 @@ describe("Providers Base Utils", () => {
 
   describe("checkForErrors", () => {
     test("should return error message if error type found", () => {
-      const output = JSON.stringify({ type: "error", error: { message: "Something went wrong" } });
+      const output = JSON.stringify({
+        type: "error",
+        error: { message: "Something went wrong" },
+      });
       const error = checkForErrors(output);
       expect(error).toBe("Something went wrong");
     });
@@ -41,12 +65,18 @@ describe("Providers Base Utils", () => {
 
   describe("detectStepFromOutput", () => {
     test("should detect read operations", () => {
-      const output = JSON.stringify({ tool: "read", file_path: "/path/to/file.ts" });
+      const output = JSON.stringify({
+        tool: "read",
+        file_path: "/path/to/file.ts",
+      });
       expect(detectStepFromOutput(output)).toBe("Reading code");
     });
 
     test("should detect write operations", () => {
-      const output = JSON.stringify({ tool: "write", file_path: "/path/to/file.ts" });
+      const output = JSON.stringify({
+        tool: "write",
+        file_path: "/path/to/file.ts",
+      });
       expect(detectStepFromOutput(output)).toBe("Implementing");
     });
 

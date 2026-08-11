@@ -29,7 +29,7 @@ export class GeminiProvider extends BaseProvider {
   async execute(
     prompt: string,
     workDir: string,
-    options?: ProviderOptions,
+    options?: ProviderOptions
   ): Promise<AIResult> {
     return this.executeStreaming(prompt, workDir, () => {}, options);
   }
@@ -38,11 +38,15 @@ export class GeminiProvider extends BaseProvider {
     prompt: string,
     workDir: string,
     onProgress: (step: string, content?: string) => void,
-    options?: ProviderOptions,
+    options?: ProviderOptions
   ): Promise<AIResult> {
     // Disable the pickle-rick extension to prevent recursion or interference
     try {
-      await execCommand(this.cliCommand, ["extensions", "disable", "pickle-rick"], workDir);
+      await execCommand(
+        this.cliCommand,
+        ["extensions", "disable", "pickle-rick"],
+        workDir
+      );
     } catch (e) {
       // Silently ignore if it fails (might not be installed)
     }
@@ -94,7 +98,7 @@ export class GeminiProvider extends BaseProvider {
         command,
         shellArgs,
         workDir,
-        (line) => {
+        line => {
           outputLines.push(line);
           try {
             const parsed = JSON.parse(line);
@@ -116,7 +120,7 @@ export class GeminiProvider extends BaseProvider {
               onProgress(step);
             }
           } catch {} // Ignore JSON parsing errors
-        },
+        }
       );
 
       const fullOutput = outputLines.join("\n");
@@ -126,7 +130,7 @@ export class GeminiProvider extends BaseProvider {
       // If exit code is bad but no JSON error found, use the raw output (likely stderr)
       if (exitCode !== 0 && !error) {
         // Filter out likely non-error lines (json) to find the error message
-        const rawLines = outputLines.filter((l) => !l.trim().startsWith("{"));
+        const rawLines = outputLines.filter(l => !l.trim().startsWith("{"));
         error =
           rawLines.join("\n") ||
           "Unknown execution error (exit code " + exitCode + ")";
@@ -162,7 +166,11 @@ export class GeminiProvider extends BaseProvider {
 
       // Re-enable the extension
       try {
-        await execCommand(this.cliCommand, ["extensions", "enable", "pickle-rick"], workDir);
+        await execCommand(
+          this.cliCommand,
+          ["extensions", "enable", "pickle-rick"],
+          workDir
+        );
       } catch (e) {} // Ignore errors during cleanup
     }
   }

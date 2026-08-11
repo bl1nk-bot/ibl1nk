@@ -10,7 +10,7 @@ mock.module("../theme.js", () => ({
     white: "#ffffff",
     darkAccent: "#003300",
     highlight: "#00ff00",
-  }
+  },
 }));
 
 describe("FilePickerView", () => {
@@ -62,7 +62,7 @@ describe("FilePickerView", () => {
     // Navigate up from 0 -> should wrap to 2
     (picker as any).navigate(-1);
     expect((picker as any).selectedIndex).toBe(2);
-    
+
     // Navigate down from 2 -> should wrap to 0
     (picker as any).navigate(1);
     expect((picker as any).selectedIndex).toBe(0);
