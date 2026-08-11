@@ -195,8 +195,9 @@ const firebaseConfig = {
 
 const plainTextCharCount = (text: string): number => {
   if (!text) return 0;
-  const plainText = text
-    .replace(/<[^>]*>/g, "")
+  const tempEl = document.createElement("div");
+  tempEl.innerHTML = text;
+  const plainText = (tempEl.textContent || "")
     .replace(/\s+/g, " ")
     .trim();
   return plainText.length;
