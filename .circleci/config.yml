@@ -1,0 +1,55 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: cimg/node:22.14
+    working_directory: ~/project
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - pnpm-v1-{{ checksum "pnpm-lock.yaml" }}
+            - pnpm-v1-
+      - run:
+          name: Enable pnpm
+          command: corepack enable && corepack prepare pnpm@10.4.1 --activate
+      - run:
+          name: Install dependencies
+          command: pnpm install --frozen-lockfile
+      - save_cache:
+          key: pnpm-v1-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - ~/.local/share/pnpm/store
+      - run:
+          name: Run tests
+          command: pnpm test
+      - run:
+          name: Typecheck
+          command: pnpm check
+
+  build:
+    docker:
+      - image: cimg/node:22.14
+    working_directory: ~/project
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - pnpm-v1-{{ checksum "pnpm-lock.yaml" }}
+            - pnpm-v1-
+      - run:
+          name: Enable pnpm
+          command: corepack enable && corepack prepare pnpm@10.4.1 --activate
+      - run:
+          name: Install dependencies
+          command: pnpm install --frozen-lockfile
+      - run:
+          name: Build application
+          command: pnpm build
+
+workflows:
+  verify:
+    jobs:
+      - test
+      - build
