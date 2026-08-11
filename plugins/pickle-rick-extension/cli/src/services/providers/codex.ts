@@ -51,8 +51,6 @@ interface CodexEvent {
   message?: string;
 }
 
-
-
 function extractErrorMessage(event: CodexEvent): string | undefined {
   return (
     event.error?.message ||
@@ -84,7 +82,7 @@ export class CodexProvider extends BaseProvider {
   async execute(
     prompt: string,
     workDir: string,
-    options?: ProviderOptions,
+    options?: ProviderOptions
   ): Promise<AIResult> {
     return this.executeStreaming(prompt, workDir, () => {}, options);
   }
@@ -93,7 +91,7 @@ export class CodexProvider extends BaseProvider {
     prompt: string,
     workDir: string,
     onProgress: (step: string, content?: string) => void,
-    options?: ProviderOptions,
+    options?: ProviderOptions
   ): Promise<AIResult> {
     const codexArgs: string[] = ["exec"];
 
@@ -126,7 +124,7 @@ export class CodexProvider extends BaseProvider {
       this.cliCommand,
       codexArgs,
       workDir,
-      (line) => {
+      line => {
         outputLines.push(line);
         try {
           const event: CodexEvent = JSON.parse(line);
@@ -143,8 +141,8 @@ export class CodexProvider extends BaseProvider {
               normalizedItemType === "agentmessage"
             ) {
               if (event.item.text) {
-              accumulatedResponse += event.item.text;
-              onProgress("thinking", event.item.text);
+                accumulatedResponse += event.item.text;
+                onProgress("thinking", event.item.text);
               }
             }
 
@@ -171,7 +169,7 @@ export class CodexProvider extends BaseProvider {
         }
       },
       undefined,
-      prompt,
+      prompt
     );
 
     const fullOutput = outputLines.join("\n");
@@ -181,8 +179,10 @@ export class CodexProvider extends BaseProvider {
     }
 
     if (exitCode !== 0 && !error) {
-      const rawLines = outputLines.filter((l) => !l.trim().startsWith("{"));
-      error = rawLines.join("\n") || `Unknown execution error (exit code ${exitCode})`;
+      const rawLines = outputLines.filter(l => !l.trim().startsWith("{"));
+      error =
+        rawLines.join("\n") ||
+        `Unknown execution error (exit code ${exitCode})`;
     }
 
     if (error) {
@@ -201,7 +201,8 @@ export class CodexProvider extends BaseProvider {
       response: accumulatedResponse || "Task completed",
       inputTokens,
       outputTokens,
-      error: exitCode !== 0 ? `Process exited with code ${exitCode}` : undefined,
+      error:
+        exitCode !== 0 ? `Process exited with code ${exitCode}` : undefined,
       sessionId,
     };
   }

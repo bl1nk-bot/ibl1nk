@@ -1,4 +1,12 @@
-import { mock, expect, test, describe, beforeEach, afterEach, spyOn } from "bun:test";
+import {
+  mock,
+  expect,
+  test,
+  describe,
+  beforeEach,
+  afterEach,
+  spyOn,
+} from "bun:test";
 import "../test-setup.js";
 import { createMockRenderer } from "../mock-factory.js";
 import { SessionData } from "../../types/tasks.js";
@@ -19,7 +27,13 @@ describe("SessionChip", () => {
       prompt: "test prompt",
       status: "Running",
       workingDir: "/test/path",
-      gitStatus: { branch: "main", ahead: 0, behind: 0, modified: 0, isClean: true },
+      gitStatus: {
+        branch: "main",
+        ahead: 0,
+        behind: 0,
+        modified: 0,
+        isClean: true,
+      },
     } as SessionData;
     onSelect = mock(() => {});
 

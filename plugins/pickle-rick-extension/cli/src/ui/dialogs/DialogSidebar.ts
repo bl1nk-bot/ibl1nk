@@ -8,7 +8,7 @@ export class DialogSidebar {
 
   constructor(renderer: CliRenderer) {
     this.dashboardDialog = new DashboardDialog(renderer);
-    
+
     // Add the dialog to the renderer root
     renderer.root.add(this.dashboardDialog.root);
   }
@@ -40,18 +40,15 @@ export class DialogSidebar {
     // Dialog doesn't support input
   }
 
-  public hideInput() {
-  }
+  public hideInput() {}
 
-  public focusInput() {
-  }
+  public focusInput() {}
 
   public get onHide() {
     return undefined;
   }
 
-  public set onHide(callback: (() => void) | undefined) {
-  }
+  public set onHide(callback: (() => void) | undefined) {}
 
   public get input() {
     return undefined;

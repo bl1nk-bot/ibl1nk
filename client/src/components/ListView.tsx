@@ -27,7 +27,7 @@ interface ListViewProps {
 export function ListView({ items, onItemClick }: ListViewProps) {
   return (
     <div className="space-y-2">
-      {items.map((item) => (
+      {items.map(item => (
         <Card
           key={item.id}
           className="cursor-pointer hover:bg-muted transition-colors"
@@ -40,7 +40,10 @@ export function ListView({ items, onItemClick }: ListViewProps) {
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-semibold truncate">{item.title}</h3>
                   {item.badge && (
-                    <Badge variant={item.badgeVariant || "secondary"} className="text-xs flex-shrink-0">
+                    <Badge
+                      variant={item.badgeVariant || "secondary"}
+                      className="text-xs flex-shrink-0"
+                    >
                       {item.badge}
                     </Badge>
                   )}
@@ -56,14 +59,16 @@ export function ListView({ items, onItemClick }: ListViewProps) {
                 {item.progress !== undefined && (
                   <div className="mb-2">
                     <Progress value={item.progress} className="h-1.5" />
-                    <p className="text-xs text-muted-foreground mt-1">{item.progress}% complete</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {item.progress}% complete
+                    </p>
                   </div>
                 )}
 
                 {/* Tags */}
                 {item.tags && item.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-2">
-                    {item.tags.slice(0, 4).map((tag) => (
+                    {item.tags.slice(0, 4).map(tag => (
                       <Badge key={tag} variant="outline" className="text-xs">
                         {tag}
                       </Badge>
@@ -79,9 +84,11 @@ export function ListView({ items, onItemClick }: ListViewProps) {
                 {/* Stats */}
                 {item.stats && item.stats.length > 0 && (
                   <div className="flex gap-4 text-xs">
-                    {item.stats.map((stat) => (
+                    {item.stats.map(stat => (
                       <div key={stat.label}>
-                        <span className="text-muted-foreground">{stat.label}:</span>
+                        <span className="text-muted-foreground">
+                          {stat.label}:
+                        </span>
                         <span className="font-semibold ml-1">{stat.value}</span>
                       </div>
                     ))}
@@ -90,7 +97,9 @@ export function ListView({ items, onItemClick }: ListViewProps) {
 
                 {/* Metadata */}
                 {item.metadata && (
-                  <p className="text-xs text-muted-foreground mt-1">{item.metadata}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {item.metadata}
+                  </p>
                 )}
               </div>
 
@@ -100,7 +109,7 @@ export function ListView({ items, onItemClick }: ListViewProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       item.onEdit?.();
                     }}
@@ -112,7 +121,7 @@ export function ListView({ items, onItemClick }: ListViewProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       item.onDelete?.();
                     }}

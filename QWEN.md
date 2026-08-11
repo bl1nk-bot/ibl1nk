@@ -3,6 +3,7 @@
 ## Project Overview
 
 **ibl1nk** is a **Writing Management Dashboard** — an all-in-one platform for novelists that combines:
+
 - Story outline & chapter management
 - Character tracking with relationship maps
 - AI-powered content analysis (sentiment, keywords, grammar, hooks)
@@ -10,6 +11,7 @@
 - Visual dashboards with charts & Mermaid diagrams
 
 **Tech Stack:**
+
 - **Frontend:** React 19, Vite 7, Tailwind CSS 4, shadcn/ui, Radix UI
 - **Backend:** Express.js, tRPC 11
 - **Database:** MySQL (Drizzle ORM)
@@ -64,6 +66,7 @@ ibl1nk/
 ## Key Commands
 
 ### Development
+
 ```bash
 pnpm install          # Install dependencies
 npm run dev           # Start dev server (Vite + Express hot reload)
@@ -71,12 +74,14 @@ npm run db:push       # Generate & apply Drizzle migrations
 ```
 
 ### Build & Production
+
 ```bash
 npm run build         # Build client (Vite) + server (esbuild) → dist/
 npm run start         # Run production server
 ```
 
 ### Testing & Quality
+
 ```bash
 npm run test          # Run tests with Vitest
 npm run check         # TypeScript type checking
@@ -88,16 +93,19 @@ npm run format        # Format code with Prettier
 ## Engineering Standards
 
 ### Security
+
 - **IDOR Protection:** All DB queries & tRPC procedures must verify `userId` ownership
 - **Error Handling:** Use `TRPCError` with bilingual messages (TH/EN) + error codes
 - **Format:** `ไม่พบโปรเจกต์นี้ (30001) / Project not found (30001)`
 
 ### Testing
+
 - **TDD approach**, target >80% coverage (focus: DB logic + tRPC routers)
 - Tests live in `tests/` directory
 - Use Vitest as primary test runner
 
 ### Code Organization
+
 - **Single Responsibility Principle** for components
 - Custom hooks for state & API calls
 - Mobile-first UI design
@@ -107,11 +115,13 @@ npm run format        # Format code with Prettier
 ## Workflow & Conventions
 
 ### Session Lifecycle (from `.omg/hooks.json`)
+
 1. **Session Start:** Read `.omg/MEMORY.md` → Read `todo.md`
 2. **Task Received:** Append to `todo.md` (never overwrite)
 3. **Task Complete:** Update todo → Verify → Biome lint → Vitest → Build → Write WORK-LOG
 
 ### Work Tracking
+
 - **`docs/work-log.csv`** — CSV with emoji status tracking
   - ⬜ ค้าง (pending) | 🟡 แก้ไข (needs fix) | 🔴 ปัญหา (problem)
   - 🟢 รอดูรีวิว (ready for review) | 🔵 รีวิวแล้ว (reviewed — user sets) | 🟠 Tool error
@@ -119,11 +129,13 @@ npm run format        # Format code with Prettier
 - **`todo.md`** — Current task list (append only)
 
 ### JSDoc Standards
+
 - **Incomplete work:** `// TODO: <description>`
 - **Completed work:** Full JSDoc with `@module`, `@description`, `@param`, `@returns`, `@done`, `@tested`, `@status`
 - Every touched file gets JSDoc header
 
 ### Plugin Architecture
+
 - Plugins are built-in (integrated into Manus system)
 - Each plugin needs `bl1nk.jsonc` config in its directory
 - Plugin SDK lives in `server/_core/pluginsdk/` (7 files)
@@ -135,6 +147,7 @@ npm run format        # Format code with Prettier
 ## Database Migrations
 
 Naming convention (~3 syllables):
+
 - `001_user_base.sql` — User auth
 - `002_writer_core.sql` — Outlines, chapters, scenes, characters
 - `003_analysis_log.sql` — Content analysis & stats

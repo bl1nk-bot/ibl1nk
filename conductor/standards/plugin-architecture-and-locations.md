@@ -5,6 +5,7 @@
 เอกสารนี้กำหนดสถาปัตยกรรมและตำแหน่งของ plugins สำหรับระบบ ibl1nk
 
 **หลักการสำคัญ:**
+
 - ibl1nk เป็น **Host System** ที่อ่าน plugins โดยตรง
 - plugins/ ใน repo นี้คือ **Built-in plugins** (ไม่ใช่ third-party)
 - SDK คือ **Standard Format** ที่กำหนดวิธีที่ระบบอ่านและเข้าใจ plugins
@@ -85,19 +86,19 @@
 ```typescript
 // Pseudo-code: Discovery algorithm
 async function discoverPlugins(): Promise<Plugin[]> {
-  const pluginsDir = path.join(repoRoot, 'plugins');
+  const pluginsDir = path.join(repoRoot, "plugins");
   const plugins: Plugin[] = [];
-  
+
   // Scan each directory in plugins/
   for (const entry of await fs.readdir(pluginsDir)) {
     const pluginPath = path.join(pluginsDir, entry);
-    const configPath = path.join(pluginPath, 'bl1nk.jsonc');
-    
+    const configPath = path.join(pluginPath, "bl1nk.jsonc");
+
     // Check if it's a valid plugin (has bl1nk.jsonc)
     if (await fs.exists(configPath)) {
       const config = await readConfig(configPath);
       const validated = await validateConfig(config);
-      
+
       if (validated.valid) {
         plugins.push({
           name: config.name,
@@ -107,7 +108,7 @@ async function discoverPlugins(): Promise<Plugin[]> {
       }
     }
   }
-  
+
   return plugins;
 }
 ```
@@ -141,26 +142,31 @@ Startup
 ## Component Types
 
 ### 1. Agents (`agents/*.md`)
+
 - **Purpose:** กำหนด roles/personas
 - **Format:** Markdown
 - **Discovery:** Glob pattern จาก `bl1nk.jsonc`
 
 ### 2. Commands (`commands/*.toml` or `commands/*.md`)
+
 - **Purpose:** Slash commands หรือ automated actions
 - **Format:** TOML หรือ Markdown
 - **Discovery:** Glob pattern จาก `bl1nk.jsonc`
 
 ### 3. Skills (`skills/*/SKILL.md`)
+
 - **Purpose:** Domain-specific expertise
 - **Format:** Markdown (แต่ละ skill มี directory ตัวเอง)
 - **Discovery:** Glob pattern จาก `bl1nk.jsonc`
 
 ### 4. Tools (`tools/*` or `scripts/*`)
+
 - **Purpose:** Executable scripts หรือ MCP servers
 - **Format:** Shell, JavaScript, Python, etc.
 - **Discovery:** Glob pattern จาก `bl1nk.jsonc`
 
 ### 5. Hooks (`hooks/*.json`)
+
 - **Purpose:** Event-driven scripts
 - **Format:** JSON config + script files
 - **Discovery:** Glob pattern จาก `bl1nk.jsonc`
@@ -196,7 +202,7 @@ External CLI ที่ต้องการเชื่อมต่อกับ 
 class ClaudeCodeAdapter {
   async loadIbl1nkPlugins(repoRoot: string) {
     const plugins = await discoverPlugins(repoRoot);
-    
+
     for (const plugin of plugins) {
       // Convert ibl1nk skills to Claude Code skills
       for (const skillPath of plugin.config.components.skills) {
@@ -207,7 +213,7 @@ class ClaudeCodeAdapter {
           triggers: skill.triggers,
         });
       }
-      
+
       // Convert ibl1nk commands to Claude Code commands
       for (const cmdPath of plugin.config.components.commands) {
         const cmd = await loadCommand(cmdPath);
@@ -244,6 +250,7 @@ class ClaudeCodeAdapter {
 ## Testing Strategy
 
 ### Unit Tests
+
 - Config reading & parsing
 - Schema validation
 - Path resolution
@@ -251,11 +258,13 @@ class ClaudeCodeAdapter {
 - Error handling
 
 ### Integration Tests
+
 - Full discovery flow (scan → read → validate → load)
 - Plugin loading with real plugins
 - Component registration
 
 ### E2E Tests
+
 - System startup with all plugins
 - All features work correctly
 - No conflicts between plugins

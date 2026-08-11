@@ -5,6 +5,7 @@
 SDK สำหรับอ่านและ validate plugin configuration จาก `bl1nk.jsonc` พร้อม utilities สำหรับ resolve paths, substitute environment variables, และ error handling มาตรฐาน
 
 **หลักการสำคัญ:**
+
 - ibl1nk เป็น **Host System** อ่าน `plugins/` โดยตรง
 - SDK คือ **Standard Format** ที่ระบบใช้ discover และ validate plugins
 - CLI tools อื่น (Claude Code, Gemini CLI, etc.) จะสร้าง **adapter** มาเชื่อมกับ standard ของเรา
@@ -34,15 +35,15 @@ interface PluginConfig {
 }
 
 interface AgentFrontmatter {
-  name: string;              // kebab-case identifier
-  description: string;       // one-line description
-  mode: 'all' | 'primary' | 'subagent';
-  tools?: ('bash' | 'python' | 'node')[];
+  name: string; // kebab-case identifier
+  description: string; // one-line description
+  mode: "all" | "primary" | "subagent";
+  tools?: ("bash" | "python" | "node")[];
 }
 
 interface AgentManifest {
   name: string;
-  path: string;              // absolute path to agent file
+  path: string; // absolute path to agent file
   frontmatter: AgentFrontmatter;
   // เนื้อหาเต็มโหลดเฉพาะเมื่อถูกเรียก
 }
@@ -75,15 +76,19 @@ interface ResolvedPaths {
 ### 2. Main Functions
 
 #### `discoverPlugins(pluginsDir: string): Promise<Plugin[]>`
+
 Scan plugins/ directory และ return plugins ทั้งหมดที่ valid
 
-**Input**: 
+**Input**:
+
 - `pluginsDir`: Absolute path ถึง plugins/ directory
 
-**Output**: 
+**Output**:
+
 - Array ของ Plugin objects
 
 **Logic**:
+
 1. Scan แต่ละ directory ใน plugins/
 2. ตรวจสอบว่ามี `bl1nk.jsonc`
 3. อ่านและ validate config
@@ -91,8 +96,9 @@ Scan plugins/ directory และ return plugins ทั้งหมดที่ 
 5. Return plugins ทั้งหมด
 
 **Example**:
+
 ```typescript
-const plugins = await discoverPlugins('/path/to/repo/plugins');
+const plugins = await discoverPlugins("/path/to/repo/plugins");
 // Returns: [
 //   { name: 'agent-browser', path: '/path/...', config: {...} },
 //   { name: 'ibl1nk', path: '/path/...', config: {...} },
@@ -103,28 +109,34 @@ const plugins = await discoverPlugins('/path/to/repo/plugins');
 ---
 
 #### `parseAgentFrontmatter(agentPath: string): Promise<AgentFrontmatter>`
+
 อ่านเฉพาะ YAML frontmatter จาก agent file (ไม่โหลดเนื้อหาเต็ม)
 
-**Input**: 
+**Input**:
+
 - `agentPath`: Absolute path ถึง agent `.md` file
 
-**Output**: 
+**Output**:
+
 - `AgentFrontmatter` object
 
 **Errors**:
+
 - `FRONTMATTER_NOT_FOUND`: ไม่มี YAML frontmatter ในไฟล์
 - `FRONTMATTER_PARSE_ERROR`: YAML parse ไม่ได้
 - `VALIDATION_FAILED`: Frontmatter ไม่ตรง schema
 
 **Logic**:
+
 1. อ่านไฟล์จนถึง `---` แรก (frontmatter block)
 2. Parse YAML
 3. Validate ต่อ schema
 4. Return frontmatter object
 
 **Example**:
+
 ```typescript
-const fm = await parseAgentFrontmatter('/path/to/agents/lead-writer.md');
+const fm = await parseAgentFrontmatter("/path/to/agents/lead-writer.md");
 // fm = { name: 'lead-writer', description: '...', mode: 'primary', tools: ['bash'] }
 
 // ระบบใช้ frontmatter เพื่อ:
@@ -136,22 +148,27 @@ const fm = await parseAgentFrontmatter('/path/to/agents/lead-writer.md');
 ---
 
 #### `discoverAgents(pluginDir: string, config: PluginConfig): Promise<AgentManifest[]>`
+
 Scan agents directory และ return manifests ทั้งหมด (เฉพาะ frontmatter)
 
 **Input**:
+
 - `pluginDir`: Absolute path ถึง plugin directory
 - `config`: Plugin config ที่ resolve paths แล้ว
 
 **Output**:
+
 - Array ของ `AgentManifest` (frontmatter เท่านั้น, ไม่มีเนื้อหาเต็ม)
 
 **Logic**:
+
 1. ใช้ `config.components.agents` glob patterns
 2. หาไฟล์ที่ match
 3. สำหรับแต่ละไฟล์ → `parseAgentFrontmatter()`
 4. Return manifests ทั้งหมด
 
 **Example**:
+
 ```typescript
 const agents = await discoverAgents(pluginDir, config);
 // agents = [
@@ -165,25 +182,29 @@ const agents = await discoverAgents(pluginDir, config);
 ---
 
 #### `loadAgent(agentPath: string): Promise<{ frontmatter: AgentFrontmatter, content: string }>`
+
 โหลดเนื้อหาเต็มของ agent (ใช้เมื่อ agent ถูกเลือกแล้วเท่านั้น)
 
 **Input**:
+
 - `agentPath`: Absolute path ถึง agent file
 
 **Output**:
+
 - Frontmatter + เนื้อหาเต็มของ agent
 
 **สำคัญ:** ฟังก์ชันนี้ควรเรียกเฉพาะเมื่อผู้ใช้เลือก agent แล้วเท่านั้น
 **ไม่ควร** โหลดทั้งหมดตอน startup
 
 **Example**:
+
 ```typescript
 // 1. discoverAgents() เพื่อหา agents ทั้งหมด (เฉพาะ frontmatter)
 const agents = await discoverAgents(pluginDir, config);
 
 // 2. Match กับ user request
-const matchedAgent = agents.find(a => 
-  a.frontmatter.description.includes('เขียนนิยาย')
+const matchedAgent = agents.find(a =>
+  a.frontmatter.description.includes("เขียนนิยาย")
 );
 
 // 3. โหลดเฉพาะ agent ที่ match เท่านั้น
@@ -194,41 +215,51 @@ const agent = await loadAgent(matchedAgent.path);
 ---
 
 #### `readConfig(pluginDir: string): Promise<PluginConfig>`
+
 อ่าน config file จาก `bl1nk.jsonc` ใน plugin directory
 
-**Input**: 
+**Input**:
+
 - `pluginDir`: Absolute path ถึง plugin directory
 
-**Output**: 
+**Output**:
+
 - Parsed config object
 
 **Errors**:
+
 - `CONFIG_NOT_FOUND`: bl1nk.jsonc ไม่มีใน directory
 - `CONFIG_PARSE_ERROR`: JSONC parse ไม่ได้
 - `CONFIG_READ_ERROR`: FileSystem error
 
 **Example**:
+
 ```typescript
-const config = await readConfig('/path/to/plugins/my-plugin');
+const config = await readConfig("/path/to/plugins/my-plugin");
 // Returns: { name: 'my-plugin', version: '1.0.0', ... }
 ```
 
 ---
 
 #### `validateConfig(config: PluginConfig, schema?: object): Promise<ValidationResult>`
+
 Validate config ต่อ schema
 
 **Input**:
+
 - `config`: Config object ที่อ่านจาก `readConfig()`
 - `schema`: (Optional) Custom JSON schema ถ้าต้องการ override default
 
 **Output**:
+
 - `ValidationResult` { valid: boolean, errors: ValidationError[] }
 
 **Errors**:
+
 - `SCHEMA_LOAD_ERROR`: Default schema load ไม่ได้
 
 **Example**:
+
 ```typescript
 const result = await validateConfig(config);
 if (!result.valid) {
@@ -239,19 +270,24 @@ if (!result.valid) {
 ---
 
 #### `resolvePaths(pluginDir: string, config: PluginConfig): Promise<ResolvedPaths>`
+
 Convert relative paths ใน config ให้เป็น absolute paths
 
 **Input**:
+
 - `pluginDir`: Absolute path ถึง plugin directory
 - `config`: Config object ที่ validate แล้ว
 
 **Output**:
+
 - `ResolvedPaths` พร้อม absolute paths ทั้งหมด
 
 **Errors**:
+
 - `PATH_RESOLUTION_ERROR`: Path resolve ไม่ได้ (เช่น file ไม่มีจริง)
 
 **Logic**:
+
 1. เริ่มจาก `pluginDir` เป็น base
 2. Resolve `contextFile` path
 3. Resolve แต่ละ component glob pattern
@@ -259,8 +295,9 @@ Convert relative paths ใน config ให้เป็น absolute paths
 5. Return absolute paths ทั้งหมด
 
 **Example**:
+
 ```typescript
-const paths = await resolvePaths('/path/to/plugins/my-plugin', config);
+const paths = await resolvePaths("/path/to/plugins/my-plugin", config);
 // paths.contextFile = '/path/to/plugins/my-plugin/AGENTS.md'
 // paths.components.agents = ['/path/to/plugins/my-plugin/agents/writer.md']
 ```
@@ -268,25 +305,30 @@ const paths = await resolvePaths('/path/to/plugins/my-plugin', config);
 ---
 
 #### `substituteEnv(config: PluginConfig, env?: NodeJS.ProcessEnv): PluginConfig`
+
 แทนที่ `${VAR_NAME}` ใน config values ด้วย environment variable values
 
 **Input**:
+
 - `config`: Config object
 - `env`: (Optional) Custom env object (default: `process.env`)
 
 **Output**:
+
 - Config ใหม่ที่แทนที่ env vars แล้ว
 
 **Pattern**:
+
 - `${VAR_NAME}` - แทนที่ด้วย value หรือ empty string ถ้าไม่มี
 - `${VAR_NAME:-default}` - ใช้ default ถ้า VAR_NAME ไม่มี
 
 **Example**:
+
 ```typescript
-process.env.API_KEY = 'secret123';
+process.env.API_KEY = "secret123";
 const config = {
-  name: 'my-plugin',
-  description: 'Uses ${API_KEY} for auth'
+  name: "my-plugin",
+  description: "Uses ${API_KEY} for auth",
 };
 const substituted = substituteEnv(config);
 // substituted.description = 'Uses secret123 for auth'
@@ -295,20 +337,25 @@ const substituted = substituteEnv(config);
 ---
 
 #### `loadPlugin(pluginDir: string): Promise<{ config: PluginConfig, paths: ResolvedPaths }>`
+
 High-level function ที่ทำ read → validate → resolve → return
 
 **Input**:
+
 - `pluginDir`: Absolute path ถึง plugin directory
 
 **Output**:
+
 - Config และ resolved paths ที่ validate แล้ว
 
 **Errors**:
+
 - โยน error จากขั้นตอนใดขั้นตอนหนึ่ง
 
 **Example**:
+
 ```typescript
-const plugin = await loadPlugin('/path/to/plugins/my-plugin');
+const plugin = await loadPlugin("/path/to/plugins/my-plugin");
 // plugin.config = { ... }
 // plugin.paths = { ... }
 ```
@@ -319,13 +366,13 @@ const plugin = await loadPlugin('/path/to/plugins/my-plugin');
 
 ```typescript
 enum PluginErrorCode {
-  CONFIG_NOT_FOUND = 'CONFIG_NOT_FOUND',
-  CONFIG_PARSE_ERROR = 'CONFIG_PARSE_ERROR',
-  CONFIG_READ_ERROR = 'CONFIG_READ_ERROR',
-  SCHEMA_LOAD_ERROR = 'SCHEMA_LOAD_ERROR',
-  VALIDATION_ERROR = 'VALIDATION_ERROR',
-  PATH_RESOLUTION_ERROR = 'PATH_RESOLUTION_ERROR',
-  ENV_SUBSTITUTION_ERROR = 'ENV_SUBSTITUTION_ERROR',
+  CONFIG_NOT_FOUND = "CONFIG_NOT_FOUND",
+  CONFIG_PARSE_ERROR = "CONFIG_PARSE_ERROR",
+  CONFIG_READ_ERROR = "CONFIG_READ_ERROR",
+  SCHEMA_LOAD_ERROR = "SCHEMA_LOAD_ERROR",
+  VALIDATION_ERROR = "VALIDATION_ERROR",
+  PATH_RESOLUTION_ERROR = "PATH_RESOLUTION_ERROR",
+  ENV_SUBSTITUTION_ERROR = "ENV_SUBSTITUTION_ERROR",
 }
 
 class PluginConfigError extends Error {
@@ -335,7 +382,7 @@ class PluginConfigError extends Error {
     public details?: any
   ) {
     super(message);
-    this.name = 'PluginConfigError';
+    this.name = "PluginConfigError";
   }
 }
 ```
@@ -375,13 +422,12 @@ CLI tools อื่นที่ต้องการเชื่อมต่อ�
 3. **ลงทะเบียน** กับระบบของ CLI นั้น
 
 **Example: Claude Code Adapter**
+
 ```typescript
 class ClaudeCodeAdapter {
   async loadIbl1nkPlugins(repoRoot: string) {
-    const plugins = await discoverPlugins(
-      path.join(repoRoot, 'plugins')
-    );
-    
+    const plugins = await discoverPlugins(path.join(repoRoot, "plugins"));
+
     for (const plugin of plugins) {
       // Convert our skills → Claude Code skills
       // Convert our commands → Claude Code commands
@@ -446,11 +492,12 @@ packages/plugin-sdk/
 ## Usage Examples
 
 ### Example 1: Discover All Plugins (Primary Use Case)
-```typescript
-import { discoverPlugins } from '@bl1nk/plugin-sdk';
 
-const repoRoot = '/path/to/ibl1nk/repo';
-const plugins = await discoverPlugins(path.join(repoRoot, 'plugins'));
+```typescript
+import { discoverPlugins } from "@bl1nk/plugin-sdk";
+
+const repoRoot = "/path/to/ibl1nk/repo";
+const plugins = await discoverPlugins(path.join(repoRoot, "plugins"));
 
 console.log(`Found ${plugins.length} plugins:`);
 for (const plugin of plugins) {
@@ -459,20 +506,22 @@ for (const plugin of plugins) {
 ```
 
 ### Example 2: Load Specific Plugin
-```typescript
-import { loadPlugin } from '@bl1nk/plugin-sdk';
 
-const plugin = await loadPlugin('/path/to/repo/plugins/story-studio');
+```typescript
+import { loadPlugin } from "@bl1nk/plugin-sdk";
+
+const plugin = await loadPlugin("/path/to/repo/plugins/story-studio");
 console.log(`Loaded ${plugin.config.name} v${plugin.config.version}`);
 console.log(`Context file: ${plugin.paths.contextFilePath}`);
 console.log(`Skills: ${plugin.paths.components.skills.length}`);
 ```
 
 ### Example 3: Validate Only
-```typescript
-import { readConfig, validateConfig } from '@bl1nk/plugin-sdk';
 
-const config = await readConfig('/path/to/repo/plugins/my-plugin');
+```typescript
+import { readConfig, validateConfig } from "@bl1nk/plugin-sdk";
+
+const config = await readConfig("/path/to/repo/plugins/my-plugin");
 const result = await validateConfig(config);
 
 if (!result.valid) {
@@ -481,13 +530,14 @@ if (!result.valid) {
 ```
 
 ### Example 4: External Adapter Usage
+
 ```typescript
 // Claude Code adapter for ibl1nk plugins
-import { discoverPlugins } from '@bl1nk/plugin-sdk';
+import { discoverPlugins } from "@bl1nk/plugin-sdk";
 
 async function integrateWithClaudeCode(repoRoot: string) {
-  const plugins = await discoverPlugins(path.join(repoRoot, 'plugins'));
-  
+  const plugins = await discoverPlugins(path.join(repoRoot, "plugins"));
+
   for (const plugin of plugins) {
     // Convert and register with Claude Code
     await claudeCode.registerPlugin(plugin);

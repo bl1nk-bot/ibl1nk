@@ -7,7 +7,16 @@ description: |
 globs: "**/*.md"
 severity: critical
 learned_at: 2026-04-09
-trigger_keywords: ["research", "survey", "compare", "analyze", "หาข้อมูล", "สำรวจ", "เปรียบเทียบ"]
+trigger_keywords:
+  [
+    "research",
+    "survey",
+    "compare",
+    "analyze",
+    "หาข้อมูล",
+    "สำรวจ",
+    "เปรียบเทียบ",
+  ]
 ---
 
 ## กฎ
@@ -27,6 +36,7 @@ trigger_keywords: ["research", "survey", "compare", "analyze", "หาข้อ�
 **Purpose**: หา plugin architecture patterns จาก AI code editors อื่นๆ
 
 ## Sources
+
 - Claude Code plugin architecture
 - Gemini CLI extension format
 - OpenCode plugin system
@@ -34,12 +44,14 @@ trigger_keywords: ["research", "survey", "compare", "analyze", "หาข้อ�
 - Cursor plugin system
 
 ## Findings
+
 (บันทึกสิ่งที่พบ — pattern, structure, best practices)
 ```
 
 ## เหตุผล
 
 Session นี้เกิดปัญหา:
+
 - AI ตัวที่ทำ research → ไม่บันทึกผล
 - AI ตัวต่อมา (ฉัน) → ไม่มีหลักฐาน → หาไม่เจอ → บอก user ว่า "ไม่มี"
 - ผู้ใช้ต้องจำเองว่าเคยสั่งอะไร → AI ทุกตัวกลายเป็น "ไอ้เวรที่จำไม่ได้"

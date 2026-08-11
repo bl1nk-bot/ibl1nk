@@ -29,11 +29,11 @@ describe("Input Chrome Utilities", () => {
         content: "",
         fg: "",
       } as unknown as TextRenderable;
-      
+
       const originalExit = process.exit;
-      Object.defineProperty(process, 'exit', {
+      Object.defineProperty(process, "exit", {
         value: mock(() => {}),
-        configurable: true
+        configurable: true,
       });
 
       const handler = createCtrlCExitHandler({
@@ -56,7 +56,7 @@ describe("Input Chrome Utilities", () => {
       expect(mockRenderer.destroy).toHaveBeenCalled();
       expect(process.exit).toHaveBeenCalledWith(0);
 
-      Object.defineProperty(process, 'exit', { value: originalExit });
+      Object.defineProperty(process, "exit", { value: originalExit });
     });
   });
 });

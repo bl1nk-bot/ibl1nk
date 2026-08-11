@@ -1,5 +1,11 @@
 import { expect, test, describe, mock } from "bun:test";
-import { loadSettings, saveSettings, getConfiguredProvider, getConfiguredModel, updateModelSettings } from "./settings.js";
+import {
+  loadSettings,
+  saveSettings,
+  getConfiguredProvider,
+  getConfiguredModel,
+  updateModelSettings,
+} from "./settings.js";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 
 // Mock fs/promises
@@ -9,18 +15,18 @@ mock.module("node:fs/promises", () => ({
       return JSON.stringify({
         model: {
           provider: "gemini",
-          model: "gemini-3-flash"
-        }
+          model: "gemini-3-flash",
+        },
       });
     }
     throw new Error("File not found");
   },
   writeFile: async () => {},
-  mkdir: async () => {}
+  mkdir: async () => {},
 }));
 
 mock.module("node:os", () => ({
-  homedir: () => "/home/testuser"
+  homedir: () => "/home/testuser",
 }));
 
 describe("Settings", () => {

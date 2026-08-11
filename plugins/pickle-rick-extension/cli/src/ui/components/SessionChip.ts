@@ -15,7 +15,11 @@ import { SessionData } from "../../types/tasks.js";
 import { THEME } from "../theme.js";
 import { formatDuration, isSessionActive } from "../../utils/index.js";
 
-function interpolateColor(color1: string, color2: string, factor: number): string {
+function interpolateColor(
+  color1: string,
+  color2: string,
+  factor: number
+): string {
   const c1 = parseColor(color1);
   const c2 = parseColor(color2);
   const r = c1.r + (c2.r - c1.r) * factor;
@@ -97,7 +101,10 @@ export class SessionChip extends BoxRenderable {
           this.isPressed = false;
           this.updateVisuals(150);
           // Only select if the target is not the cancel or review button
-          if (event.target !== this.cancelButton && event.target !== this.reviewButton) {
+          if (
+            event.target !== this.cancelButton &&
+            event.target !== this.reviewButton
+          ) {
             this.onSelectCallback(this.session);
           }
           break;
@@ -245,7 +252,10 @@ export class SessionChip extends BoxRenderable {
 
     // If it looks like a common folder name, try to get parent too
     const commonFolders = ["src", "lib", "app", "cli", "dist", "build"];
-    if (commonFolders.includes(lastSegment.toLowerCase()) && segments.length > 1) {
+    if (
+      commonFolders.includes(lastSegment.toLowerCase()) &&
+      segments.length > 1
+    ) {
       return `~/${segments[segments.length - 2]}/${lastSegment}`;
     }
 
@@ -260,37 +270,89 @@ export class SessionChip extends BoxRenderable {
     const prompt = this.session.prompt;
 
     // Timestamp (no prefix on header)
-    chunks.push({ text: time, fg: parseColor(LOG_COLORS.timestamp), __isChunk: true });
+    chunks.push({
+      text: time,
+      fg: parseColor(LOG_COLORS.timestamp),
+      __isChunk: true,
+    });
     chunks.push({ text: " ", __isChunk: true });
 
     // Git status: [branch +ahead -behind ~modified]
-    chunks.push({ text: "[", fg: parseColor(LOG_COLORS.gitBranch), __isChunk: true });
-    chunks.push({ text: gs?.branch || "main", fg: parseColor(LOG_COLORS.gitBranch), __isChunk: true });
+    chunks.push({
+      text: "[",
+      fg: parseColor(LOG_COLORS.gitBranch),
+      __isChunk: true,
+    });
+    chunks.push({
+      text: gs?.branch || "main",
+      fg: parseColor(LOG_COLORS.gitBranch),
+      __isChunk: true,
+    });
 
     if (gs) {
       if (gs.ahead > 0) {
-        chunks.push({ text: " +", fg: parseColor(LOG_COLORS.gitAhead), __isChunk: true });
-        chunks.push({ text: String(gs.ahead), fg: parseColor(LOG_COLORS.gitAhead), __isChunk: true });
+        chunks.push({
+          text: " +",
+          fg: parseColor(LOG_COLORS.gitAhead),
+          __isChunk: true,
+        });
+        chunks.push({
+          text: String(gs.ahead),
+          fg: parseColor(LOG_COLORS.gitAhead),
+          __isChunk: true,
+        });
       }
       if (gs.behind > 0) {
-        chunks.push({ text: " -", fg: parseColor(LOG_COLORS.gitBehind), __isChunk: true });
-        chunks.push({ text: String(gs.behind), fg: parseColor(LOG_COLORS.gitBehind), __isChunk: true });
+        chunks.push({
+          text: " -",
+          fg: parseColor(LOG_COLORS.gitBehind),
+          __isChunk: true,
+        });
+        chunks.push({
+          text: String(gs.behind),
+          fg: parseColor(LOG_COLORS.gitBehind),
+          __isChunk: true,
+        });
       }
       if (gs.modified > 0) {
-        chunks.push({ text: " ~", fg: parseColor(LOG_COLORS.gitModified), __isChunk: true });
-        chunks.push({ text: String(gs.modified), fg: parseColor(LOG_COLORS.gitModified), __isChunk: true });
+        chunks.push({
+          text: " ~",
+          fg: parseColor(LOG_COLORS.gitModified),
+          __isChunk: true,
+        });
+        chunks.push({
+          text: String(gs.modified),
+          fg: parseColor(LOG_COLORS.gitModified),
+          __isChunk: true,
+        });
       }
     }
 
-    chunks.push({ text: "]", fg: parseColor(LOG_COLORS.gitBranch), __isChunk: true });
+    chunks.push({
+      text: "]",
+      fg: parseColor(LOG_COLORS.gitBranch),
+      __isChunk: true,
+    });
     chunks.push({ text: " ", __isChunk: true });
 
     // Path
-    chunks.push({ text: path, fg: parseColor(LOG_COLORS.path), __isChunk: true });
-    chunks.push({ text: " > ", fg: parseColor(LOG_COLORS.path), __isChunk: true });
+    chunks.push({
+      text: path,
+      fg: parseColor(LOG_COLORS.path),
+      __isChunk: true,
+    });
+    chunks.push({
+      text: " > ",
+      fg: parseColor(LOG_COLORS.path),
+      __isChunk: true,
+    });
 
     // Prompt
-    chunks.push({ text: prompt, fg: parseColor(LOG_COLORS.prompt), __isChunk: true });
+    chunks.push({
+      text: prompt,
+      fg: parseColor(LOG_COLORS.prompt),
+      __isChunk: true,
+    });
 
     return new StyledText(chunks);
   }
@@ -298,16 +360,32 @@ export class SessionChip extends BoxRenderable {
   private buildStatusContent(message: string): StyledText {
     const chunks: TextChunk[] = [];
     chunks.push({ text: "│   ", fg: parseColor(THEME.dim), __isChunk: true });
-    chunks.push({ text: "[STATUS] ", fg: parseColor(LOG_COLORS.statusLabel), __isChunk: true });
-    chunks.push({ text: message, fg: parseColor(LOG_COLORS.statusText), __isChunk: true });
+    chunks.push({
+      text: "[STATUS] ",
+      fg: parseColor(LOG_COLORS.statusLabel),
+      __isChunk: true,
+    });
+    chunks.push({
+      text: message,
+      fg: parseColor(LOG_COLORS.statusText),
+      __isChunk: true,
+    });
     return new StyledText(chunks);
   }
 
   private buildInfoContent(message: string): StyledText {
     const chunks: TextChunk[] = [];
     chunks.push({ text: "│   ", fg: parseColor(THEME.dim), __isChunk: true });
-    chunks.push({ text: "[INFO] ", fg: parseColor(LOG_COLORS.infoLabel), __isChunk: true });
-    chunks.push({ text: message, fg: parseColor(LOG_COLORS.statusText), __isChunk: true });
+    chunks.push({
+      text: "[INFO] ",
+      fg: parseColor(LOG_COLORS.infoLabel),
+      __isChunk: true,
+    });
+    chunks.push({
+      text: message,
+      fg: parseColor(LOG_COLORS.statusText),
+      __isChunk: true,
+    });
     return new StyledText(chunks);
   }
 
@@ -318,16 +396,27 @@ export class SessionChip extends BoxRenderable {
 
     // Extract step from status if available (e.g., "Iteration 1: DRAFT PRD (prd)")
     let stepInfo = `Iteration ${iteration}: DRAFT PRD`;
-    if (status && !status.toLowerCase().includes("initializing") &&
-        !status.toLowerCase().includes("done") &&
-        !status.toLowerCase().includes("error")) {
+    if (
+      status &&
+      !status.toLowerCase().includes("initializing") &&
+      !status.toLowerCase().includes("done") &&
+      !status.toLowerCase().includes("error")
+    ) {
       // Clean up the status to show just the relevant part
       stepInfo = status;
     }
 
     chunks.push({ text: "│   ", fg: parseColor(THEME.dim), __isChunk: true });
-    chunks.push({ text: "[RUN    ] ", fg: parseColor(LOG_COLORS.runLabel), __isChunk: true });
-    chunks.push({ text: stepInfo, fg: parseColor(LOG_COLORS.runText), __isChunk: true });
+    chunks.push({
+      text: "[RUN    ] ",
+      fg: parseColor(LOG_COLORS.runLabel),
+      __isChunk: true,
+    });
+    chunks.push({
+      text: stepInfo,
+      fg: parseColor(LOG_COLORS.runText),
+      __isChunk: true,
+    });
     return new StyledText(chunks);
   }
 
@@ -341,15 +430,35 @@ export class SessionChip extends BoxRenderable {
     chunks.push({ text: "│   └─", fg: parseColor(THEME.dim), __isChunk: true });
 
     if (hasError) {
-      chunks.push({ text: "[Error]", fg: parseColor(LOG_COLORS.errorLabel), __isChunk: true });
+      chunks.push({
+        text: "[Error]",
+        fg: parseColor(LOG_COLORS.errorLabel),
+        __isChunk: true,
+      });
     } else if (isFinished) {
-      chunks.push({ text: "[Done]", fg: parseColor(LOG_COLORS.doneLabel), __isChunk: true });
+      chunks.push({
+        text: "[Done]",
+        fg: parseColor(LOG_COLORS.doneLabel),
+        __isChunk: true,
+      });
     } else {
-      chunks.push({ text: "[...]", fg: parseColor(LOG_COLORS.elapsed), __isChunk: true });
+      chunks.push({
+        text: "[...]",
+        fg: parseColor(LOG_COLORS.elapsed),
+        __isChunk: true,
+      });
     }
 
-    chunks.push({ text: " Elapsed: ", fg: parseColor(LOG_COLORS.elapsed), __isChunk: true });
-    chunks.push({ text: formatDuration(durationMs), fg: parseColor(LOG_COLORS.elapsed), __isChunk: true });
+    chunks.push({
+      text: " Elapsed: ",
+      fg: parseColor(LOG_COLORS.elapsed),
+      __isChunk: true,
+    });
+    chunks.push({
+      text: formatDuration(durationMs),
+      fg: parseColor(LOG_COLORS.elapsed),
+      __isChunk: true,
+    });
 
     return new StyledText(chunks);
   }
@@ -383,7 +492,7 @@ export class SessionChip extends BoxRenderable {
     this.visualTimeline = createTimeline({ autoplay: false });
     this.visualTimeline.add(this, {
       duration,
-      onUpdate: (anim) => {
+      onUpdate: anim => {
         if (startBg !== "transparent" && targetBg !== "transparent") {
           this.currentBg = interpolateColor(startBg, targetBg, anim.progress);
         } else {
@@ -462,7 +571,8 @@ export class SessionChip extends BoxRenderable {
     this.doneLine.content = this.buildDoneContent();
 
     // Update button visibility
-    const completedLike = statusLower.includes("done") || statusLower.includes("task completed");
+    const completedLike =
+      statusLower.includes("done") || statusLower.includes("task completed");
     const isFinished = !isSessionActive(session.status) || completedLike;
     const isDone = completedLike || statusLower === "done";
     const hasWorktree = !!session.worktreeInfo;

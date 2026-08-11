@@ -3,9 +3,11 @@
 ## Survey of All 5 Plugins
 
 ### 1. agent-browser
+
 **Location**: `plugins/agent-browser/`
 
 **Directory Structure**:
+
 ```
 agent-browser/
 ├── SKILL.md
@@ -23,6 +25,7 @@ agent-browser/
 ```
 
 **Components**:
+
 - **Skill**: 1 (SKILL.md at root)
 - **References**: 6 files (detailed documentation)
 - **Templates**: 3 shell scripts
@@ -38,9 +41,11 @@ agent-browser/
 ---
 
 ### 2. ibl1nk
+
 **Location**: `plugins/ibl1nk/`
 
 **Directory Structure**:
+
 ```
 ibl1nk/
 ├── SKILL.md
@@ -55,6 +60,7 @@ ibl1nk/
 ```
 
 **Components**:
+
 - **Skill**: 1 (SKILL.md at root)
 - **References**: 3 files (API documentation)
 - **Scripts**: 3 JavaScript files
@@ -70,9 +76,11 @@ ibl1nk/
 ---
 
 ### 3. pickle-rick-extension
+
 **Location**: `plugins/pickle-rick-extension/`
 
 **Directory Structure**:
+
 ```
 pickle-rick-extension/
 ├── gemini-extension.json
@@ -117,6 +125,7 @@ pickle-rick-extension/
 ```
 
 **Components**:
+
 - **Skills**: 9 skills (แต่ละตัวมี SKILL.md หรือ similar)
 - **Commands**: 7 commands (.toml files)
 - **Hooks**: 5 hooks (hooks.json + shell/ps1 scripts)
@@ -132,9 +141,11 @@ pickle-rick-extension/
 ---
 
 ### 4. story-studio
+
 **Location**: `plugins/story-studio/`
 
 **Directory Structure**:
+
 ```
 story-studio/
 ├── agents/
@@ -161,6 +172,7 @@ story-studio/
 ```
 
 **Components**:
+
 - **Agents**: 4 agents (lead-writer, editor, context-manager, marketing-specialist)
 - **Commands**: 7 commands (.md files)
 - **Hooks**: 1 (hooks.json)
@@ -176,9 +188,11 @@ story-studio/
 ---
 
 ### 5. command-creator
+
 **Location**: `plugins/command-creator/`
 
 **Directory Structure**:
+
 ```
 command-creator/
 ├── commands/
@@ -191,6 +205,7 @@ command-creator/
 ```
 
 **Components**:
+
 - **Commands**: 1 command (command-creator.md)
 - **Skills**: 1 skill (command-creator/SKILL.md)
 - **Evals**: Yes (evaluation tests)
@@ -253,7 +268,9 @@ command-creator/
 ## Common Config Patterns
 
 ### Config Files Found:
+
 1. **gemini-extension.json** (pickle-rick)
+
    ```json
    {
      "name": "pickle-rick",
@@ -275,6 +292,7 @@ command-creator/
 ## Majority Directory Structures
 
 ### Most Common Directories (by frequency):
+
 1. **skills/** - 3/5 plugins
 2. **commands/** - 3/5 plugins
 3. **references/** - 3/5 plugins
@@ -287,6 +305,7 @@ command-creator/
 10. **evals/** - 1/5 plugins
 
 ### Majority Structure (出現在 3+ plugins):
+
 ```
 plugins/<plugin-name>/
 ├── <CONTEXT>.md           # SKILL.md หรือ GEMINI.md (3/5)
@@ -303,27 +322,33 @@ plugins/<plugin-name>/
 ## Majority File Naming Conventions
 
 ### Commands:
+
 - **Format**: `.md` (2/3) หรือ `.toml` (1/3)
 - **Naming**: kebab-case (e.g., `create-board.md`, `pickle-prd.toml`)
 
 ### Skills:
+
 - **Format**: `skills/<skill-name>/SKILL.md`
 - **Naming**: kebab-case สำหรับ directory name
 
 ### Hooks:
+
 - **Config**: `hooks.json`
 - **Scripts**: kebab-case.sh หรือ kebab-case.ps1
 
 ### Scripts:
+
 - **Shell**: kebab-case.sh
 - **JavaScript**: kebab-case.js
 - **PowerShell**: kebab-case.ps1
 
 ### Agents:
+
 - **Format**: `agents/<agent-name>.md`
 - **Naming**: kebab-case
 
 ### References:
+
 - **Format**: `references/<topic>.md`
 - **Naming**: kebab-case
 
@@ -332,6 +357,7 @@ plugins/<plugin-name>/
 ## Summary
 
 ### What Exists (Majority):
+
 - **Context File**: SKILL.md หรือ similar (3/5)
 - **Commands**: commands/*.md (3/5)
 - **Skills**: skills/*/SKILL.md (3/5)
@@ -340,13 +366,16 @@ plugins/<plugin-name>/
 - **Hooks**: hooks/*.json + scripts (2/5)
 
 ### What's Missing (Minority):
+
 - **Config File**: 3/5 plugins ไม่มี config file
 - **Agents**: 4/5 plugins ไม่มี agents/
 - **Themes**: 4/5 plugins ไม่มี themes/
 - **Tests**: 5/5 plugins ไม่มี tests/ directory!
 
 ### Standard Should Be:
+
 Based on majority patterns + requirements:
+
 ```
 plugins/<plugin-name>/
 ├── bl1nk.jsonc              # NEW: Config standard

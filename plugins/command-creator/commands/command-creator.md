@@ -18,11 +18,11 @@ This skill helps you create, manage, and optimize custom Qwen Code commands.
 
 Commands are stored as markdown files and use three injection mechanisms:
 
-| Syntax | Purpose | Example |
-|--------|---------|---------|
-| `@{path}` | Inject file/directory content | `@{src/main.py}` |
-| `!{command}` | Execute shell command | `!{git diff --staged}` |
-| `{{args}}` | Accept user parameters | `Review {{args}}` |
+| Syntax       | Purpose                       | Example                |
+| ------------ | ----------------------------- | ---------------------- |
+| `@{path}`    | Inject file/directory content | `@{src/main.py}`       |
+| `!{command}` | Execute shell command         | `!{git diff --staged}` |
+| `{{args}}`   | Accept user parameters        | `Review {{args}}`      |
 
 ## Creating a New Command
 
@@ -77,6 +77,7 @@ Additional data:
 ---
 description: Generate code based on specifications
 ---
+
 Generate code based on the following requirements:
 
 {{args}}
@@ -88,6 +89,7 @@ Current project structure:
 !{ls -la}
 
 Requirements:
+
 1. Follow best practices
 2. Include error handling
 3. Add type hints
@@ -100,6 +102,7 @@ Requirements:
 ---
 description: Review code for quality and best practices
 ---
+
 Review the following code:
 
 @{{file_path}}
@@ -108,6 +111,7 @@ Standards to check against:
 @{docs/review-checklist.md}
 
 Provide:
+
 - Security issues found
 - Performance improvements
 - Code quality suggestions
@@ -116,18 +120,21 @@ Provide:
 
 ### Template 3: Git Workflow
 
-```markdown
+````markdown
 ---
 description: Create git commit from staged changes
 ---
+
 Create a commit message based on these changes:
 
 ```diff
 !{git diff --staged}
 ```
+````
 
 Follow conventional commits format.
-```
+
+````
 
 ## Best Practices
 
@@ -164,7 +171,7 @@ Project structure:
 !{tree -L 2}
 
 Task: {{args}}
-```
+````
 
 ### Pattern: Conditional Parameters
 
@@ -204,6 +211,7 @@ When creating a command, follow this sequence:
 ## Next Steps
 
 When working with this skill:
+
 1. Define what command you want to create
 2. I'll help design the structure and template
 3. Create the file in the correct location

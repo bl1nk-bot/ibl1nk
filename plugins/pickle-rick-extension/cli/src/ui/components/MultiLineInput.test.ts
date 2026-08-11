@@ -2,7 +2,10 @@ import { mock, expect, test, describe, beforeEach } from "bun:test";
 import "../test-setup.js";
 import { createMockRenderer } from "../mock-factory.ts";
 
-import { MultiLineInputRenderable, MultiLineInputEvents } from "./MultiLineInput.ts";
+import {
+  MultiLineInputRenderable,
+  MultiLineInputEvents,
+} from "./MultiLineInput.ts";
 
 describe("MultiLineInputRenderable", () => {
   let mockCtx: any;

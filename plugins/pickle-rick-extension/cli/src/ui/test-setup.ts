@@ -7,7 +7,7 @@ export class MockRenderable {
   public _children: any[] = [];
   public _handlers: Record<string, Function[]> = {};
   public _ctx: any;
-  
+
   constructor(renderer: any, options: any) {
     this._ctx = renderer;
     this.id = options?.id || "";
@@ -16,14 +16,14 @@ export class MockRenderable {
     this._handlers = {};
   }
 
-  public add(child: any) { 
-    if (child) this._children.push(child); 
+  public add(child: any) {
+    if (child) this._children.push(child);
   }
-  public remove(id: string) { 
-    this._children = this._children.filter((c: any) => c.id !== id); 
+  public remove(id: string) {
+    this._children = this._children.filter((c: any) => c.id !== id);
   }
-  public getChildren() { 
-    return this._children || []; 
+  public getChildren() {
+    return this._children || [];
   }
   public destroy() {}
   public destroyRecursively() {}
@@ -31,18 +31,20 @@ export class MockRenderable {
   public focus() {}
   public blur() {}
   public requestRender() {}
-  
+
   public on(event: string, handler: Function) {
     if (!this._handlers[event]) this._handlers[event] = [];
     this._handlers[event].push(handler);
   }
-  
+
   public off(event: string, handler: Function) {
     if (this._handlers[event]) {
-      this._handlers[event] = this._handlers[event].filter((h: any) => h !== handler);
+      this._handlers[event] = this._handlers[event].filter(
+        (h: any) => h !== handler
+      );
     }
   }
-  
+
   public emit(event: string, ...args: any[]) {
     if (this._handlers[event]) {
       this._handlers[event].forEach((h: any) => h(...args));
@@ -68,23 +70,25 @@ export class MockCliRenderer {
 
   constructor() {
     this.keyInput = {
-      on: mock(function(this: any, event: string, handler: Function) {
+      on: mock(function (this: any, event: string, handler: Function) {
         if (!this._handlers) this._handlers = {};
         if (!this._handlers[event]) this._handlers[event] = [];
         this._handlers[event].push(handler);
       }),
-      off: mock(function(this: any, event: string, handler: Function) {
+      off: mock(function (this: any, event: string, handler: Function) {
         if (this._handlers && this._handlers[event]) {
-          this._handlers[event] = this._handlers[event].filter((h: any) => h !== handler);
+          this._handlers[event] = this._handlers[event].filter(
+            (h: any) => h !== handler
+          );
         }
       }),
-      emit: mock(function(this: any, event: string, ...args: any[]) {
+      emit: mock(function (this: any, event: string, ...args: any[]) {
         if (this._handlers && this._handlers[event]) {
           this._handlers[event].forEach((h: any) => h(...args));
         }
       }),
       removeListener: mock(() => {}),
-      _handlers: {} as Record<string, Function[]>
+      _handlers: {} as Record<string, Function[]>,
     };
     this._internalKeyInput = {
       onInternal: mock(() => {}),
@@ -115,13 +119,13 @@ mock.module("@opentui/core", () => {
       public _placeholder = "";
       public position = "relative";
       public onContentChange: () => void = () => {};
-      constructor(ctx: any, options: any) { 
+      constructor(ctx: any, options: any) {
         super(ctx, options);
-        this.value = options?.value || ""; 
+        this.value = options?.value || "";
         this.plainText = this.value;
         this.maxLength = options?.maxLength ?? 1000;
         this.height = options?.height ?? 1;
-        
+
         // Ensure methods that might be overridden in subclasses are on the prototype OR
         // allow them to be shadowed by subclass properties.
         // We'll keep them as instance properties for now but use bind to allow super calls
@@ -131,12 +135,19 @@ mock.module("@opentui/core", () => {
       public handleKeyPress = mock(() => true);
       public newLine = mock(() => true);
       public handlePaste = mock(() => {});
-      public insertText = mock(function(this: any, text: string) { this.plainText += text; });
-      public setText = mock(function(this: any, text: string) { this.plainText = text; });
+      public insertText = mock(function (this: any, text: string) {
+        this.plainText += text;
+      });
+      public setText = mock(function (this: any, text: string) {
+        this.plainText = text;
+      });
       public submit = mock(() => true);
       public removeHighlightsByRef = mock(() => {});
       public addHighlightByCharRange = mock(() => {});
-      public syntaxStyle = { registerStyle: mock(() => 1), destroy: mock(() => {}) };
+      public syntaxStyle = {
+        registerStyle: mock(() => 1),
+        destroy: mock(() => {}),
+      };
     },
     BoxRenderable: class extends MockRenderable {
       public backgroundColor: any = { r: 0, g: 0, b: 0, a: 1 };
@@ -153,14 +164,22 @@ mock.module("@opentui/core", () => {
         this.height = options?.height || 0;
         this.minHeight = options?.minHeight || 0;
         if (options?.backgroundColor) {
-          this.backgroundColor = typeof options.backgroundColor === 'string'
-            ? { r: 0, g: 0, b: 0, a: 1, toString: () => options.backgroundColor }
-            : options.backgroundColor;
+          this.backgroundColor =
+            typeof options.backgroundColor === "string"
+              ? {
+                  r: 0,
+                  g: 0,
+                  b: 0,
+                  a: 1,
+                  toString: () => options.backgroundColor,
+                }
+              : options.backgroundColor;
         }
         if (options?.borderColor) {
-          this.borderColor = typeof options.borderColor === 'string'
-            ? { r: 0, g: 0, b: 0, a: 1, toString: () => options.borderColor }
-            : options.borderColor;
+          this.borderColor =
+            typeof options.borderColor === "string"
+              ? { r: 0, g: 0, b: 0, a: 1, toString: () => options.borderColor }
+              : options.borderColor;
         }
       }
     },
@@ -170,9 +189,9 @@ mock.module("@opentui/core", () => {
     TextRenderable: class extends MockRenderable {
       public content = "";
       public fg = "";
-      constructor(renderer: any, options: any) { 
+      constructor(renderer: any, options: any) {
         super(renderer, options);
-        this.content = options?.content || ""; 
+        this.content = options?.content || "";
       }
     },
     SelectRenderable: class extends MockRenderable {
@@ -196,19 +215,32 @@ mock.module("@opentui/core", () => {
     FrameBufferRenderable: class extends MockRenderable {},
     MarkdownRenderable: class extends MockRenderable {},
     fg: () => (text: string) => text,
-    RGBA: { 
-      fromValues: mock((r: number, g: number, b: number, a: number) => ({ r, g, b, a, toString: () => `rgba(${r},${g},${b},${a})` })),
+    RGBA: {
+      fromValues: mock((r: number, g: number, b: number, a: number) => ({
+        r,
+        g,
+        b,
+        a,
+        toString: () => `rgba(${r},${g},${b},${a})`,
+      })),
       fromHex: mock((hex: string) => {
-        if (typeof hex !== 'string') return { r: 0, g: 0, b: 0, a: 1, toString: () => String(hex) };
+        if (typeof hex !== "string")
+          return { r: 0, g: 0, b: 0, a: 1, toString: () => String(hex) };
         const r = parseInt(hex.slice(1, 3), 16) || 0;
         const g = parseInt(hex.slice(3, 5), 16) || 0;
         const b = parseInt(hex.slice(5, 7), 16) || 0;
         return { r, g, b, a: 1, toString: () => hex };
       }),
-      fromInts: mock((r: number, g: number, b: number, a: number) => ({ r, g, b, a, toString: () => `rgba(${r},${g},${b},${a})` })),
+      fromInts: mock((r: number, g: number, b: number, a: number) => ({
+        r,
+        g,
+        b,
+        a,
+        toString: () => `rgba(${r},${g},${b},${a})`,
+      })),
     },
     parseColor: mock((c: string) => {
-      if (typeof c === 'string' && c.startsWith("#")) {
+      if (typeof c === "string" && c.startsWith("#")) {
         const r = parseInt(c.slice(1, 3), 16) || 0;
         const g = parseInt(c.slice(3, 5), 16) || 0;
         const b = parseInt(c.slice(5, 7), 16) || 0;
@@ -217,7 +249,8 @@ mock.module("@opentui/core", () => {
       return { r: 0, g: 0, b: 0, a: 1, toString: () => String(c) };
     }),
     parseColorHex: mock((hex: string) => {
-      if (typeof hex !== 'string') return { r: 0, g: 0, b: 0, a: 1, toString: () => String(hex) };
+      if (typeof hex !== "string")
+        return { r: 0, g: 0, b: 0, a: 1, toString: () => String(hex) };
       const r = parseInt(hex.slice(1, 3), 16) || 0;
       const g = parseInt(hex.slice(3, 5), 16) || 0;
       const b = parseInt(hex.slice(5, 7), 16) || 0;
@@ -225,17 +258,21 @@ mock.module("@opentui/core", () => {
     }),
     rgbToHex: mock((rgbaOrR: any, gArg?: number, bArg?: number) => {
       // Handle both RGBA object and individual numbers
-      const r = typeof rgbaOrR === 'object' ? rgbaOrR.r : rgbaOrR;
-      const g = typeof rgbaOrR === 'object' ? rgbaOrR.g : gArg ?? 0;
-      const b = typeof rgbaOrR === 'object' ? rgbaOrR.b : bArg ?? 0;
-      const toHex = (n: number) => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, '0');
+      const r = typeof rgbaOrR === "object" ? rgbaOrR.r : rgbaOrR;
+      const g = typeof rgbaOrR === "object" ? rgbaOrR.g : (gArg ?? 0);
+      const b = typeof rgbaOrR === "object" ? rgbaOrR.b : (bArg ?? 0);
+      const toHex = (n: number) =>
+        Math.max(0, Math.min(255, Math.round(n)))
+          .toString(16)
+          .padStart(2, "0");
       return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
     }),
     createTimeline: mock(() => {
       const tl: any = {
         _actions: [] as Function[],
-        add: function(target: any, options: any) {
-          const { onUpdate, onComplete, duration, ease, ...props } = options || {};
+        add: function (target: any, options: any) {
+          const { onUpdate, onComplete, duration, ease, ...props } =
+            options || {};
           const anim = { progress: 1 };
           tl._actions.push(() => {
             if (target) Object.assign(target, props);
@@ -250,26 +287,34 @@ mock.module("@opentui/core", () => {
           });
           return tl;
         },
-        play: function() {
+        play: function () {
           while (tl._actions.length > 0) {
             const action = tl._actions.shift();
             if (action) action();
           }
           return tl;
         },
-        pause: function() { return tl; },
+        pause: function () {
+          return tl;
+        },
       };
       return tl;
     }),
-    StyledText: class { 
+    StyledText: class {
       constructor(public chunks: any[]) {}
       public toString() {
-        return this.chunks.map(c => typeof c === 'string' ? c : (c.text || '')).join('');
+        return this.chunks
+          .map(c => (typeof c === "string" ? c : c.text || ""))
+          .join("");
       }
     },
     TextAttributes: { BOLD: 1 },
     Timeline: class {},
-    SelectRenderableEvents: { CHANGE: "change", SELECTION_CHANGED: "selection_changed", ITEM_SELECTED: "item_selected" },
+    SelectRenderableEvents: {
+      CHANGE: "change",
+      SELECTION_CHANGED: "selection_changed",
+      ITEM_SELECTED: "item_selected",
+    },
     TabSelectRenderableEvents: { CHANGE: "change" },
     InputRenderableEvents: {
       ENTER: "enter",
@@ -280,9 +325,15 @@ mock.module("@opentui/core", () => {
       FOCUS: "focus",
       BLUR: "blur",
     },
-    SyntaxStyle: { 
-      create: mock(() => ({ registerStyle: mock(() => 1), destroy: mock(() => {}) })),
-      fromStyles: mock(() => ({ registerStyle: mock(() => 1), destroy: mock(() => {}) })),
+    SyntaxStyle: {
+      create: mock(() => ({
+        registerStyle: mock(() => 1),
+        destroy: mock(() => {}),
+      })),
+      fromStyles: mock(() => ({
+        registerStyle: mock(() => 1),
+        destroy: mock(() => {}),
+      })),
     },
     MouseParser: class {
       parseMouseEvent = mock(() => null);
@@ -295,6 +346,6 @@ mock.module("@opentui/core", () => {
       MOUSE_UP: "mouseup",
       MOUSE_MOVE: "mousemove",
       MOUSE_WHEEL: "mousewheel",
-    }
+    },
   };
 });

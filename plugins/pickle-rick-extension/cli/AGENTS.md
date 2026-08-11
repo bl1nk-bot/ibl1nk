@@ -27,12 +27,14 @@ bun test src/path/to/file.test.ts
 ## Code Style Guidelines
 
 ### General Principles
+
 - **TypeScript**: All code must be TypeScript with strict mode enabled
 - **ESM**: Use ES modules with `.js` extensions for imports (not `.ts`)
 - **Async/Await**: Prefer async/await over Promise chains
 - **Error Handling**: Use try/catch with proper error typing and messages
 
 ### Import Organization
+
 ```typescript
 // 1. Node.js built-ins
 import { readFile } from "node:fs/promises";
@@ -48,6 +50,7 @@ import { GeminiEngine } from "./engines/gemini.js";
 ```
 
 ### Naming Conventions
+
 - **Files**: kebab-case for files (e.g., `dashboard-controller.ts`)
 - **Classes**: PascalCase (e.g., `DashboardController`, `GeminiEngine`)
 - **Functions/Variables**: camelCase (e.g., `createSession`, `sessionDir`)
@@ -55,6 +58,7 @@ import { GeminiEngine } from "./engines/gemini.js";
 - **Interfaces**: PascalCase with `I` prefix only for React-like props (e.g., `DashboardUI`)
 
 ### Type Safety
+
 - **Zod**: Use Zod schemas for all external data validation
 - **Strict Types**: Always define explicit return types and parameter types
 - **Error Types**: Use `unknown` for catch blocks, then narrow with `instanceof`
@@ -83,24 +87,28 @@ async function loadState(path) {
 ```
 
 ### Code Organization
+
 - **Barrel Exports**: Use `index.ts` files for clean public APIs
 - **Single Responsibility**: Each file should export one main class/function
 - **Dependencies**: Inject dependencies, avoid global state
 - **Constants**: Define theme and configuration constants in dedicated files
 
 ### TUI Components (@opentui/core)
+
 - **Renderables**: All UI components extend renderable classes
 - **Event Handling**: Use proper event listener patterns with cleanup
 - **State Management**: Keep UI state in controller classes, not renderables
 - **Theme**: Use centralized theme constants from `./theme.js`
 
 ### Testing
+
 - **Framework**: Use Bun's built-in test runner
 - **Structure**: Group tests with `describe()`, use descriptive test names
 - **Coverage**: Test public interfaces, not implementation details
 - **Mocking**: Mock external dependencies (file system, network, CLI commands)
 
 ### Error Handling Patterns
+
 ```typescript
 // CLI commands
 try {
@@ -120,18 +128,21 @@ try {
 ```
 
 ### Git & Session Management
+
 - **Worktrees**: Sessions execute in isolated git worktrees
 - **State Persistence**: All state must be serializable to JSON via Zod schemas
 - **Cleanup**: Always clean up resources (worktrees, processes, event listeners)
 - **Idempotency**: Operations should be safe to retry
 
 ### Performance Considerations
+
 - **Streaming**: Use streaming APIs for CLI output and large data
 - **Lazy Loading**: Initialize TUI components only when needed
 - **Memory**: Clean up event listeners and intervals in component lifecycle
 - **Throttling**: Rate-limit expensive operations like file system scans
 
 ### Security Best Practices
+
 - **No Secrets**: Never commit API keys, tokens, or sensitive data
 - **Input Validation**: Validate all user input with Zod schemas
 - **Command Injection**: Use parameterized arrays for exec commands

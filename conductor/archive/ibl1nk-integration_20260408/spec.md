@@ -1,9 +1,11 @@
 # Track Specification: ibl1nk-integration_20260408
 
 ## Overview
+
 ปรับปรุง `NoteTaskApp.tsx` และ `AIChatBox.tsx` ให้ integrate กับ Claude Writer Dashboard (ปัจจุบันเป็น outlines/characters/scenes) และเปลี่ยนชื่อโปรเจคเป็น **ibl1nk**
 
 ## Objectives
+
 1. เปลี่ยนชื่อโปรเจคจาก `claude-writer-dashboard` เป็น `ibl1nk` ทุกที่ที่เกี่ยวข้อง
 2. เชื่อมต่อ NoteTaskApp เข้ากับระบบ outlines/characters/scenes ที่มีอยู่
 3. ปรับ AI Chat Box ให้ใช้ tRPC และ context จาก dashboard
@@ -15,6 +17,7 @@
 ## Scope
 
 ### In Scope
+
 - Rename project: package.json, vite.config.ts, imports, comments
 - Database: เพิ่ม tables สำหรับ notes, tasks, lore, plotOutlines (เชื่อมกับ outlines/characters)
 - Backend: tRPC routers สำหรับ notes, tasks, lore, projects
@@ -24,6 +27,7 @@
 - Mobile-first responsive design
 
 ### Out of Scope
+
 - Craft API integration (จะทำใน track ต่อไป)
 - Obsidian sync (จะทำใน track ต่อไป)
 - Slack integration (จะทำใน track ต่อไป)
@@ -32,6 +36,7 @@
 ## Technical Approach
 
 ### Database Changes
+
 ```
 เพิ่ม tables:
 - notes (เชื่อมกับ userId, outlineId)
@@ -43,6 +48,7 @@
 ```
 
 ### Backend Changes
+
 ```
 เพิ่ม tRPC routers:
 - notesRouter (CRUD + search + link parsing)
@@ -52,6 +58,7 @@
 ```
 
 ### Frontend Changes
+
 ```
 - แปลง NoteTaskApp จาก standalone app เป็น page component
 - ปรับ routing ให้เข้ากับ dashboard layout
@@ -61,6 +68,7 @@
 ```
 
 ## Success Criteria
+
 - [ ] Project rename สำเร็จ ทุกที่เปลี่ยนเป็น ibl1nk
 - [ ] Notes สร้าง/อ่าน/แก้ไข/ลบ ได้ผ่าน tRPC
 - [ ] Tasks สร้าง/แก้ไข/ลบ ได้ พร้อม subtasks

@@ -74,7 +74,7 @@ export namespace Clipboard {
             stdin: "pipe",
             stdout: "ignore",
             stderr: "ignore",
-          },
+          }
         );
 
         proc.stdin.write(text);

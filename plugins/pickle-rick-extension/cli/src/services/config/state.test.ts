@@ -5,8 +5,12 @@ const mockFiles = new Map<string, string>();
 
 mock.module("node:fs", () => ({
   existsSync: (path: string) => {
-    return mockFiles.has(path) || (path.includes(".pickle/sessions") && !path.includes("definitely-not-there"));
-  }
+    return (
+      mockFiles.has(path) ||
+      (path.includes(".pickle/sessions") &&
+        !path.includes("definitely-not-there"))
+    );
+  },
 }));
 
 mock.module("node:fs/promises", () => ({
@@ -23,23 +27,24 @@ mock.module("node:fs/promises", () => ({
       return [{ name: "session-1", isDirectory: () => true }];
     }
     return [];
-  }
+  },
 }));
 
 mock.module("node:os", () => ({
-  homedir: () => "/home/testuser"
+  homedir: () => "/home/testuser",
 }));
 
 mock.module("./settings.js", () => ({
-  loadSettings: async () => ({ max_iterations: 15 })
+  loadSettings: async () => ({ max_iterations: 15 }),
 }));
 
 mock.module("../../utils/project-root.js", () => ({
-  findProjectRoot: () => "/project"
+  findProjectRoot: () => "/project",
 }));
 
 // Import AFTER mocks
-const { getSessionPath, loadState, saveState, createSession } = await import("./state.js");
+const { getSessionPath, loadState, saveState, createSession } =
+  await import("./state.js");
 
 describe("Config State", () => {
   beforeEach(() => {
@@ -47,7 +52,9 @@ describe("Config State", () => {
   });
 
   test("getSessionPath should return correct path", () => {
-    expect(getSessionPath("/app", "sid")).toBe(join("/app", ".pickle", "sessions", "sid"));
+    expect(getSessionPath("/app", "sid")).toBe(
+      join("/app", ".pickle", "sessions", "sid")
+    );
   });
 
   test("saveState and loadState should work together", async () => {
@@ -66,7 +73,7 @@ describe("Config State", () => {
       current_ticket: "t1",
       history: [],
       started_at: new Date().toISOString(),
-      session_dir: sessionDir
+      session_dir: sessionDir,
     };
 
     await saveState(sessionDir, state);

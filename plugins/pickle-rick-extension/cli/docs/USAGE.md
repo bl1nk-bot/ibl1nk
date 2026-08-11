@@ -9,6 +9,7 @@ pickle
 ```
 
 Opens the interactive terminal interface where you can:
+
 - Enter prompts for new coding tasks
 - View and manage existing sessions
 - Monitor task progress in real-time
@@ -22,6 +23,7 @@ pickle "Your task description here"
 Starts a new session directly with the given prompt, bypassing the TUI.
 
 Examples:
+
 ```bash
 pickle "Add unit tests for the authentication module"
 pickle "Refactor the database layer to use connection pooling"
@@ -36,12 +38,12 @@ The default command. Runs the agent with an optional prompt.
 
 **Options:**
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `-m, --max-iterations <n>` | Maximum agent iterations | `20` |
-| `-r, --resume <path>` | Resume an existing session | - |
+| Option                        | Description                           | Default       |
+| ----------------------------- | ------------------------------------- | ------------- |
+| `-m, --max-iterations <n>`    | Maximum agent iterations              | `20`          |
+| `-r, --resume <path>`         | Resume an existing session            | -             |
 | `--completion-promise <text>` | Stop when this text appears in output | `"I AM DONE"` |
-| `--tui` | Force TUI mode | `false` |
+| `--tui`                       | Force TUI mode                        | `false`       |
 
 **Examples:**
 
@@ -65,6 +67,7 @@ pickle sessions
 ```
 
 Output shows:
+
 - Timestamp
 - Status (running, completed, failed)
 - Original prompt (truncated)
@@ -80,8 +83,8 @@ pickle validate-settings
 
 **Options:**
 
-| Option | Description |
-|--------|-------------|
+| Option  | Description                                            |
+| ------- | ------------------------------------------------------ |
 | `--fix` | Automatically fix common issues (like trailing commas) |
 
 ```bash
@@ -94,10 +97,12 @@ pickle validate-settings --fix
 ### Session Storage
 
 Sessions are stored in:
+
 - **Local**: `.pickle/sessions/<date-hash>/` in your project directory
 - **Global**: `~/.gemini/extensions/pickle-rick/sessions/`
 
 Each session directory contains:
+
 - `state.json` - Session state and progress
 - Agent output logs
 - Generated files and artifacts
@@ -116,16 +121,16 @@ The agent will continue from where it left off, maintaining context and progress
 
 When in the TUI dashboard:
 
-| Key | Action |
-|-----|--------|
-| `Enter` | Submit prompt / Confirm |
-| `Esc` | Cancel / Go back |
-| `Tab` | Switch focus |
-| `Ctrl+C` | Exit |
+| Key      | Action                  |
+| -------- | ----------------------- |
+| `Enter`  | Submit prompt / Confirm |
+| `Esc`    | Cancel / Go back        |
+| `Tab`    | Switch focus            |
+| `Ctrl+C` | Exit                    |
 
 ## Exit Codes
 
-| Code | Meaning |
-|------|---------|
-| `0` | Success |
-| `1` | Execution failed / Error |
+| Code | Meaning                  |
+| ---- | ------------------------ |
+| `0`  | Success                  |
+| `1`  | Execution failed / Error |

@@ -21,7 +21,9 @@ export class SnakeGame {
 
   constructor(width: number, height: number) {
     if (width < 10 || height < 10) {
-      throw new Error(`Invalid board dimensions: ${width}x${height}. Minimum 10x10 required.`);
+      throw new Error(
+        `Invalid board dimensions: ${width}x${height}. Minimum 10x10 required.`
+      );
     }
     this.width = width;
     this.height = height;
@@ -57,13 +59,20 @@ export class SnakeGame {
     }
 
     // Collision check: Walls
-    if (head.x < 0 || head.x >= this.width || head.y < 0 || head.y >= this.height) {
+    if (
+      head.x < 0 ||
+      head.x >= this.width ||
+      head.y < 0 ||
+      head.y >= this.height
+    ) {
       this.isGameOver = true;
       return;
     }
 
     // Collision check: Self
-    if (this.snake.some((segment) => segment.x === head.x && segment.y === head.y)) {
+    if (
+      this.snake.some(segment => segment.x === head.x && segment.y === head.y)
+    ) {
       this.isGameOver = true;
       return;
     }
@@ -96,7 +105,7 @@ export class SnakeGame {
         y: Math.floor(Math.random() * this.height),
       };
       const onSnake = this.snake.some(
-        (segment) => segment.x === newFood.x && segment.y === newFood.y
+        segment => segment.x === newFood.x && segment.y === newFood.y
       );
       if (!onSnake) return newFood;
       attempts++;
@@ -105,7 +114,7 @@ export class SnakeGame {
     // Fallback: If random picking fails too many times, find the first free cell
     for (let x = 0; x < this.width; x++) {
       for (let y = 0; y < this.height; y++) {
-        if (!this.snake.some((s) => s.x === x && s.y === y)) {
+        if (!this.snake.some(s => s.x === x && s.y === y)) {
           return { x, y };
         }
       }

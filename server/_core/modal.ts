@@ -8,7 +8,7 @@
 
 import { ENV } from "./env";
 
-const MODAL_API = 'https://api.modal.com/v1';
+const MODAL_API = "https://api.modal.com/v1";
 
 /**
  * Get Basic Auth string for Modal API.
@@ -19,9 +19,11 @@ function getAuth(): string {
   const id = ENV.modalTokenId;
   const secret = ENV.modalTokenSecret;
   if (!id || !secret) {
-    throw new Error('Modal.com credentials not configured. Set MODAL_TOKEN_ID and MODAL_TOKEN_SECRET.');
+    throw new Error(
+      "Modal.com credentials not configured. Set MODAL_TOKEN_ID and MODAL_TOKEN_SECRET."
+    );
   }
-  return Buffer.from(`${id}:${secret}`).toString('base64');
+  return Buffer.from(`${id}:${secret}`).toString("base64");
 }
 
 /**
@@ -30,9 +32,9 @@ function getAuth(): string {
  */
 function headers(): HeadersInit {
   return {
-    'Authorization': `Basic ${getAuth()}`,
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
+    Authorization: `Basic ${getAuth()}`,
+    "Content-Type": "application/json",
+    Accept: "application/json",
   };
 }
 
@@ -40,7 +42,7 @@ function headers(): HeadersInit {
 
 export interface ModalSandbox {
   sandbox_id: string;
-  status: 'starting' | 'running' | 'stopped' | 'failed';
+  status: "starting" | "running" | "stopped" | "failed";
   image: string;
   created_at: number;
   tunnel_url?: string;
@@ -75,19 +77,21 @@ export const ModalSandboxAPI = {
    * @param {string} [opts.gpu] - GPU type if required.
    * @returns {Promise<ModalSandbox>} - Sandbox metadata.
    */
-  async create(opts: {
-    image?: string;
-    cpu?: number;
-    memory?: number;
-    timeout?: number;
-    env?: Record<string, string>;
-    gpu?: string;
-  } = {}): Promise<ModalSandbox> {
+  async create(
+    opts: {
+      image?: string;
+      cpu?: number;
+      memory?: number;
+      timeout?: number;
+      env?: Record<string, string>;
+      gpu?: string;
+    } = {}
+  ): Promise<ModalSandbox> {
     const res = await fetch(`${MODAL_API}/sandboxes`, {
-      method: 'POST',
+      method: "POST",
       headers: headers(),
       body: JSON.stringify({
-        image_id: opts.image ?? 'python-3.11-slim',
+        image_id: opts.image ?? "python-3.11-slim",
         cpu: opts.cpu ?? 0.5,
         memory_mb: opts.memory ?? 512,
         timeout_secs: opts.timeout ?? 300,
@@ -102,27 +106,32 @@ export const ModalSandboxAPI = {
     return res.json();
   },
 
-  /** 
+  /**
    * Get sandbox status and tunnel URL.
    * @param {string} sandboxId - Unique identifier of the sandbox.
    * @returns {Promise<ModalSandbox>} - Sandbox details.
    */
   async get(sandboxId: string): Promise<ModalSandbox> {
-    const res = await fetch(`${MODAL_API}/sandboxes/${sandboxId}`, { headers: headers() });
+    const res = await fetch(`${MODAL_API}/sandboxes/${sandboxId}`, {
+      headers: headers(),
+    });
     if (!res.ok) throw new Error(`Modal get sandbox failed: ${res.status}`);
     return res.json();
   },
 
-  /** 
+  /**
    * Execute a command in the sandbox container.
    * @param {string} sandboxId - Unique identifier of the sandbox.
    * @param {string | string[]} command - Command string or array to run.
    * @returns {Promise<ModalExecResult>} - Execution output and exit code.
    */
-  async exec(sandboxId: string, command: string | string[]): Promise<ModalExecResult> {
-    const cmd = Array.isArray(command) ? command : ['/bin/sh', '-c', command];
+  async exec(
+    sandboxId: string,
+    command: string | string[]
+  ): Promise<ModalExecResult> {
+    const cmd = Array.isArray(command) ? command : ["/bin/sh", "-c", command];
     const res = await fetch(`${MODAL_API}/sandboxes/${sandboxId}/exec`, {
-      method: 'POST',
+      method: "POST",
       headers: headers(),
       body: JSON.stringify({ command: cmd }),
     });
@@ -133,19 +142,19 @@ export const ModalSandboxAPI = {
     return res.json();
   },
 
-  /** 
+  /**
    * Terminate a sandbox container immediately.
    * @param {string} sandboxId - Unique identifier of the sandbox.
    * @returns {Promise<void>}
    */
   async terminate(sandboxId: string): Promise<void> {
     await fetch(`${MODAL_API}/sandboxes/${sandboxId}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: headers(),
     });
   },
 
-  /** 
+  /**
    * List all currently running sandboxes.
    * @returns {Promise<ModalSandbox[]>} - Active sandboxes.
    */
@@ -165,7 +174,7 @@ export const ModalPluginRuntime = {
    */
   async executeSkill(opts: {
     skillCode: string;
-    language: 'python' | 'node';
+    language: "python" | "node";
     context: {
       selection?: string;
       content?: string;
@@ -173,27 +182,33 @@ export const ModalPluginRuntime = {
     };
     timeout?: number;
   }): Promise<{ output: string; error?: string; exit_code: number }> {
-    const image = opts.language === 'python' ? 'python-3.11-slim' : 'node-18-slim';
-    const ext = opts.language === 'python' ? 'py' : 'js';
+    const image =
+      opts.language === "python" ? "python-3.11-slim" : "node-18-slim";
+    const ext = opts.language === "python" ? "py" : "js";
 
-    const sandbox = await ModalSandboxAPI.create({ image, timeout: opts.timeout ?? 60 });
+    const sandbox = await ModalSandboxAPI.create({
+      image,
+      timeout: opts.timeout ?? 60,
+    });
 
     try {
       const contextJson = JSON.stringify(opts.context);
-      await ModalSandboxAPI.exec(sandbox.sandbox_id,
+      await ModalSandboxAPI.exec(
+        sandbox.sandbox_id,
         `echo '${opts.skillCode.replace(/'/g, "'\\''")}' > /tmp/skill.${ext} && ` +
-        `echo '${contextJson.replace(/'/g, "'\\''")}' > /tmp/context.json`
+          `echo '${contextJson.replace(/'/g, "'\\''")}' > /tmp/context.json`
       );
 
-      const runner = opts.language === 'python'
-        ? `python /tmp/skill.${ext}`
-        : `node /tmp/skill.${ext}`;
+      const runner =
+        opts.language === "python"
+          ? `python /tmp/skill.${ext}`
+          : `node /tmp/skill.${ext}`;
 
       const result = await ModalSandboxAPI.exec(sandbox.sandbox_id, runner);
       return {
         output: result.stdout,
         error: result.stderr,
-        exit_code: result.exit_code
+        exit_code: result.exit_code,
       };
     } finally {
       await ModalSandboxAPI.terminate(sandbox.sandbox_id).catch(() => {});

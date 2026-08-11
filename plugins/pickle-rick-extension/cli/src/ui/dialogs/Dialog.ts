@@ -24,7 +24,7 @@ export class Dialog {
   private isVisible = false;
   private onShow?: () => void;
   private onHide?: () => void;
-  
+
   private titleText: TextRenderable;
   public content: BoxRenderable;
   private optionsContainer: BoxRenderable;
@@ -32,7 +32,7 @@ export class Dialog {
 
   constructor(renderer: CliRenderer, title: string) {
     this.renderer = renderer;
-    
+
     // Background overlay
     this.overlay = new BoxRenderable(renderer, {
       id: "dialog-overlay",
@@ -106,7 +106,7 @@ export class Dialog {
       flexShrink: 0, // Prevent options from shrinking
     });
     mainContainer.add(this.optionsContainer);
-    
+
     this.dialogPanel.add(mainContainer);
 
     this.setupCloseButton();

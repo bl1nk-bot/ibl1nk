@@ -14,7 +14,9 @@ describe("ToyboxView", () => {
 
   test("should initialize with container", () => {
     const onBack = mock(() => {});
-    const mockContainer = new BoxRenderable(mockRenderer, { id: "toybox-container" });
+    const mockContainer = new BoxRenderable(mockRenderer, {
+      id: "toybox-container",
+    });
     const view = new ToyboxView(mockRenderer, mockContainer, undefined, onBack);
 
     expect(view["container"]).toBeDefined();
@@ -22,7 +24,9 @@ describe("ToyboxView", () => {
   });
 
   test("should have enable and disable methods", () => {
-    const mockContainer = new BoxRenderable(mockRenderer, { id: "toybox-container" });
+    const mockContainer = new BoxRenderable(mockRenderer, {
+      id: "toybox-container",
+    });
     const view = new ToyboxView(mockRenderer, mockContainer);
 
     expect(typeof view.enable).toBe("function");
@@ -30,14 +34,18 @@ describe("ToyboxView", () => {
   });
 
   test("should have destroy method", () => {
-    const mockContainer = new BoxRenderable(mockRenderer, { id: "toybox-container" });
+    const mockContainer = new BoxRenderable(mockRenderer, {
+      id: "toybox-container",
+    });
     const view = new ToyboxView(mockRenderer, mockContainer);
 
     expect(typeof view.destroy).toBe("function");
   });
 
   test("should create card renderables for toys", () => {
-    const mockContainer = new BoxRenderable(mockRenderer, { id: "toybox-container" });
+    const mockContainer = new BoxRenderable(mockRenderer, {
+      id: "toybox-container",
+    });
     const view = new ToyboxView(mockRenderer, mockContainer);
 
     // Should have cards for each toy

@@ -3,6 +3,7 @@
 ## Qwen Added Memories
 
 <!-- RULES: บังคับเด็ดขาด ห้ามละเมิด ทุกข้อต้องทำตาม -->
+
 ## Rules
 
 - ตอบเป็นภาษาไทยเสมอเมื่อทำได้
@@ -40,16 +41,20 @@
   - เปลี่ยน style/format ที่มีอยู่แล้ว
 
 <!-- MAIN ACTIONS: เมื่อต้องทำงาน ยึดรูปแบบนี้เป็น framework การคิดและตัดสินใจ -->
+
 ## Main Actions
 
 ### THINK BEFORE ACTING
+
 เมื่อต้องทำงานใดๆ:
+
 - ระบุ assumption ชัดเจน
 - เสนอ trade-offs
 - ใช้ AskUserQuestion เมื่อไม่ชัดเจนหรือมีหลายทาง
 - หยุดเมื่อไม่แน่ใจ
 
 ### SIMPLICITY-FIRST
+
 - ทำน้อยที่สุดที่แก้ปัญหา อย่า over-engineer
 
   ห้าม:
@@ -64,7 +69,9 @@
   - เลือกวิธีที่ง่ายที่สุดที่ได้งาน
 
 ### PROJECT DISCOVERY ORDER
+
 เมื่อต้องการข้อมูลเกี่ยวกับโปรเจค ให้ค้นหาตามลำดับ:
+
 1. AGENTS.md — ความรู้ความเข้าใจ codebase
 2. TODO.md — งานที่กำลังดำเนินการ
 3. README.md — ข้อมูลภาพรวมโปรเจค
@@ -72,30 +79,38 @@
 เริ่มจาก AGENTS.md และ TODO.md เสมอ ก่อนอ่าน README.md
 
 ### MOBILE FIRST UI
+
 เมื่อต้องสร้างหน้า UI ให้เริ่มทำจากหน้าจอมือถือก่อนเสมอ
 
 ควร:
+
 - ออกแบบ layout สำหรับ mobile size ก่อน
 - ค่อยขยายเป็น tablet และ desktop
 - ใช้ responsive breakpoints จากเล็กไปใหญ่
 
 ห้าม:
+
 - เริ่มออกแบบจาก desktop แล้วค่อยย่อลง mobile
 - ใช้ fixed width สำหรับ desktop เท่านั้น
 
 ### DOCUMENTATION LOCATION
+
 เมื่อต้องสร้างเอกสารสำหรับโปรเจค:
+
 - สร้างไฟล์เอกสารใน `docs/`
 - เพิ่มลิงก์ไปยังไฟล์นั้นใน `README.md`
 
 <!-- ACTIONS: การกระทำทั่วไป ใช้ tool ตาม mapping นี้ -->
+
 ## Actions
 
 ### Library/Code Reference
+
 - ต้องการข้อมูลไลบรารี่/API docs → ใช้ context7 ก่อน
 - context7 ไม่มีข้อมูล → ใช้ WebSearch
 
 ### Tool Usage
+
 - ไม่แน่ใจ/ต้องการความชัดเจน → AskUserQuestion
 - หาไฟล์ → Glob, ListFiles
 - ค้นหาในไฟล์ → Grep
@@ -110,6 +125,7 @@
 - นำเสนอแผน → ExitPlanMode
 
 ### Skills
+
 - ใช้ skill ui-ux-pro-max เมื่อต้องออกแบบ UI
 
 ---
@@ -117,29 +133,32 @@
 ## 🔧 Hooks & Workflow (.omg/hooks.json)
 
 ### Session Start — อ่านทุกครั้งเมื่อเริ่ม session
+
 1. อ่าน `.omg/MEMORY.md` — เห็น rules และ architecture notes
 2. อ่าน `todo.md` — เห็นงานที่กำลังดำเนินการ
 
 ### รับคำสั่งงาน — สร้าง/อัพเดต todo.md
+
 - **เพิ่ม task ต่อท้ายไฟล์** — ใช้ append เท่านั้น
 - **ห้ามใช้ write_file ทับ todo.md** — ไม่เคยลบงานเก่าทิ้ง
 
 ### จบงาน — Pipeline ต้องทำตามลำดับ
 
-| ลำดับ | ขั้นตอน | รายละเอียด |
-|---|---|---|
-| 1 | อัพเดต todo.md | เปลี่ยน `[ ]` → `[x]` task ที่เสร็จ |
-| 2 | ตรวจสอบซ้ำ | Verify ว่าสิ่งที่ทำถูกต้อง ครบถ้วน |
-| 3 | รัน Biome lint/fix | `biome check --apply` — ถ้าแก้ได้ให้ biome แก้, ถ้าแก้ไม่ได้ → แก้ด้วยตัวเอง |
-| 4 | รัน tests | **vitest** เป็นอันดับแรก, UI test → **playwright** ถ้ามี, ถ้าไม่มี → รายงาน user + เสนอทางออก |
-| 5 | Build | ถ้าโปรเจคต้อง build → รัน, ถ้ารันได้เลย → ข้ามไป test |
-| 6 | เขียน WORK-LOG | บันทึกสิ่งที่ทำ ใน `docs/WORK-LOG.md` พร้อม Evidence |
+| ลำดับ | ขั้นตอน            | รายละเอียด                                                                                    |
+| ----- | ------------------ | --------------------------------------------------------------------------------------------- |
+| 1     | อัพเดต todo.md     | เปลี่ยน `[ ]` → `[x]` task ที่เสร็จ                                                           |
+| 2     | ตรวจสอบซ้ำ         | Verify ว่าสิ่งที่ทำถูกต้อง ครบถ้วน                                                            |
+| 3     | รัน Biome lint/fix | `biome check --apply` — ถ้าแก้ได้ให้ biome แก้, ถ้าแก้ไม่ได้ → แก้ด้วยตัวเอง                  |
+| 4     | รัน tests          | **vitest** เป็นอันดับแรก, UI test → **playwright** ถ้ามี, ถ้าไม่มี → รายงาน user + เสนอทางออก |
+| 5     | Build              | ถ้าโปรเจคต้อง build → รัน, ถ้ารันได้เลย → ข้ามไป test                                         |
+| 6     | เขียน WORK-LOG     | บันทึกสิ่งที่ทำ ใน `docs/WORK-LOG.md` พร้อม Evidence                                          |
 
 ---
 
 ## 📝 JSDoc Standards
 
 ### งานยังไม่เสร็จ — ใช้ TODO comment
+
 ```typescript
 // TODO: <รายละเอียดงาน> — อธิบายว่าต้องทำอะไร
 function unfinishedFunction() {
@@ -148,6 +167,7 @@ function unfinishedFunction() {
 ```
 
 ### งานเสร็จแล้ว — JSDoc มาตรฐาน
+
 ```typescript
 /**
  * @module <ชื่อ module>
@@ -162,6 +182,7 @@ function unfinishedFunction() {
 ```
 
 ### หลักการ
+
 - **ต้องอธิบาย logic/API** — ไม่ใช่แค่ repeat ชื่อ function
 - **ภาษาคน** — user อ่านโค้ดไม่เป็น → ต้องเข้าใจจาก comments
 - **TODO:** = งานค้าง, **@done** = เสร็จแล้ว
@@ -171,44 +192,46 @@ function unfinishedFunction() {
 
 ## 🚫 Learned Rules — ห้ามละเมิด (จาก .omg/rules/learned/)
 
-| Rule | สรุป |
-|---|---|
-| glob-before-create | สร้างไฟล์ต้อง glob หาของเดิมก่อน — ไม่สร้างทับ |
-| jsdoc-evidence | ทุกไฟล์ที่แตะต้องมี JSDoc @done — evidence อ่านได้ |
-| work-log-on-complete | จบงานต้องเขียน docs/WORK-LOG.md |
-| plan-then-confirm | บอกแผน → รอ confirm → ทำ — ไม่เริ่มเอง |
-| no-duplicate-structure | ห้ามสร้าง structure ซ้ำ — tests ซ้ำ, package ไม่มี src |
-| thai-output-technical-unchanged | ตอบไทย — technical artifacts คงเดิม |
+| Rule                            | สรุป                                                   |
+| ------------------------------- | ------------------------------------------------------ |
+| glob-before-create              | สร้างไฟล์ต้อง glob หาของเดิมก่อน — ไม่สร้างทับ         |
+| jsdoc-evidence                  | ทุกไฟล์ที่แตะต้องมี JSDoc @done — evidence อ่านได้     |
+| work-log-on-complete            | จบงานต้องเขียน docs/WORK-LOG.md                        |
+| plan-then-confirm               | บอกแผน → รอ confirm → ทำ — ไม่เริ่มเอง                 |
+| no-duplicate-structure          | ห้ามสร้าง structure ซ้ำ — tests ซ้ำ, package ไม่มี src |
+| thai-output-technical-unchanged | ตอบไทย — technical artifacts คงเดิม                    |
 
 ---
 
 ## 📊 Work-Log CSV — วิธีติดตามงาน
 
 ### ไฟล์
+
 - **ตำแหน่ง:** `docs/work-log.csv`
 - **Format:** CSV with header
 
 ### Header Columns
-| Column | คำอธิบาย |
-|--------|----------|
-| `Task ID` | รหัสงาน เช่น `TASK-001` (เพิ่มทีละ 1) |
-| `Created At` | วันที่-เวลาที่สร้าง (YYYY-MM-DD HH:MM) |
-| `Source Command` | คำสั่งหรือ request ที่ทำให้งานนี้เกิด |
-| `Description` | อธิบายสั้นๆ ว่าทำอะไร |
-| `Files Created/Modified` | รายชื่อไฟล์ที่แตะ (คั่นด้วย ` + `) |
-| `Status` | Emoji status (ดูตารางด้านล่าง) |
-| `Notes` | หมายเหตุ — ถ้าไม่มีใช้ `-` |
+
+| Column                   | คำอธิบาย                               |
+| ------------------------ | -------------------------------------- |
+| `Task ID`                | รหัสงาน เช่น `TASK-001` (เพิ่มทีละ 1)  |
+| `Created At`             | วันที่-เวลาที่สร้าง (YYYY-MM-DD HH:MM) |
+| `Source Command`         | คำสั่งหรือ request ที่ทำให้งานนี้เกิด  |
+| `Description`            | อธิบายสั้นๆ ว่าทำอะไร                  |
+| `Files Created/Modified` | รายชื่อไฟล์ที่แตะ (คั่นด้วย `+`)       |
+| `Status`                 | Emoji status (ดูตารางด้านล่าง)         |
+| `Notes`                  | หมายเหตุ — ถ้าไม่มีใช้ `-`             |
 
 ### Emoji Status Codes
 
-| Emoji | สี | ความหมาย | ใช้เมื่อ |
-|-------|-----|----------|----------|
-| ⬜ | เทา | ค้าง | ยังไม่เริ่มทำ |
-| 🟡 | เหลือง | ต้องแก้ไข | ทำแล้วแต่ต้องแก้/กลับมาทำใหม่ |
-| 🔴 | แดง | ปัญหา | เจอ error, tool ขัดข้อง, blocker |
-| 🟢 | เขียว | รอดูรีวิว | เสร็จแล้ว รอ user ตรวจสอบ |
-| 🔵 | ฟ้า | รีวิวแล้ว | user ตรวจสอบแล้ว (user ใส่เอง) |
-| 🟠 | ส้ม | Tool error | ปัญหาการใช้ tool/permission/environment |
+| Emoji | สี     | ความหมาย   | ใช้เมื่อ                                |
+| ----- | ------ | ---------- | --------------------------------------- |
+| ⬜    | เทา    | ค้าง       | ยังไม่เริ่มทำ                           |
+| 🟡    | เหลือง | ต้องแก้ไข  | ทำแล้วแต่ต้องแก้/กลับมาทำใหม่           |
+| 🔴    | แดง    | ปัญหา      | เจอ error, tool ขัดข้อง, blocker        |
+| 🟢    | เขียว  | รอดูรีวิว  | เสร็จแล้ว รอ user ตรวจสอบ               |
+| 🔵    | ฟ้า    | รีวิวแล้ว  | user ตรวจสอบแล้ว (user ใส่เอง)          |
+| 🟠    | ส้ม    | Tool error | ปัญหาการใช้ tool/permission/environment |
 
 ### กฎการเขียน Work-Log
 

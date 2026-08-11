@@ -22,7 +22,9 @@ mock.module("./components/MultiLineInput.js", () => ({
     id = "";
     focus = mock(() => {});
     on = mock(() => {});
-    constructor(_1: never, opts: { id: string }) { this.id = opts.id; }
+    constructor(_1: never, opts: { id: string }) {
+      this.id = opts.id;
+    }
   },
   MultiLineInputEvents: {
     SUBMIT: "submit",

@@ -15,7 +15,7 @@ import { loadSettings, getConfiguredProvider } from "../config/settings.js";
  */
 export async function createProvider(): Promise<AIProvider> {
   const configuredProvider = await getConfiguredProvider();
-  
+
   switch (configuredProvider) {
     case "codex":
       return new CodexProvider();

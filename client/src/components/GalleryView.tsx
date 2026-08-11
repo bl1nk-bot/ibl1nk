@@ -22,7 +22,11 @@ interface GalleryViewProps {
   onItemClick?: (item: GalleryItem) => void;
 }
 
-export function GalleryView({ items, columns = 3, onItemClick }: GalleryViewProps) {
+export function GalleryView({
+  items,
+  columns = 3,
+  onItemClick,
+}: GalleryViewProps) {
   const gridColsClass = {
     2: "grid-cols-1 md:grid-cols-2",
     3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
@@ -31,7 +35,7 @@ export function GalleryView({ items, columns = 3, onItemClick }: GalleryViewProp
 
   return (
     <div className={`grid ${gridColsClass[columns]} gap-4`}>
-      {items.map((item) => (
+      {items.map(item => (
         <Card
           key={item.id}
           className="overflow-hidden cursor-pointer hover:shadow-xl transition-shadow group"
@@ -51,7 +55,7 @@ export function GalleryView({ items, columns = 3, onItemClick }: GalleryViewProp
                 <Button
                   size="sm"
                   variant="secondary"
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     item.onEdit?.();
                   }}
@@ -63,7 +67,7 @@ export function GalleryView({ items, columns = 3, onItemClick }: GalleryViewProp
                 <Button
                   size="sm"
                   variant="destructive"
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     item.onDelete?.();
                   }}
@@ -76,7 +80,10 @@ export function GalleryView({ items, columns = 3, onItemClick }: GalleryViewProp
             {/* Badge */}
             {item.badge && (
               <div className="absolute top-2 right-2">
-                <Badge variant={item.badgeVariant || "secondary"} className="text-xs">
+                <Badge
+                  variant={item.badgeVariant || "secondary"}
+                  className="text-xs"
+                >
                   {item.badge}
                 </Badge>
               </div>
@@ -97,7 +104,7 @@ export function GalleryView({ items, columns = 3, onItemClick }: GalleryViewProp
             {/* Tags */}
             {item.tags && item.tags.length > 0 && (
               <div className="flex flex-wrap gap-1">
-                {item.tags.slice(0, 3).map((tag) => (
+                {item.tags.slice(0, 3).map(tag => (
                   <Badge key={tag} variant="outline" className="text-xs">
                     {tag}
                   </Badge>

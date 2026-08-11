@@ -5,17 +5,20 @@
 ## 🚀 Getting Started
 
 1. **Setup Environment:**
+
    ```bash
    cp .env.example .env
    # Update DATABASE_URL and other keys
    ```
 
 2. **Install Dependencies:**
+
    ```bash
    pnpm install
    ```
 
 3. **Database Migration:**
+
    ```bash
    npm run db:push
    ```
@@ -30,18 +33,22 @@
 โครงการนี้ยึดหลักมาตรฐานการพัฒนาที่เข้มงวดเพื่อความปลอดภัยและความยั่งยืนของโค้ด:
 
 ### 1. ความปลอดภัย (IDOR Protection)
+
 - ทุก Query ใน Database และ tRPC Router ต้องมีการตรวจสอบสิทธิ์เจ้าของข้อมูลผ่าน `userId` เสมอ
 - ห้ามใช้เพียง ID ที่ส่งมาจาก Client ในการเข้าถึงข้อมูลโดยไม่มีการ Verify ความเป็นเจ้าของ
 
 ### 2. การจัดการข้อผิดพลาด (Standardized Error Handling)
+
 - ใช้ `TRPCError` พร้อมรหัสข้อผิดพลาดและข้อความแจ้งเตือน 2 ภาษา (ไทย/อังกฤษ)
 - รูปแบบ: `ไม่พบโปรเจกต์นี้ (30001) / Project not found (30001)`
 
 ### 3. การทดสอบ (Automated Testing)
+
 - ยึดหลัก **Test-Driven Development (TDD)**
 - เป้าหมาย Code Coverage >80% (เน้นที่ Database logic และ tRPC Routers)
 
 ### 4. โครงสร้างคอมโพเนนต์ (Modularization)
+
 - แยก UI Logic ออกเป็นคอมโพเนนต์ย่อยตามหลัก **Single Responsibility Principle (SRP)**
 - ใช้ Custom Hooks สำหรับจัดการ State และ API Calls
 

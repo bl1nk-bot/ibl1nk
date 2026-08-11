@@ -9,8 +9,14 @@ const SETTINGS_PATH = join(SETTINGS_DIR, "settings.json");
 
 // Valid provider names
 const VALID_PROVIDERS = [
-  "gemini", "opencode", "claude", "cursor", "codex", 
-  "qwen", "droid", "copilot"
+  "gemini",
+  "opencode",
+  "claude",
+  "cursor",
+  "codex",
+  "qwen",
+  "droid",
+  "copilot",
 ] as const;
 
 export interface ValidationResult {
@@ -25,8 +31,8 @@ export interface ValidationResult {
  */
 function fixJsonSyntax(jsonString: string): string | null {
   // Remove trailing commas before } or ]
-  let fixed = jsonString.replace(/,(\s*[}\]])/g, '$1');
-  
+  let fixed = jsonString.replace(/,(\s*[}\]])/g, "$1");
+
   // Try to parse the fixed JSON
   try {
     JSON.parse(fixed);
@@ -42,12 +48,12 @@ function fixJsonSyntax(jsonString: string): string | null {
 export function validateSettings(content: string): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
-  
+
   // Check if content is empty
   if (!content || content.trim() === "") {
     return { valid: false, errors: ["Settings file is empty"], warnings };
   }
-  
+
   // Try to parse JSON
   let parsed: unknown;
   try {
@@ -60,39 +66,52 @@ export function validateSettings(content: string): ValidationResult {
         parsed = JSON.parse(fixed);
         warnings.push("Fixed trailing comma in JSON");
       } catch {
-        errors.push(`Invalid JSON syntax: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
+        errors.push(
+          `Invalid JSON syntax: ${parseError instanceof Error ? parseError.message : String(parseError)}`
+        );
         return { valid: false, errors, warnings, fixed: undefined };
       }
     } else {
-      errors.push(`Invalid JSON syntax: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
+      errors.push(
+        `Invalid JSON syntax: ${parseError instanceof Error ? parseError.message : String(parseError)}`
+      );
       return { valid: false, errors, warnings, fixed: undefined };
     }
   }
-  
+
   // Keep track if we fixed the JSON
   const wasFixed = parsed !== undefined && content !== JSON.stringify(parsed);
-  
+
   // Validate against schema
   const schemaResult = PickleSettingsSchema.safeParse(parsed);
   if (!schemaResult.success) {
-    schemaResult.error.errors.forEach((err) => {
-      errors.push(`Schema error at ${err.path.join('.')}: ${err.message}`);
+    schemaResult.error.errors.forEach(err => {
+      errors.push(`Schema error at ${err.path.join(".")}: ${err.message}`);
     });
-    return { valid: false, errors, warnings, fixed: wasFixed ? JSON.stringify(parsed) : undefined };
+    return {
+      valid: false,
+      errors,
+      warnings,
+      fixed: wasFixed ? JSON.stringify(parsed) : undefined,
+    };
   }
-  
+
   const settings = schemaResult.data;
-  
+
   // Validate provider if specified
   if (settings.model?.provider) {
-    if (!VALID_PROVIDERS.includes(settings.model.provider as typeof VALID_PROVIDERS[number])) {
+    if (
+      !VALID_PROVIDERS.includes(
+        settings.model.provider as (typeof VALID_PROVIDERS)[number]
+      )
+    ) {
       errors.push(
         `Invalid provider "${settings.model.provider}". ` +
-        `Must be one of: ${VALID_PROVIDERS.join(", ")}`
+          `Must be one of: ${VALID_PROVIDERS.join(", ")}`
       );
     }
   }
-  
+
   // Validate model string if specified
   if (settings.model?.model !== undefined) {
     if (typeof settings.model.model !== "string") {
@@ -101,33 +120,36 @@ export function validateSettings(content: string): ValidationResult {
       warnings.push("Model name is empty - provider default will be used");
     }
   }
-  
+
   // Warn if no provider configured
   if (!settings.model?.provider) {
     warnings.push("No provider configured - will use default (Gemini)");
   }
-  
+
   return {
     valid: errors.length === 0,
     errors,
     warnings,
-    fixed: wasFixed ? JSON.stringify(parsed, null, 2) : undefined
+    fixed: wasFixed ? JSON.stringify(parsed, null, 2) : undefined,
   };
 }
 
 /**
  * Validate and load settings with detailed error reporting
  */
-export async function loadSettingsWithValidation(): Promise<{ settings: PickleSettings; validation: ValidationResult }> {
+export async function loadSettingsWithValidation(): Promise<{
+  settings: PickleSettings;
+  validation: ValidationResult;
+}> {
   try {
     const content = await readFile(SETTINGS_PATH, "utf-8");
     const validation = validateSettings(content);
-    
+
     // If we have a fixed version, use it
-    const parsed = validation.fixed 
+    const parsed = validation.fixed
       ? JSON.parse(validation.fixed)
       : JSON.parse(content);
-    
+
     const settings = PickleSettingsSchema.parse(parsed);
     return { settings, validation };
   } catch (e) {
@@ -138,18 +160,20 @@ export async function loadSettingsWithValidation(): Promise<{ settings: PickleSe
         validation: {
           valid: true,
           errors: [],
-          warnings: ["Settings file does not exist - using defaults"]
-        }
+          warnings: ["Settings file does not exist - using defaults"],
+        },
       };
     }
-    
+
     return {
       settings: {},
       validation: {
         valid: false,
-        errors: [`Failed to load settings: ${e instanceof Error ? e.message : String(e)}`],
-        warnings: []
-      }
+        errors: [
+          `Failed to load settings: ${e instanceof Error ? e.message : String(e)}`,
+        ],
+        warnings: [],
+      },
     };
   }
 }

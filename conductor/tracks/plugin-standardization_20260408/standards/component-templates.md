@@ -130,17 +130,17 @@ Output: <Generated episode content>
 <One sentence describing what this command does>
 
 ## Usage
-
 ```
+
 <command-syntax>
 ```
 
 ## Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `<param1>` | string | Yes | <Description> |
-| `<param2>` | number | No | <Description, default: X> |
+| Parameter  | Type   | Required | Description               |
+| ---------- | ------ | -------- | ------------------------- |
+| `<param1>` | string | Yes      | <Description>             |
+| `<param2>` | number | No       | <Description, default: X> |
 
 ## Examples
 
@@ -171,9 +171,10 @@ Output: <Generated episode content>
 Create a new story board with initial structure and contexts.
 
 ## Usage
-
 ```
+
 /create-board <project-name> [--template <template-name>]
+
 ```
 
 ## Parameters
@@ -188,13 +189,17 @@ Create a new story board with initial structure and contexts.
 ### Basic Usage
 
 ```
+
 /create-board "My Novel"
+
 ```
 
 ### Advanced Usage
 
 ```
+
 /create-board "Fantasy Epic" --template "fantasy-world"
+
 ```
 
 ## Implementation Notes
@@ -296,8 +301,8 @@ description: <Short description (1-2 sentences)>
 ## Usage
 
 ### Basic Usage
-
 ```
+
 <How to activate and use this skill>
 ```
 
@@ -330,7 +335,8 @@ description: <Short description (1-2 sentences)>
 
 - [Related skill 1](../related-skill-1/SKILL.md)
 - [External documentation](https://...)
-```
+
+````
 
 **Example** (adapted from agent-browser/SKILL.md):
 
@@ -415,7 +421,7 @@ BROWSER_ARGS=--no-sandbox      # optional
 - [Snapshot refs lifecycle](references/snapshot-refs.md)
 - [Session management](references/session-management.md)
 - [Authentication patterns](references/authentication.md)
-```
+````
 
 ---
 
@@ -566,10 +572,10 @@ set -euo pipefail
 main() {
   # Read context from environment or stdin
   local context="${CONTEXT_VAR:-}"
-  
+
   # Do something
   echo "Hook executed successfully"
-  
+
   # Exit with appropriate code
   exit 0
 }
@@ -606,6 +612,7 @@ main "$@"
 สำหรับแต่ละ component ที่สร้าง:
 
 ### Agent
+
 - [ ] มี Header (ชื่อ + role)
 - [ ] มี Personality section
 - [ ] มี Capabilities list
@@ -614,12 +621,14 @@ main "$@"
 - [ ] มี Constraints
 
 ### Command
+
 - [ ] มี Description
 - [ ] มี Usage syntax
 - [ ] มี Parameters table (ถ้ามี params)
 - [ ] มี Examples (อย่างน้อย 1)
 
 ### Skill
+
 - [ ] มี frontmatter (name, description)
 - [ ] มี Triggers (1-5 triggers)
 - [ ] มี Capabilities list
@@ -628,6 +637,7 @@ main "$@"
 - [ ] ชื่อไฟล์ต้องเป็น `SKILL.md`
 
 ### Tool
+
 - [ ] มี shebang line
 - [ ] มี description comment
 - [ ] มี usage instructions
@@ -635,6 +645,7 @@ main "$@"
 - [ ] Output เป็น JSON-RPC หรือ stdio
 
 ### Hook
+
 - [ ] มี hooks.json config
 - [ ] มี event name
 - [ ] มี script ที่ทำงานได้

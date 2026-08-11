@@ -8,7 +8,10 @@ import {
   RenderableEvents,
 } from "@opentui/core";
 import { THEME } from "../theme.js";
-import { launchGameboy, isGameboyActive } from "../../games/gameboy/GameboyView.js";
+import {
+  launchGameboy,
+  isGameboyActive,
+} from "../../games/gameboy/GameboyView.js";
 import { launchSnake } from "../../games/snake/SnakeView.js";
 import { HEADER_LINES, getLineColor } from "../common.js";
 import { GameSidebarManager } from "../../games/GameSidebarManager.js";
@@ -105,7 +108,7 @@ export class ToyboxView {
       this.keyHandler = (key: any) => this.handleKey(key);
       this.renderer.keyInput.on("keypress", this.keyHandler);
       this.sidebarManager.enable();
-      
+
       // Select first item if nothing selected
       if (this.selectedIndex === -1 && this.toys.length > 0) {
         this.selectedIndex = 0;
@@ -148,9 +151,14 @@ export class ToyboxView {
       this.selectedIndex = (this.selectedIndex + 1) % this.toys.length;
       this.updateSelection();
     } else if (key.name === "left") {
-      this.selectedIndex = (this.selectedIndex - 1 + this.toys.length) % this.toys.length;
+      this.selectedIndex =
+        (this.selectedIndex - 1 + this.toys.length) % this.toys.length;
       this.updateSelection();
-    } else if (key.name === "return" || key.name === "enter" || key.name === "space") {
+    } else if (
+      key.name === "return" ||
+      key.name === "enter" ||
+      key.name === "space"
+    ) {
       if (this.selectedIndex !== -1 && this.toys[this.selectedIndex].onClick) {
         this.toys[this.selectedIndex].onClick!();
       }
@@ -161,8 +169,12 @@ export class ToyboxView {
     this.cardRenderables.forEach((card, i) => {
       const isSelected = i === this.selectedIndex;
       const toy = this.toys[i];
-      const targetBorder = isSelected ? RGBA.fromHex(THEME.accent) : RGBA.fromHex(THEME.darkAccent);
-      const targetBg = isSelected ? RGBA.fromHex(THEME.bg) : RGBA.fromHex(THEME.surface);
+      const targetBorder = isSelected
+        ? RGBA.fromHex(THEME.accent)
+        : RGBA.fromHex(THEME.darkAccent);
+      const targetBg = isSelected
+        ? RGBA.fromHex(THEME.bg)
+        : RGBA.fromHex(THEME.surface);
 
       createTimeline()
         .add(card.borderColor, {
@@ -212,21 +224,25 @@ export class ToyboxView {
         color: THEME.accent,
         onClick: () => {
           this.disable();
-          launchSnake(this.renderer, () => {
-            this.enable();
-            this.renderer.requestRender();
-          }, {
-            onSplitRequest: (paused) => {
-              if (this.onSplitSnake) (this.onSplitSnake as any)(paused);
+          launchSnake(
+            this.renderer,
+            () => {
+              this.enable();
+              this.renderer.requestRender();
             },
-            onSidebarRequest: () => this.sidebarManager.toggleSidebar(),
-          });
+            {
+              onSplitRequest: paused => {
+                if (this.onSplitSnake) (this.onSplitSnake as any)(paused);
+              },
+              onSidebarRequest: () => this.sidebarManager.toggleSidebar(),
+            }
+          );
         },
       },
     ];
 
     this.cardRenderables = [];
-    this.toys.forEach((toy) => {
+    this.toys.forEach(toy => {
       const card = this.createToyCard(toy);
       this.cardRenderables.push(card);
       container.add(card);

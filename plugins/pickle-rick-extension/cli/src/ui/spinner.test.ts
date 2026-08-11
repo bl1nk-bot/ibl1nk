@@ -57,7 +57,7 @@ describe("ProgressSpinner", () => {
     const spinner = new ProgressSpinner("Idle");
     spinner.stop();
     expect(capturedOutput).toBe("");
-    
+
     spinner.updateStep("Work");
     spinner.stop();
     expect(capturedOutput).toContain("\n");

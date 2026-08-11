@@ -1,5 +1,11 @@
 import { useEffect, useRef } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface Character {
   id: number;
@@ -79,17 +85,20 @@ export function CharacterGraphView({
   );
 }
 
-function generateMermaidGraph(characters: Character[], relationships: Relationship[]): string {
+function generateMermaidGraph(
+  characters: Character[],
+  relationships: Relationship[]
+): string {
   let graph = "graph TD\n";
 
   // Add character nodes
-  characters.forEach((char) => {
+  characters.forEach(char => {
     const roleColor = getRoleColor(char.role);
     graph += `  ${char.id}["${char.name}<br/><small>${char.role}</small>"]:::${roleColor}\n`;
   });
 
   // Add relationship edges
-  relationships.forEach((rel) => {
+  relationships.forEach(rel => {
     graph += `  ${rel.from} -->|${rel.type}| ${rel.to}\n`;
   });
 

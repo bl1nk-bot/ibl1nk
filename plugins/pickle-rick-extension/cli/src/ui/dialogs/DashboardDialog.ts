@@ -18,7 +18,7 @@ export class DashboardDialog {
   private session: SessionData | null = null;
   private logView: LogView | null = null;
   private currentSessionId: string | null = null;
-  
+
   private promptText!: TextRenderable;
   private timeText!: TextRenderable;
   private statusText!: TextRenderable;
@@ -31,9 +31,9 @@ export class DashboardDialog {
   constructor(renderer: CliRenderer) {
     this.renderer = renderer;
     this.dialog = new Dialog(renderer, "Session Dashboard");
-    
+
     this.setupContent();
-    
+
     // Initialize with a message to ensure content is visible
     this.promptText.content = "No session selected";
     this.timeText.content = "--:--s";
@@ -237,7 +237,7 @@ export class DashboardDialog {
         title: "Copy",
         value: "dialog.copy",
         description: "logs to clipboard",
-        onSelect: async (dialog) => {
+        onSelect: async dialog => {
           if (this.session) {
             try {
               const logContent = await this.getLogContent();
@@ -284,7 +284,9 @@ export class DashboardDialog {
     const sessionId = this.formatSessionId(this.session.id);
     const mode = this.session.isPrdMode ? "PRD" : "Run";
     this.sessionMetaText.content = `${this.session.engine} • ${mode} • ${sessionId}`;
-    this.logHeaderRight.content = sessionId ? `session ${sessionId}` : "auto-follow";
+    this.logHeaderRight.content = sessionId
+      ? `session ${sessionId}`
+      : "auto-follow";
 
     // Always rebuild log view on update to avoid stale tails and ensure fresh content
     if (this.logView) {
@@ -293,11 +295,15 @@ export class DashboardDialog {
       this.logView.destroy();
       this.logView = null;
     }
-    
-    this.logView = new LogView(this.renderer, `${this.session.id}/session.log`, () => {
-      this.renderer.requestRender();
-    });
-    
+
+    this.logView = new LogView(
+      this.renderer,
+      `${this.session.id}/session.log`,
+      () => {
+        this.renderer.requestRender();
+      }
+    );
+
     if (this.logScrollContainer) {
       this.logScrollContainer.add(this.logView.root);
     }
@@ -319,16 +325,20 @@ export class DashboardDialog {
 
   private getStatusColor(status: string): string {
     const normalized = status.toLowerCase();
-    if (normalized.includes("error") || normalized.includes("failed")) return "#ff5252";
-    if (normalized.includes("cancelled") || normalized.includes("canceled")) return "#ff5252";
-    if (normalized.includes("done") || normalized.includes("success")) return THEME.green;
-    if (normalized.includes("iteration") || normalized.includes("running")) return THEME.accent;
+    if (normalized.includes("error") || normalized.includes("failed"))
+      return "#ff5252";
+    if (normalized.includes("cancelled") || normalized.includes("canceled"))
+      return "#ff5252";
+    if (normalized.includes("done") || normalized.includes("success"))
+      return THEME.green;
+    if (normalized.includes("iteration") || normalized.includes("running"))
+      return THEME.accent;
     return THEME.text;
   }
 
   private async getLogContent(): Promise<string> {
     if (!this.session) return "";
-    
+
     try {
       const logPath = `${this.session.id}/session.log`;
       console.log("Attempting to read log file:", logPath);

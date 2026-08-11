@@ -10,85 +10,72 @@
 {
   // ชื่อ plugin (required, kebab-case)
   "name": "plugin-name",
-  
+
   // เวอร์ชัน (required, semver)
   "version": "0.1.0",
-  
+
   // คำอธิบาย plugin (required, 1-2 ประโยค)
   "description": "คำอธิบายสั้นๆ ว่า plugin นี้ทำอะไร",
-  
+
   // ชื่อไฟล์ context (required)
   "contextFile": "PLUGIN.md",
-  
+
   // Components ที่มีใน plugin (required, อย่างน้อย 1 component)
   "components": {
     // Agent definitions (ถ้ามี)
-    "agents": [
-      "agents/*.md"
-    ],
-    
+    "agents": ["agents/*.md"],
+
     // Command definitions (ถ้ามี)
-    "commands": [
-      "commands/*.md",
-      "commands/*.toml"
-    ],
-    
+    "commands": ["commands/*.md", "commands/*.toml"],
+
     // Skill definitions (ถ้ามี)
-    "skills": [
-      "skills/*/SKILL.md"
-    ],
-    
+    "skills": ["skills/*/SKILL.md"],
+
     // Tool implementations (ถ้ามี)
-    "tools": [
-      "tools/*"
-    ],
-    
+    "tools": ["tools/*"],
+
     // Hook configurations (ถ้ามี)
-    "hooks": [
-      "hooks/*.json"
-    ],
-    
+    "hooks": ["hooks/*.json"],
+
     // Theme files (ถ้ามี)
-    "themes": [
-      "themes/*"
-    ]
+    "themes": ["themes/*"],
   },
-  
+
   // Dependencies ระหว่าง plugins (optional)
   "dependencies": {
     // ชื่อ plugin ที่ต้องติดตั้งก่อน
-    "plugins": []
+    "plugins": [],
   },
-  
+
   // Environment variables ที่ plugin ต้องการ (optional)
   "env": {
     // ชื่อ env var + คำอธิบาย
-    "EXAMPLE_API_KEY": "API key สำหรับ example service"
+    "EXAMPLE_API_KEY": "API key สำหรับ example service",
   },
-  
+
   // Config schema สำหรับ plugin-specific settings (optional)
   "configSchema": {
     // JSON schema สำหรับ validate plugin config
-  }
+  },
 }
 ```
 
 ## Required Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | string | ชื่อ plugin (kebab-case, unique) |
-| `version` | string | เวอร์ชัน (semver: `MAJOR.MINOR.PATCH`) |
-| `description` | string | คำอธิบาย (1-2 ประโยค) |
+| Field         | Type   | Description                                      |
+| ------------- | ------ | ------------------------------------------------ |
+| `name`        | string | ชื่อ plugin (kebab-case, unique)                 |
+| `version`     | string | เวอร์ชัน (semver: `MAJOR.MINOR.PATCH`)           |
+| `description` | string | คำอธิบาย (1-2 ประโยค)                            |
 | `contextFile` | string | ชื่อไฟล์ context (เช่น `PLUGIN.md`, `GEMINI.md`) |
-| `components` | object | อย่างน้อย 1 component type ต้องมีค่า |
+| `components`  | object | อย่างน้อย 1 component type ต้องมีค่า             |
 
 ## Optional Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `dependencies` | object | Dependencies ระหว่าง plugins |
-| `env` | object | Environment variables ที่ต้องการ |
+| Field          | Type   | Description                      |
+| -------------- | ------ | -------------------------------- |
+| `dependencies` | object | Dependencies ระหว่าง plugins     |
+| `env`          | object | Environment variables ที่ต้องการ |
 | `configSchema` | object | JSON schema สำหรับ plugin config |
 
 ## Examples
@@ -104,8 +91,8 @@
   "components": {
     "skills": ["skills/*/SKILL.md"],
     "tools": ["templates/*.sh"],
-    "references": ["references/*.md"]
-  }
+    "references": ["references/*.md"],
+  },
 }
 ```
 
@@ -123,12 +110,12 @@
     "hooks": ["hooks/*.json"],
     "tools": ["scripts/*.sh", "scripts/*.ps1"],
     "resources": ["resources/*"],
-    "themes": ["themes/*"]
+    "themes": ["themes/*"],
   },
   "env": {
     "MAX_ITERATIONS": "จำนวน iteration สูงสุด (default: 10)",
-    "WORKER_TIMEOUT": "Worker timeout เป็นวินาที (default: 300)"
-  }
+    "WORKER_TIMEOUT": "Worker timeout เป็นวินาที (default: 300)",
+  },
 }
 ```
 
@@ -145,11 +132,11 @@
     "commands": ["commands/*.md"],
     "hooks": ["hooks/*.json"],
     "scripts": ["scripts/*.sh"],
-    "references": ["references/*.md"]
+    "references": ["references/*.md"],
   },
   "dependencies": {
-    "plugins": ["ibl1nk"]
-  }
+    "plugins": ["ibl1nk"],
+  },
 }
 ```
 

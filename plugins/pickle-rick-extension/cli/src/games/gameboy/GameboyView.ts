@@ -1,19 +1,14 @@
 /**
  * GameboyView - A wrapper around opentui-gameboy that adds app-specific UI
  */
-import {
-  CliRenderer,
-  BoxRenderable,
-  RGBA,
-  KeyEvent,
-} from "@opentui/core";
+import { CliRenderer, BoxRenderable, RGBA, KeyEvent } from "@opentui/core";
 import { join } from "node:path";
 import { homedir } from "node:os";
-import { 
-  launchGameboy as launchGameboyCore, 
-  isGameboyActive as isGameboyActiveCore, 
-  type GameboyOptions, 
-  type Keybinding 
+import {
+  launchGameboy as launchGameboyCore,
+  isGameboyActive as isGameboyActiveCore,
+  type GameboyOptions,
+  type Keybinding,
 } from "opentui-gameboy";
 import { THEME } from "../../ui/theme.js";
 import { logError } from "../../ui/logger.js";
@@ -23,7 +18,9 @@ export function isGameboyActive(): boolean {
   try {
     return isGameboyActiveCore();
   } catch (e) {
-    logError(`Gameboy binding error: ${e instanceof Error ? e.message : String(e)}`);
+    logError(
+      `Gameboy binding error: ${e instanceof Error ? e.message : String(e)}`
+    );
     return false;
   }
 }
@@ -36,7 +33,10 @@ export interface GameboyViewOptions {
 /**
  * Launch the GameBoy emulator with a black background overlay
  */
-export function launchGameboy(renderer: CliRenderer, options: GameboyViewOptions): void {
+export function launchGameboy(
+  renderer: CliRenderer,
+  options: GameboyViewOptions
+): void {
   const { onExit, onSidebarRequest } = options;
 
   // Set up Ctrl+S handler for sidebar toggle (app-specific behavior)
@@ -86,14 +86,16 @@ export function launchGameboy(renderer: CliRenderer, options: GameboyViewOptions
       },
     });
   } catch (e) {
-    logError(`Failed to launch Gameboy: ${e instanceof Error ? e.message : String(e)}`);
-    
+    logError(
+      `Failed to launch Gameboy: ${e instanceof Error ? e.message : String(e)}`
+    );
+
     // Cleanup on failure
     renderer.keyInput.off("keypress", sidebarKeyHandler);
     try {
       renderer.root.remove("gameboy-background");
     } catch (err) {}
-    
+
     // Notify caller that we "exited" (failed)
     onExit();
   }

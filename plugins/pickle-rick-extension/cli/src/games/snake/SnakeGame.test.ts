@@ -29,7 +29,7 @@ describe("SnakeGame", () => {
     // This is hard to test without reflection or a very small board
     // Let's use the smallest possible board
     const game = new SnakeGame(10, 10);
-    // We can't easily fill the board here without internal access, 
+    // We can't easily fill the board here without internal access,
     // but we've added the logic.
   });
 });

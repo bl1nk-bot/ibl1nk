@@ -13,6 +13,7 @@
 ```
 
 ### Parameters (ทั้งหมด optional)
+
 - `--type storyboard` — Timeline ตามตอน แบ่ง 4 Acts
 - `--type corkboard` — Cluster ตัวละคร / สถานที่ / Plot Points / Marketing
 - `--type word_count` — Kanban สถานะ word count ต่อตอน
@@ -30,6 +31,7 @@
 ## Auto-Update
 
 หลังจากสร้าง board แล้ว board จะถูกอัปเดตอัตโนมัติเมื่อ:
+
 - `/write-episodes` เสร็จ → อัปเดต Storyboard และ Word Count Tracker
 - `/update-context` → อัปเดต Corkboard
 - `/marketing-assets` → อัปเดต Marketing cluster ใน Corkboard

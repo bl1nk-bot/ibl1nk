@@ -17,6 +17,7 @@ This skill guides the creation and management of custom Qwen Code commands.
 ## Core Concepts
 
 Commands are markdown files that define reusable AI behaviors. They live in:
+
 - **Global**: `~/.qwen/commands/` (all projects)
 - **Project**: `<project>/.qwen/commands/` (current project only, takes priority)
 
@@ -24,17 +25,18 @@ File paths map to command names: `git/commit.md` → `/git:commit`
 
 ## Three Injection Types
 
-| Syntax | Purpose | When to Use |
-|--------|---------|-------------|
-| `@{path}` | Inject file/directory content | When you need code, docs, or config as context |
+| Syntax       | Purpose                               | When to Use                                                  |
+| ------------ | ------------------------------------- | ------------------------------------------------------------ |
+| `@{path}`    | Inject file/directory content         | When you need code, docs, or config as context               |
 | `!{command}` | Execute shell command & inject output | When you need dynamic data (git status, file listings, etc.) |
-| `{{args}}` | Accept user parameters | When the command needs custom input per use |
+| `{{args}}`   | Accept user parameters                | When the command needs custom input per use                  |
 
 ## Command Creation Workflow
 
 ### 1. Define the Purpose
 
 Ask:
+
 - What problem does this command solve?
 - What information does it need? (files, shell output, user input)
 - What should the output look like?
@@ -49,15 +51,19 @@ description: Short description for /help
 # Instructions for the AI
 
 ## Context
+
 @{relevant-files.md}
 
 ## Dynamic Data
+
 !{shell-command}
 
 ## User Input
+
 Task: {{args}}
 
 ## Requirements
+
 1. Specific requirement 1
 2. Specific requirement 2
 ```
@@ -84,7 +90,9 @@ Test the command with various inputs and adjust the template based on results.
 ---
 description: Review code against standards
 ---
+
 Review the following code for:
+
 - Security vulnerabilities
 - Performance issues
 - Best practices violations
@@ -101,19 +109,22 @@ Provide specific line recommendations.
 
 ### Git Commit Generator
 
-```markdown
+````markdown
 ---
 description: Generate commit message from staged changes
 ---
+
 Generate a conventional commit message based on these staged changes:
 
 ```diff
 !{git diff --staged}
 ```
+````
 
 Follow conventional commits format (feat:, fix:, docs:, etc.)
 Keep subject line under 72 characters.
-```
+
+````
 
 ### Test Generator
 
@@ -135,7 +146,7 @@ Requirements:
 - Test happy path, edge cases, and error conditions
 - Use the project's test framework
 - Follow existing test patterns and style
-```
+````
 
 ## Best Practices
 
@@ -154,16 +165,17 @@ Requirements:
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| Command not in `/help` | Add `description` to frontmatter |
-| File not injecting | Check path is absolute or relative to command file |
-| Shell errors | Verify command syntax and working directory |
-| Args not working | Use double braces `{{args}}` not single `{args}` |
+| Problem                | Solution                                           |
+| ---------------------- | -------------------------------------------------- |
+| Command not in `/help` | Add `description` to frontmatter                   |
+| File not injecting     | Check path is absolute or relative to command file |
+| Shell errors           | Verify command syntax and working directory        |
+| Args not working       | Use double braces `{{args}}` not single `{args}`   |
 
 ## When to Use This Skill
 
 Use this skill when:
+
 - Creating new custom commands
 - Editing existing commands
 - Organizing command structure

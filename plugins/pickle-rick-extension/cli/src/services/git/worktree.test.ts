@@ -16,7 +16,9 @@ mock.module("simple-git", () => ({
 }));
 
 // More precise fs mocking
-const mockExistsSync = mock((p: string) => p.includes(".pickle") && !p.includes("session-test"));
+const mockExistsSync = mock(
+  (p: string) => p.includes(".pickle") && !p.includes("session-test")
+);
 mock.module("node:fs", () => ({
   existsSync: mockExistsSync,
 }));
@@ -41,12 +43,23 @@ describe("Worktree Service", () => {
       mockExistsSync.mockReturnValueOnce(true); // .pickle exists
       mockExistsSync.mockReturnValueOnce(false); // session-test doesn't exist
 
-      const { worktreeDir, branchName } = await worktreeService.createPickleWorktree("test", "main", "/wd", mockGit as any);
+      const { worktreeDir, branchName } =
+        await worktreeService.createPickleWorktree(
+          "test",
+          "main",
+          "/wd",
+          mockGit as any
+        );
 
       expect(branchName).toBe("pickle/session-test");
       expect(mockGit.raw).toHaveBeenCalledWith(["worktree", "prune"]);
       expect(mockGit.raw).toHaveBeenCalledWith([
-        "worktree", "add", "-B", branchName, worktreeDir, "main"
+        "worktree",
+        "add",
+        "-B",
+        branchName,
+        worktreeDir,
+        "main",
       ]);
     });
   });
@@ -54,13 +67,19 @@ describe("Worktree Service", () => {
   describe("getGitRoot", () => {
     test("should return revparse toplevel", async () => {
       mockGit.revparse.mockResolvedValueOnce("/git/root");
-      const root = await worktreeService.getGitRoot("/git/root/subdir", mockGit as any);
+      const root = await worktreeService.getGitRoot(
+        "/git/root/subdir",
+        mockGit as any
+      );
       expect(root).toBe("/git/root");
     });
 
     test("should fallback to provided dir on error", async () => {
       mockGit.revparse.mockRejectedValueOnce(new Error("Not a git repo"));
-      const root = await worktreeService.getGitRoot("/some/dir", mockGit as any);
+      const root = await worktreeService.getGitRoot(
+        "/some/dir",
+        mockGit as any
+      );
       expect(root).toBe("/some/dir");
     });
   });
@@ -72,7 +91,13 @@ describe("Worktree Service", () => {
       // Mock worktree has changes
       mockGit.status.mockResolvedValueOnce({ files: ["mod.ts"] } as any);
 
-      await worktreeService.syncWorktreeToOriginal("/wt", "/orig", "pickle/test", mockGit as any, mockGit as any);
+      await worktreeService.syncWorktreeToOriginal(
+        "/wt",
+        "/orig",
+        "pickle/test",
+        mockGit as any,
+        mockGit as any
+      );
 
       expect(mockGit.add).toHaveBeenCalledWith("-A");
       expect(mockGit.commit).toHaveBeenCalled();
@@ -90,9 +115,18 @@ describe("Worktree Service", () => {
       // Mock worktree exists
       mockExistsSync.mockReturnValue(true);
 
-      await worktreeService.cleanupPickleWorktree("/wt", "/orig", mockGit as any);
+      await worktreeService.cleanupPickleWorktree(
+        "/wt",
+        "/orig",
+        mockGit as any
+      );
 
-      expect(mockGit.raw).toHaveBeenCalledWith(["worktree", "remove", "-f", "/wt"]);
+      expect(mockGit.raw).toHaveBeenCalledWith([
+        "worktree",
+        "remove",
+        "-f",
+        "/wt",
+      ]);
       expect(mockGit.raw).toHaveBeenCalledWith(["worktree", "prune"]);
     });
   });

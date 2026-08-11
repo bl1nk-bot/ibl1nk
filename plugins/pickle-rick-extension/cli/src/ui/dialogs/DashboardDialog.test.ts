@@ -1,5 +1,10 @@
 import { mock, expect, test, describe, beforeEach, afterEach } from "bun:test";
-import { createMockRenderer, createMockSession, type MockRenderer, type MockSelect } from "./test-utils.ts";
+import {
+  createMockRenderer,
+  createMockSession,
+  type MockRenderer,
+  type MockSelect,
+} from "./test-utils.ts";
 import type { CliRenderer } from "@opentui/core";
 
 mock.module("../theme.js", () => ({
@@ -12,7 +17,7 @@ mock.module("../theme.js", () => ({
     white: "#ffffff",
     surface: "#111111",
     green: "#00ff00",
-  }
+  },
 }));
 
 const mockLogView = {
@@ -22,8 +27,10 @@ const mockLogView = {
 
 mock.module("../views/LogView.js", () => ({
   LogView: class {
-    constructor() { return mockLogView; }
-  }
+    constructor() {
+      return mockLogView;
+    }
+  },
 }));
 
 const utilsMock = {
@@ -53,14 +60,14 @@ describe("DashboardDialog", () => {
     intervals = [];
     originalSetInterval = global.setInterval;
     originalClearInterval = global.clearInterval;
-    
+
     // @ts-ignore - Mocking global timer functions
     global.setInterval = mock((fn: Function, ms: number) => {
       const id = { fn, ms };
       intervals.push(id);
       return id as unknown as Timer;
     });
-    
+
     // @ts-ignore - Mocking global timer functions
     global.clearInterval = mock((id: Timer) => {
       intervals = intervals.filter(i => (i as unknown as Timer) !== id);
@@ -74,15 +81,19 @@ describe("DashboardDialog", () => {
 
   test("should initialize and setup UI", async () => {
     const { DashboardDialog } = await import("./DashboardDialog.ts");
-    const dashboard = new DashboardDialog(mockRenderer as unknown as CliRenderer);
+    const dashboard = new DashboardDialog(
+      mockRenderer as unknown as CliRenderer
+    );
     expect(dashboard).toBeDefined();
     expect(dashboard.isOpen()).toBe(false);
   });
 
   test("should update with session data", async () => {
     const { DashboardDialog } = await import("./DashboardDialog.ts");
-    const dashboard = new DashboardDialog(mockRenderer as unknown as CliRenderer);
-    
+    const dashboard = new DashboardDialog(
+      mockRenderer as unknown as CliRenderer
+    );
+
     const mockSession = createMockSession({
       id: "sessions/test-id",
       prompt: "test prompt",
@@ -91,27 +102,29 @@ describe("DashboardDialog", () => {
       engine: "gemini",
       isPrdMode: false,
     });
-    
+
     dashboard.update(mockSession);
-    
+
     expect(global.setInterval).toHaveBeenCalled();
     expect(mockRenderer.requestRender).toHaveBeenCalled();
   });
 
   test("should clear ticker on hide", async () => {
     const { DashboardDialog } = await import("./DashboardDialog.ts");
-    const dashboard = new DashboardDialog(mockRenderer as unknown as CliRenderer);
-    
+    const dashboard = new DashboardDialog(
+      mockRenderer as unknown as CliRenderer
+    );
+
     const mockSession = createMockSession({
       id: "sessions/test-id",
       prompt: "test prompt",
       startTime: Date.now(),
       status: "Running",
     });
-    
+
     dashboard.update(mockSession);
     expect(intervals.length).toBe(1);
-    
+
     dashboard.hide();
     expect(global.clearInterval).toHaveBeenCalled();
     expect(intervals.length).toBe(0);
@@ -119,27 +132,31 @@ describe("DashboardDialog", () => {
 
   test("should handle copy logs to clipboard", async () => {
     const { DashboardDialog } = await import("./DashboardDialog.ts");
-    const dashboard = new DashboardDialog(mockRenderer as unknown as CliRenderer);
-    
+    const dashboard = new DashboardDialog(
+      mockRenderer as unknown as CliRenderer
+    );
+
     const mockSession = createMockSession({
       id: "sessions/test-id",
       prompt: "test prompt",
       startTime: Date.now(),
       status: "Running",
     });
-    
+
     dashboard.update(mockSession);
-    
+
     const internalDialog = (dashboard as any).dialog as MockSelect;
-    const copyOption = internalDialog.options.find((o) => o.title === "Copy");
+    const copyOption = internalDialog.options.find(o => o.title === "Copy");
     expect(copyOption).toBeDefined();
-    
+
     // We need to cast copyOption to include onSelect which is not in MockSelect options but is in the real DialogOption
     interface DialogOptionWithSelect {
       onSelect: (dialog: any) => Promise<void>;
     }
-    
-    await (copyOption as unknown as DialogOptionWithSelect).onSelect(internalDialog);
+
+    await (copyOption as unknown as DialogOptionWithSelect).onSelect(
+      internalDialog
+    );
     expect(fsMock.readFile).toHaveBeenCalled();
     expect(utilsMock.Clipboard.copy).toHaveBeenCalledWith("mock log content");
   });

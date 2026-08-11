@@ -10,7 +10,7 @@ const mockExistsSync = mock((path: string) => {
 });
 
 mock.module("node:fs", () => ({
-  existsSync: mockExistsSync
+  existsSync: mockExistsSync,
 }));
 
 // Now import the function that uses the mocked module
@@ -20,7 +20,9 @@ describe("project-root.ts", () => {
   test("should find root based on .git marker", () => {
     const root = findProjectRoot("/home/user/project/sub/dir");
     expect(root).toBe("/home/user/project");
-    expect(mockExistsSync).toHaveBeenCalledWith(join("/home/user/project", ".git"));
+    expect(mockExistsSync).toHaveBeenCalledWith(
+      join("/home/user/project", ".git")
+    );
   });
 
   test("should find root based on .pickle-root marker", () => {

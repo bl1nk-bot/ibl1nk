@@ -79,6 +79,7 @@ pickle
 ```
 
 Opens the interactive terminal interface where you can:
+
 - Enter prompts for new coding tasks
 - View and manage existing sessions
 - Monitor task progress in real-time
@@ -90,6 +91,7 @@ pickle "Your task description here"
 ```
 
 **Examples:**
+
 ```bash
 pickle "Add unit tests for the authentication module"
 pickle "Refactor the database layer to use connection pooling"
@@ -98,12 +100,12 @@ pickle "Fix the bug where users can't logout on mobile"
 
 ### Command Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `-m, --max-iterations <n>` | Maximum agent iterations | `20` |
-| `-r, --resume <path>` | Resume an existing session | - |
+| Option                        | Description                 | Default       |
+| ----------------------------- | --------------------------- | ------------- |
+| `-m, --max-iterations <n>`    | Maximum agent iterations    | `20`          |
+| `-r, --resume <path>`         | Resume an existing session  | -             |
 | `--completion-promise <text>` | Stop when this text appears | `"I AM DONE"` |
-| `--tui` | Force TUI mode | `false` |
+| `--tui`                       | Force TUI mode              | `false`       |
 
 ### Additional Commands
 
@@ -133,21 +135,22 @@ Settings are stored at `~/.pickle/settings.json`:
 
 ### Supported Providers
 
-| Provider | Value | Description |
-|----------|-------|-------------|
-| Gemini | `"gemini"` | Google Gemini CLI (default) |
-| OpenCode | `"opencode"` | OpenCode CLI |
-| Claude | `"claude"` | Anthropic Claude |
-| Cursor | `"cursor"` | Cursor AI |
-| Codex | `"codex"` | OpenAI Codex |
-| Qwen | `"qwen"` | Alibaba Qwen |
-| Copilot | `"copilot"` | GitHub Copilot |
+| Provider | Value        | Description                 |
+| -------- | ------------ | --------------------------- |
+| Gemini   | `"gemini"`   | Google Gemini CLI (default) |
+| OpenCode | `"opencode"` | OpenCode CLI                |
+| Claude   | `"claude"`   | Anthropic Claude            |
+| Cursor   | `"cursor"`   | Cursor AI                   |
+| Codex    | `"codex"`    | OpenAI Codex                |
+| Qwen     | `"qwen"`     | Alibaba Qwen                |
+| Copilot  | `"copilot"`  | GitHub Copilot              |
 
 ## 🔍 Session Management
 
 ### Session Storage
 
 Sessions are stored in:
+
 - **Local**: `.pickle/sessions/<date-hash>/` in your project
 - **Worktrees**: `.pickle/worktrees/session-<name>/` for isolated execution
 - **Global**: `~/.gemini/extensions/pickle-rick/sessions/`
@@ -205,12 +208,14 @@ bun test
 ## ✅ When to Use Pickle Rick
 
 **Good for:**
+
 - Well-defined tasks with clear success criteria
 - Tasks requiring iteration and refinement
 - Greenfield features where you can walk away
 - Tasks with automatic verification (tests, linters)
 
 **Not good for:**
+
 - Tasks requiring human judgment mid-execution
 - One-shot simple operations
 - Tasks with unclear success criteria

@@ -12,10 +12,21 @@ import { DashboardController } from "./controllers/DashboardController.js";
 import { createLandingView } from "./views/LandingView.js";
 import { THEME } from "./theme.js";
 import { isGameboyActive } from "../games/gameboy/GameboyView.js";
-import { MultiLineInputRenderable, MultiLineInputEvents } from "./components/MultiLineInput.js";
-import { buildVerticalBar, createInputContainerMouseHandler, createProviderMetadataRow, createCtrlCExitHandler } from "./input-chrome.js";
+import {
+  MultiLineInputRenderable,
+  MultiLineInputEvents,
+} from "./components/MultiLineInput.js";
+import {
+  buildVerticalBar,
+  createInputContainerMouseHandler,
+  createProviderMetadataRow,
+  createCtrlCExitHandler,
+} from "./input-chrome.js";
 
-export async function createDashboard(renderer: CliRenderer, initialPrompt?: string) {
+export async function createDashboard(
+  renderer: CliRenderer,
+  initialPrompt?: string
+) {
   const INPUT_CHROME_LINES = 4;
 
   const root = new BoxRenderable(renderer, {
@@ -29,7 +40,7 @@ export async function createDashboard(renderer: CliRenderer, initialPrompt?: str
   });
 
   const mouseParser = new MouseParser();
-  renderer.addInputHandler((seq) => {
+  renderer.addInputHandler(seq => {
     const mouse = mouseParser.parseMouseEvent(Buffer.from(seq));
     if (mouse) {
       // Mouse events handled here if needed
@@ -68,8 +79,6 @@ export async function createDashboard(renderer: CliRenderer, initialPrompt?: str
     alignItems: "stretch",
     gap: 0,
   });
-
-
 
   const dashboardView = new ScrollBoxRenderable(renderer, {
     id: "dashboardView",
@@ -135,9 +144,16 @@ export async function createDashboard(renderer: CliRenderer, initialPrompt?: str
 
   inputRow.add(input);
 
-  inputContainer.onMouse = createInputContainerMouseHandler(inputContainer, input);
+  inputContainer.onMouse = createInputContainerMouseHandler(
+    inputContainer,
+    input
+  );
 
-  const { row: metadataRow, pickleLabel: metadataRowL, modelLabel } = createProviderMetadataRow(renderer, "metadataRow");
+  const {
+    row: metadataRow,
+    pickleLabel: metadataRowL,
+    modelLabel,
+  } = createProviderMetadataRow(renderer, "metadataRow");
 
   inputContainer.add(new BoxRenderable(renderer, { id: "spacer1", height: 1 }));
   inputContainer.add(inputRow);
@@ -211,7 +227,10 @@ export async function createDashboard(renderer: CliRenderer, initialPrompt?: str
   input.focus();
 
   const syncInputChrome = () => {
-    const minHeight = typeof inputContainer.minHeight === "number" ? inputContainer.minHeight : 5;
+    const minHeight =
+      typeof inputContainer.minHeight === "number"
+        ? inputContainer.minHeight
+        : 5;
     const inputHeight = typeof input.height === "number" ? input.height : 1;
     const nextHeight = Math.max(minHeight, inputHeight + INPUT_CHROME_LINES);
     if (inputContainer.height !== nextHeight) {
@@ -222,7 +241,6 @@ export async function createDashboard(renderer: CliRenderer, initialPrompt?: str
   };
 
   syncInputChrome();
-
 
   // Handle form submission on Enter
   input.on(MultiLineInputEvents.SUBMIT, (value: string) => {
@@ -244,7 +262,7 @@ export async function createDashboard(renderer: CliRenderer, initialPrompt?: str
       controller.toggleToybox?.();
       return true;
     }
-    
+
     // Let other keys propagate to the focused input
     return false;
   });
@@ -278,7 +296,10 @@ export async function createDashboard(renderer: CliRenderer, initialPrompt?: str
 
 export async function startDashboard(initialPrompt?: string) {
   try {
-    const renderer = await createCliRenderer({ exitOnCtrlC: false, targetFps: 100 });
+    const renderer = await createCliRenderer({
+      exitOnCtrlC: false,
+      targetFps: 100,
+    });
     renderer.useMouse = true;
 
     engine.attach(renderer);
@@ -287,7 +308,8 @@ export async function startDashboard(initialPrompt?: string) {
     renderer.root.add(dashboard.root);
 
     // Get footer reference for hints
-    const footerLeft = dashboard.root.getChildren()
+    const footerLeft = dashboard.root
+      .getChildren()
       .find(c => c.id === "globalFooter")
       ?.getChildren()
       .find(c => c.id === "footerLeft") as TextRenderable | undefined;

@@ -10,7 +10,7 @@ mock.module("node:fs/promises", () => ({
   readFile: async (path: string) => {
     if (path.includes("/.config/opencode/config.json") && shouldJsonSucceed) {
       return JSON.stringify({
-        model: "anthropic/claude-sonnet-4-5"
+        model: "anthropic/claude-sonnet-4-5",
       });
     }
     if (path.includes("/.opencode/config.yaml") && shouldYamlSucceed) {
@@ -19,11 +19,11 @@ mock.module("node:fs/promises", () => ({
     throw new Error("File not found");
   },
   writeFile: async () => {},
-  unlink: async () => {}
+  unlink: async () => {},
 }));
 
 mock.module("node:os", () => ({
-  homedir: () => "/home/testuser"
+  homedir: () => "/home/testuser",
 }));
 
 describe("OpencodeProvider", () => {
