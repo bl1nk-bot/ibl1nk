@@ -1953,8 +1953,7 @@ const _NoteTaskAppWithRouter = () => {
         .map(n => {
           let excerpt = "";
           if (plainTextCharCount(n.content) > 0) {
-            const doc = new DOMParser().parseFromString(String(n.content), "text/html");
-            const text = doc.body.textContent || doc.body.innerText || "";
+            const text = String(n.content || "");
             excerpt = text.substring(0, PROJECT_CONTEXT_MAX_NOTE_CHARS);
           }
           return `โน้ต "${n.title}": ${excerpt}...`;
