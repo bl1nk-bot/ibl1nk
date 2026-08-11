@@ -23,6 +23,8 @@ import {
   Cpu,
   Bot,
   Layers,
+  LogIn,
+  RefreshCw,
 } from "lucide-react";
 
 import { trpc } from "@/lib/trpc";
@@ -113,7 +115,7 @@ export default function Settings() {
               DevOps & Sec
             </TabsTrigger>
             <TabsTrigger value="ai" className="text-xs md:text-sm">
-              BYOK Key
+              AI Agents
             </TabsTrigger>
             <TabsTrigger value="craft" className="text-xs md:text-sm">
               Craft
@@ -133,6 +135,7 @@ export default function Settings() {
 
           {/* AI Tab (BYOK) */}
           <TabsContent value="ai" className="space-y-4">
+            <CodexAccountCard />
             <Card>
               <CardHeader>
                 <CardTitle>Bring Your Own Key (BYOK)</CardTitle>
@@ -429,6 +432,135 @@ export default function Settings() {
         </Tabs>
       </div>
     </div>
+  );
+}
+
+function CodexAccountCard() {
+  const utils = trpc.useUtils();
+  const [refreshing, setRefreshing] = useState(false);
+  const statusQuery = trpc.agentAuth.codexStatus.useQuery(undefined, {
+    refetchInterval: 2000,
+  });
+  const startLogin = trpc.agentAuth.startCodexLogin.useMutation({
+    onSuccess: () => utils.agentAuth.codexStatus.invalidate(),
+  });
+  const logoutCodex = trpc.agentAuth.logoutCodex.useMutation({
+    onSuccess: () => utils.agentAuth.codexStatus.invalidate(),
+  });
+  const status = statusQuery.data;
+  const busy =
+    startLogin.isPending ||
+    logoutCodex.isPending ||
+    status?.login?.phase === "starting" ||
+    status?.login?.phase === "waiting";
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await statusQuery.refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  return (
+    <Card className="border-t-4 border-t-accent-gold">
+      <CardHeader>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <Bot className="h-5 w-5 text-accent-gold" />
+              Codex account
+            </CardTitle>
+            <CardDescription>
+              Connect your ChatGPT account through the official Codex login.
+              The app does not request an API key or store your Codex token.
+            </CardDescription>
+          </div>
+          <Badge variant={status?.connected ? "default" : "secondary"}>
+            {status?.connected ? "Connected" : "Not connected"}
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {status && !status.installed && (
+          <div className="rounded-lg border border-yellow-400 bg-yellow-50/50 p-3 text-xs text-yellow-900 dark:bg-yellow-950/20 dark:text-yellow-200">
+            Codex CLI is not installed on this app host. Install it on the host
+            before connecting an account.
+          </div>
+        )}
+
+        {status?.mode && (
+          <div className="rounded-lg border bg-muted/60 p-3 text-xs">
+            <span className="text-muted-foreground">Authentication mode</span>
+            <pre className="mt-1 whitespace-pre-wrap font-mono text-foreground">
+              {status.mode}
+            </pre>
+          </div>
+        )}
+
+        {status?.login?.output && (
+          <div className="space-y-2">
+            <Label>Codex login</Label>
+            <pre className="max-h-48 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-950 p-3 font-mono text-xs text-slate-100">
+              {status.login.output}
+            </pre>
+            <p className="text-xs text-muted-foreground">
+              Follow the URL and code shown above. This page refreshes the
+              connection status automatically.
+            </p>
+          </div>
+        )}
+
+        {status?.login?.error && (
+          <div className="rounded-lg border border-red-400 bg-red-50/50 p-3 text-xs text-red-800 dark:bg-red-950/20 dark:text-red-200">
+            {status.login.error}
+          </div>
+        )}
+
+        <div className="flex flex-col gap-2 sm:flex-row">
+          {!status?.connected ? (
+            <>
+              <Button
+                className="flex-1"
+                disabled={busy || status?.installed === false}
+                onClick={() => startLogin.mutate({ mode: "browser" })}
+              >
+                <LogIn className="mr-2 h-4 w-4" />
+                Continue with ChatGPT
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1"
+                disabled={busy || status?.installed === false}
+                onClick={() => startLogin.mutate({ mode: "device" })}
+              >
+                Use device code
+              </Button>
+            </>
+          ) : (
+            <Button
+              variant="destructive"
+              className="flex-1"
+              disabled={busy}
+              onClick={() => logoutCodex.mutate()}
+            >
+              <Unlink className="mr-2 h-4 w-4" />
+              Disconnect Codex
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            disabled={refreshing}
+            onClick={handleRefresh}
+          >
+            <RefreshCw
+              className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
+            />
+            Refresh
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
