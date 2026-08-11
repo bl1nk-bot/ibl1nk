@@ -2142,7 +2142,13 @@ const _NoteTaskAppWithRouter = () => {
         if (titleMatch && titleMatch[1])
           noteTitleSuggestion = titleMatch[1].trim();
       } else {
-        const plainTextResponse = aiResponse || "";
+        let plainTextResponse = aiResponse || "";
+        if (window.marked && aiResponse) {
+          const parsedContent = window.marked.parse(aiResponse);
+          const contentStr = typeof parsedContent === "string" ? parsedContent : String(parsedContent);
+          const doc = new DOMParser().parseFromString(contentStr, "text/html");
+          plainTextResponse = doc.body.textContent || doc.body.innerText || aiResponse;
+        }
         const firstLine = plainTextResponse.split("\n")[0].substring(0, 50);
         if (firstLine.trim()) noteTitleSuggestion = firstLine.trim();
       }
