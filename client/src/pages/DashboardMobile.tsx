@@ -32,6 +32,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Link } from "wouter";
+import { getLoginUrl } from "@/const";
 
 // Sample data
 const writingProgressData = [
@@ -51,6 +52,31 @@ const storyStatusData = [
 
 export default function DashboardMobile() {
   const { user, isAuthenticated } = useAuth();
+  const overviewQuery = trpc.analytics.overview.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  const overview = overviewQuery.data ?? {
+    totalWords: 78930,
+    activeStories: 3,
+    totalStories: 3,
+    totalCharacters: 4,
+    weeklyWords: 24580,
+    streakDays: 7,
+    progressHistory: [
+      { date: "2026-08-05", wordsWritten: 2500 },
+      { date: "2026-08-06", wordsWritten: 3200 },
+      { date: "2026-08-07", wordsWritten: 2800 },
+      { date: "2026-08-08", wordsWritten: 4100 },
+      { date: "2026-08-09", wordsWritten: 5300 },
+      { date: "2026-08-10", wordsWritten: 6680 },
+    ],
+  };
+
+  const chartData = (overview.progressHistory || []).map((p: any) => ({
+    week: p.date ? p.date.slice(5) : "Day",
+    words: p.wordsWritten || 0,
+  }));
 
   if (!isAuthenticated) {
     return (
@@ -65,7 +91,14 @@ export default function DashboardMobile() {
               Manage your stories, characters, and writing progress in one
               place.
             </p>
-            <Button className="w-full">Log In</Button>
+            <Button
+              className="w-full"
+              onClick={() => {
+                window.location.href = getLoginUrl();
+              }}
+            >
+              Log In
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -101,13 +134,18 @@ export default function DashboardMobile() {
                 <p className="text-sm text-muted-foreground mb-1">
                   Total Words
                 </p>
-                <p className="text-3xl font-bold">24,580</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  +2,580 this week
+                <p className="text-3xl font-bold">
+                  {overview.totalWords.toLocaleString()}
                 </p>
-                <Progress value={68} className="mt-3" />
                 <p className="text-xs text-muted-foreground mt-1">
-                  68% of 36,000 goal
+                  +{overview.weeklyWords.toLocaleString()} this week
+                </p>
+                <Progress
+                  value={Math.min(100, (overview.totalWords / 100000) * 100)}
+                  className="mt-3"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Goal: 100,000 words
                 </p>
               </div>
             </CardContent>
@@ -119,9 +157,9 @@ export default function DashboardMobile() {
                 <p className="text-sm text-muted-foreground mb-1">
                   Active Stories
                 </p>
-                <p className="text-3xl font-bold">3</p>
+                <p className="text-3xl font-bold">{overview.totalStories}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  2 in progress
+                  {overview.activeStories} in progress
                 </p>
                 <Link href="/outlines" className="block mt-3">
                   <Button
@@ -140,7 +178,7 @@ export default function DashboardMobile() {
             <CardContent className="pt-6">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground mb-1">Characters</p>
-                <p className="text-3xl font-bold">12</p>
+                <p className="text-3xl font-bold">{overview.totalCharacters}</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Across all stories
                 </p>
@@ -163,15 +201,15 @@ export default function DashboardMobile() {
                 <p className="text-sm text-muted-foreground mb-1">
                   Writing Streak
                 </p>
-                <p className="text-3xl font-bold">7</p>
+                <p className="text-3xl font-bold">{overview.streakDays}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  days in a row
+                  days active in a row
                 </p>
                 <div className="flex gap-1 justify-center mt-3">
-                  {[...Array(7)].map((_, i) => (
+                  {[...Array(overview.streakDays || 7)].map((_, i) => (
                     <div
                       key={i}
-                      className="w-2 h-2 rounded-full bg-accent-gold"
+                      className="w-2.5 h-2.5 rounded-full bg-accent-gold"
                     />
                   ))}
                 </div>
@@ -198,7 +236,11 @@ export default function DashboardMobile() {
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={200}>
-                  <LineChart data={writingProgressData}>
+                  <LineChart
+                    data={
+                      chartData.length > 0 ? chartData : writingProgressData
+                    }
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="week" tick={{ fontSize: 12 }} />
                     <YAxis tick={{ fontSize: 12 }} />
@@ -290,10 +332,12 @@ export default function DashboardMobile() {
               Characters
             </Button>
           </Link>
-          <Button variant="default" size="sm" className="w-full text-xs">
-            <Plus className="w-3 h-3 mr-1" />
-            New
-          </Button>
+          <Link href="/outlines" className="w-full">
+            <Button variant="default" size="sm" className="w-full text-xs">
+              <Plus className="w-3 h-3 mr-1" />
+              New Story
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

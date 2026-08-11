@@ -25,6 +25,7 @@
  * });
  * ```
  */
+import { Buffer } from "node:buffer";
 import { ENV } from "./env";
 
 export type TranscribeOptions = {
@@ -108,18 +109,55 @@ export async function transcribeAudio(
         };
       }
 
-      audioBuffer = Buffer.from(await response.arrayBuffer());
-      mimeType = response.headers.get("content-type") || "audio/mpeg";
+      const maxBytes = 16 * 1024 * 1024;
+      const contentLength = response.headers.get("content-length");
+      if (contentLength) {
+        const declaredSize = Number(contentLength);
+        if (!Number.isNaN(declaredSize) && declaredSize > maxBytes) {
+          return {
+            error: "Audio file exceeds maximum size limit",
+            code: "FILE_TOO_LARGE",
+            details: `File size is ${(declaredSize / (1024 * 1024)).toFixed(2)}MB, maximum allowed is 16MB`,
+          };
+        }
+      }
 
-      // Check file size (16MB limit)
-      const sizeMB = audioBuffer.length / (1024 * 1024);
-      if (sizeMB > 16) {
+      const body = response.body;
+      if (!body) {
         return {
-          error: "Audio file exceeds maximum size limit",
-          code: "FILE_TOO_LARGE",
-          details: `File size is ${sizeMB.toFixed(2)}MB, maximum allowed is 16MB`,
+          error: "Failed to download audio file",
+          code: "INVALID_FORMAT",
+          details: "Response body is not available",
         };
       }
+
+      const reader = body.getReader();
+      const chunks: Buffer[] = [];
+      let totalBytes = 0;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+
+        if (value) {
+          totalBytes += value.byteLength;
+          if (totalBytes > maxBytes) {
+            await reader.cancel();
+            return {
+              error: "Audio file exceeds maximum size limit",
+              code: "FILE_TOO_LARGE",
+              details: `File size is ${(totalBytes / (1024 * 1024)).toFixed(2)}MB, maximum allowed is 16MB`,
+            };
+          }
+
+          chunks.push(Buffer.from(value));
+        }
+      }
+
+      audioBuffer = Buffer.concat(chunks);
+      mimeType = response.headers.get("content-type") || "audio/mpeg";
     } catch (error) {
       return {
         error: "Failed to fetch audio file",

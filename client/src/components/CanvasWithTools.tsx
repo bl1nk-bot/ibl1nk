@@ -12,14 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Undo2,
-  Redo2,
-  Save,
-  Download,
-  Upload,
-  Share2,
-} from "lucide-react";
+import { Undo2, Redo2, Save, Download, Upload, Share2 } from "lucide-react";
 import { useHistory } from "@/hooks/useHistory";
 import { Canvas, CanvasEntry } from "./Canvas";
 

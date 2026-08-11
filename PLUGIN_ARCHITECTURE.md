@@ -24,23 +24,23 @@ Claude Writer Dashboard is a **Built-in Plugin** integrated into the Manus syste
 └──────────────────────────┬──────────────────────────────────┘
                            │
 ┌──────────────────────────▼──────────────────────────────────┐
-│                    API Layer (tRPC)                          │
+│                    API Layer (tRPC)                         │
 │  Outlines | Characters | Analysis | Sync | Slack | Progress │
 └──────────────────────────┬──────────────────────────────────┘
                            │
 ┌──────────────────────────▼──────────────────────────────────┐
-│                  Business Logic Layer                        │
+│                  Business Logic Layer                       │
 │  Craft API | Obsidian Sync | Content Analysis | Search      │
 └──────────────────────────┬──────────────────────────────────┘
                            │
 ┌──────────────────────────▼──────────────────────────────────┐
-│                  Data Access Layer                           │
+│                  Data Access Layer                          │
 │  Database Queries | S3 Storage | Cache Management           │
 └──────────────────────────┬──────────────────────────────────┘
                            │
 ┌──────────────────────────▼──────────────────────────────────┐
-│              External Services Integration                   │
-│  Craft API | Obsidian FS | Slack API | OpenAI LLM          │
+│              External Services Integration                  │
+│  Craft API | Obsidian FS | Slack API | OpenAI LLM           │
 └─────────────────────────────────────────────────────────────┘
 ```
 

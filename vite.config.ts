@@ -14,6 +14,7 @@ import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
 const PROJECT_ROOT = import.meta.dirname;
 const LOG_DIR = path.join(PROJECT_ROOT, ".manus-logs");
 const MAX_LOG_SIZE_BYTES = 1 * 1024 * 1024; // 1MB per log file
+const MAX_REQUEST_SIZE_BYTES = 2 * 1024 * 1024;
 const TRIM_TARGET_BYTES = Math.floor(MAX_LOG_SIZE_BYTES * 0.6); // Trim to 60% to avoid constant re-trimming
 
 type LogSource = "browserConsole" | "networkRequests" | "sessionReplay";
@@ -132,11 +133,26 @@ function vitePluginManusDebugCollector(): Plugin {
         }
 
         let body = "";
+        let bodyBytes = 0;
+        let rejected = false;
         req.on("data", chunk => {
+          if (rejected) return;
+          const chunkBytes = Buffer.byteLength(chunk);
+          bodyBytes += chunkBytes;
+          if (bodyBytes > MAX_REQUEST_SIZE_BYTES) {
+            rejected = true;
+            res.writeHead(413, { "Content-Type": "application/json" });
+            res.end(
+              JSON.stringify({ success: false, error: "Payload too large" })
+            );
+            req.destroy();
+            return;
+          }
           body += chunk.toString();
         });
 
         req.on("end", () => {
+          if (rejected) return;
           try {
             const payload = JSON.parse(body);
             handlePayload(payload);
@@ -175,8 +191,8 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
-    host: "0.0.0.0",
-    allowedHosts: true,
+    host: process.env.VITE_DEV_HOST ?? "127.0.0.1",
+    allowedHosts: ["localhost", "127.0.0.1"],
     fs: {
       strict: true,
       deny: ["**/.*"],
