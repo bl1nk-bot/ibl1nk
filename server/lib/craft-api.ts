@@ -1,3 +1,4 @@
+// ponytail: integration adapter ไม่มี runtime caller; upgrade: เก็บเมื่อ endpoint จริงเรียกใช้ มิฉะนั้นลบ
 import axios, { AxiosInstance } from "axios";
 
 /**

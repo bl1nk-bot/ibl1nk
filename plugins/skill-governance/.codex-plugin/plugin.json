@@ -1,0 +1,23 @@
+{
+  "name": "skill-governance",
+  "version": "0.1.0",
+  "description": "Inventory, govern, audit, and improve skills across local and imported environments.",
+  "author": {
+    "name": "ibl1nk"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Skill Governance",
+    "shortDescription": "Govern every skill with one auditable policy.",
+    "longDescription": "Discovers skills, applies skill-level enablement policy, records observable loads and invocations, diagnoses failures, and proposes safe user-skill improvements.",
+    "developerName": "ibl1nk",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "defaultPrompt": [
+      "Show every known skill and its status.",
+      "Which skills overlap or failed recently?",
+      "Audit skill usage and suggest improvements."
+    ]
+  },
+  "mcpServers": "./.mcp.json"
+}

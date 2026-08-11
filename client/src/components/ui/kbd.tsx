@@ -1,3 +1,4 @@
+// ponytail: UI primitive ไม่มี active import; upgrade: เก็บเมื่อหน้าที่ใช้งานจริง import มิฉะนั้นลบ
 import { cn } from "@/lib/utils";
 
 function Kbd({ className, ...props }: React.ComponentProps<"kbd">) {

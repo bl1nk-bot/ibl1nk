@@ -1,3 +1,4 @@
+// ponytail: template adapter ไม่มี runtime caller; upgrade: เก็บเมื่อ endpoint จริงเรียกใช้ มิฉะนั้นลบ
 import { ENV } from "./env";
 
 export type Role = "system" | "user" | "assistant" | "tool" | "function";

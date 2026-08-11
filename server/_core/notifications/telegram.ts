@@ -1,3 +1,4 @@
+// ponytail: Telegram adapter ไม่มี runtime caller; upgrade: เก็บเมื่อ router เลือกใช้โดยตรง มิฉะนั้นลบ
 import { ENV } from "../env";
 
 export async function sendTelegramNotification(

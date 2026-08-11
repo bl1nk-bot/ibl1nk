@@ -1,3 +1,4 @@
+// ponytail: client prototype ไม่มี inbound import; upgrade: เก็บเมื่อมี route/ฟีเจอร์ใช้งานจริง มิฉะนั้นลบ
 /**
  * GOOGLE MAPS FRONTEND INTEGRATION - ESSENTIAL GUIDE
  *

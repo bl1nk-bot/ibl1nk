@@ -1,3 +1,4 @@
+// ponytail: shared type source ไม่มี runtime import และเสี่ยง drift; upgrade: เก็บเมื่อกำหนดเป็น canonical source มิฉะนั้นลบ
 /**
  * Union type of all available tool names in ibl1nk Agent System
  */

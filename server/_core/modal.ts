@@ -1,3 +1,4 @@
+// ponytail: template adapter ไม่มี runtime caller; upgrade: เก็บเมื่อ endpoint จริงเรียกใช้ มิฉะนั้นลบ
 /**
  * @module core/modal
  * @description Modal.com client wrapper for sandboxes, notebooks, and plugin runtime.

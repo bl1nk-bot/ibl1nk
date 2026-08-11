@@ -1,3 +1,4 @@
+// ponytail: showcase ไม่มี route/import ใช้งานจริง; upgrade: เก็บเมื่อมี route หรือข้อกำหนดผลิตภัณฑ์ มิฉะนั้นลบ
 import {
   Accordion,
   AccordionContent,
