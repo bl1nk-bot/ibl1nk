@@ -10,3 +10,10 @@
 ## 2026-06-08 - Use Promise.all for independent DB fetches
 **Learning:** Sequential awaits for independent database operations inside endpoints like `storyOverview` compound latency linearly (T1 + T2 + T3) whereas they can be parallelized (Max(T1, T2, T3)).
 **Action:** Identify independent data dependencies in route handlers and refactor sequential awaits to `Promise.all` to reduce overall response time.
+## 2026-05-15 - Reusing DOM Nodes for HTML Parsing
+
+**Learning:** Using `DOMParser` prevents security issues from executing scripts. Using `.innerHTML` on a created `div` does not escape meta-characters and leaves the code vulnerable to XSS.
+**Action:** Use `new DOMParser().parseFromString(html, "text/html")` instead of `element.innerHTML` when extracting text securely.
+
+**Learning:** Calling `document.createElement('div')` repeatedly inside loop callbacks (like `.map`, `.filter`, or Fuse.js indexing `getFn`) is highly expensive and creates significant performance bottlenecks due to repeated DOM allocation. Furthermore, misusing the comma operator directly in `getFn` can result in empty strings.
+**Action:** When extracting plain text from HTML, allocate a single `document.createElement('div')` outside of loops and re-use it (e.g., modifying its `innerHTML` and reading `textContent`) rather than constantly instantiating new elements.

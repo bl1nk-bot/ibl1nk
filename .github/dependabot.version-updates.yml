@@ -1,0 +1,24 @@
+# Dependabot versioning policy
+# See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 0
+allowed:
+  # Allow all updates by default (major, minor, patch)
+  - dependency-type: "all"
+    update-type: "all"
+
+# Uncomment to ignore specific packages:
+# ignored:
+#   - dependency-name: "example-package"
+#     versions: ["2.x", "3.x"]
+
+# Uncomment to group related updates (fewer PRs):
+# groups:
+#   production-deps:
+#     patterns:
+#       - "*"
+#     exclude-patterns:
+#       - "-dev"
+#     update-types:
+#       - "minor"
+#       - "patch"
