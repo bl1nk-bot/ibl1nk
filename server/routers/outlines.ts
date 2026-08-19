@@ -238,13 +238,8 @@ export const outlinesRouter = router({
     .query(async ({ ctx, input }) => {
       const outline = await getOutlineByIdForUser(input.outlineId, ctx.user.id);
       if (!outline) throw new Error("Outline not found");
-
-      // Optimization: Fetch chapters and characters in parallel after the authorization check above passes.
-      // Expected impact: Reduces database query latency for the storyOverview by executing independent reads concurrently.
-      const [chapters, characters] = await Promise.all([
-        getChaptersByOutlineId(input.outlineId),
-        getCharactersByOutlineId(input.outlineId),
-      ]);
+      const chapters = await getChaptersByOutlineId(input.outlineId);
+      const characters = await getCharactersByOutlineId(input.outlineId);
 
       return {
         outline,
