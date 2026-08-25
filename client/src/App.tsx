@@ -10,6 +10,7 @@ import Outlines from "./pages/Outlines";
 import CharactersWithViews from "./pages/CharactersWithViews";
 import Settings from "./pages/Settings";
 import AgentSessions from "./pages/AgentSessions";
+import Documentation from "./pages/Documentation";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/dashboard" component={DashboardMobile} />
       <Route path="/outlines" component={Outlines} />
       <Route path="/characters" component={CharactersWithViews} />
+      <Route path="/documentation" component={Documentation} />
       <Route path="/agents" component={AgentSessions} />
       <Route path="/settings" component={Settings} />
       <Route path="/404" component={NotFound} />

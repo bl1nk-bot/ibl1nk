@@ -2,6 +2,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Edit2, Trash2, MoreVertical } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export interface GridItem {
   id: string | number;
@@ -63,14 +69,26 @@ export function GridView({ items, columns = 3, onItemClick }: GridViewProps) {
                   </Badge>
                 )}
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 p-0"
-                onClick={e => e.stopPropagation()}
-              >
-                <MoreVertical className="w-4 h-4" />
-              </Button>
+              {(item.onEdit || item.onDelete) && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Actions for ${item.title}`}
+                      className="h-9 w-9 shrink-0"
+                      onClick={e => e.stopPropagation()}
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" onClick={e => e.stopPropagation()}>
+                    {item.onEdit && <DropdownMenuItem onSelect={() => item.onEdit?.()}><Edit2 className="mr-2 h-4 w-4" />Edit</DropdownMenuItem>}
+                    {item.onDelete && <DropdownMenuItem onSelect={() => item.onDelete?.()}><Trash2 className="mr-2 h-4 w-4" />Delete</DropdownMenuItem>}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
 
             {/* Description */}

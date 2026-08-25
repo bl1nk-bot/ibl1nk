@@ -70,7 +70,7 @@ export default function Home() {
           </Link>
           <Link
             className="transition hover:text-emerald-400"
-            href="/characters"
+            href="/documentation"
           >
             Docs
           </Link>
@@ -118,7 +118,7 @@ export default function Home() {
             Get Started for Free
           </Link>
           <Link
-            href="/characters"
+            href="/documentation"
             className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-400/[.06] px-8 font-bold text-white/80 backdrop-blur-2xl transition hover:border-emerald-400/50 hover:text-white sm:w-auto"
           >
             Documentation <ArrowRight className="h-4 w-4" />

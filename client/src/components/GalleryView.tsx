@@ -1,7 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Trash2, MoreVertical } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export interface GalleryItem {
   id: string | number;
@@ -49,33 +55,37 @@ export function GalleryView({
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
 
-            {/* Overlay on Hover */}
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
-              {item.onEdit && (
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={e => {
-                    e.stopPropagation();
-                    item.onEdit?.();
-                  }}
-                >
-                  <Edit2 className="w-4 h-4" />
-                </Button>
-              )}
-              {item.onDelete && (
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={e => {
-                    e.stopPropagation();
-                    item.onDelete?.();
-                  }}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              )}
-            </div>
+            {/* Actions remain reachable on touch devices; hover is only enhancement. */}
+            {(item.onEdit || item.onDelete) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="secondary"
+                    aria-label={`Actions for ${item.title}`}
+                    className="absolute right-2 top-2 z-10 h-9 w-9 shadow-md"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" onClick={e => e.stopPropagation()}>
+                  {item.onEdit && (
+                    <DropdownMenuItem onSelect={() => item.onEdit?.()}>
+                      <Edit2 className="mr-2 h-4 w-4" />
+                      Edit
+                    </DropdownMenuItem>
+                  )}
+                  {item.onDelete && (
+                    <DropdownMenuItem onSelect={() => item.onDelete?.()}>
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
 
             {/* Badge */}
             {item.badge && (
