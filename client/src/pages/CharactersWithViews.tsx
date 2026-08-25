@@ -94,6 +94,7 @@ export default function CharactersWithViews() {
         role: "supporting",
         description: "",
         traits: "",
+        imageUrl: "",
       });
       setIsCreateDialogOpen(false);
     },
@@ -145,8 +146,7 @@ export default function CharactersWithViews() {
           .map((trait: string) => trait.trim())
           .filter(Boolean)
       : [],
-    image:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    image: character.imageUrl || undefined,
     appearances: 8,
   }));
 
@@ -170,6 +170,7 @@ export default function CharactersWithViews() {
     role: "supporting",
     description: "",
     traits: "",
+    imageUrl: "",
   });
 
   const [newRel, setNewRel] = useState({
@@ -314,6 +315,7 @@ export default function CharactersWithViews() {
       role: newCharacter.role,
       description: newCharacter.description.trim() || undefined,
       traits: newCharacter.traits.trim() || undefined,
+      imageUrl: newCharacter.imageUrl || undefined,
     });
   };
 
@@ -404,6 +406,26 @@ export default function CharactersWithViews() {
                         })
                       }
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="character-image">Portrait image</Label>
+                    <Input
+                      id="character-image"
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      onChange={event => {
+                        const file = event.target.files?.[0];
+                        if (!file || file.size > 2 * 1024 * 1024) return;
+                        const reader = new FileReader();
+                        reader.onload = () =>
+                          setNewCharacter(current => ({
+                            ...current,
+                            imageUrl: typeof reader.result === "string" ? reader.result : "",
+                          }));
+                        reader.readAsDataURL(file);
+                      }}
+                    />
+                    <p className="text-xs text-muted-foreground">PNG, JPG, or WebP up to 2 MB.</p>
                   </div>
                   <div>
                     <Label htmlFor="traits">Traits (comma-separated)</Label>

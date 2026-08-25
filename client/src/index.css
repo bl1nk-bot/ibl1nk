@@ -44,15 +44,15 @@
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
+  --primary: oklch(0.72 0.17 158);
+  --primary-foreground: oklch(0.16 0.03 158);
+  --sidebar-primary: oklch(0.72 0.17 158);
+  --sidebar-primary-foreground: oklch(0.16 0.03 158);
+  --chart-1: oklch(0.72 0.17 158);
+  --chart-2: oklch(0.62 0.15 158);
+  --chart-3: oklch(0.52 0.12 158);
+  --chart-4: oklch(0.42 0.1 158);
+  --chart-5: oklch(0.32 0.08 158);
   --radius: 0.65rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.235 0.015 65);
@@ -115,11 +115,51 @@
 }
 
 @layer base {
-  * {
+  *,
+  *::before,
+  *::after {
     @apply border-border outline-ring/50;
+    box-sizing: border-box;
   }
+
+  html {
+    min-width: 320px;
+    background: var(--background);
+    overflow-x: clip;
+  }
+
   body {
     @apply bg-background text-foreground;
+    min-width: 0;
+    min-height: 100dvh;
+    overflow-x: clip;
+  }
+
+  #root {
+    min-width: 0;
+    min-height: 100dvh;
+  }
+
+  :where([data-mobile-nav], .mobile-bottom-nav) {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  :where([data-page], main, section, article) {
+    min-width: 0;
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    max-width: 100%;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),

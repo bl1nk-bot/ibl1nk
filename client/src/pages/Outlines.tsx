@@ -483,8 +483,8 @@ export default function Outlines() {
                   setSelectedChapterId(null);
                 }}
               >
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
+                <CardContent className="p-4 md:p-6">
+                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2 flex-wrap">
                         <BookOpen className="w-5 h-5 text-accent-gold" />
@@ -541,7 +541,7 @@ export default function Outlines() {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-2 ml-4">
+                    <div className="flex w-full flex-wrap items-center gap-2 md:w-auto md:ml-4">
                       <Button
                         variant="ghost"
                         size="sm"

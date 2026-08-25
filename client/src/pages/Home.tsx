@@ -3,38 +3,19 @@ import {
   Activity,
   ArrowRight,
   BarChart3,
+  BookOpen,
   Check,
-  Cpu,
   ShieldCheck,
   Terminal,
+  Users,
 } from "lucide-react";
 import { Link } from "wouter";
 
 const cards = [
-  {
-    title: "Health Dashboard",
-    icon: Activity,
-    desc: "12 active services, latency 18ms",
-    shortcut: "⌘+H",
-  },
-  {
-    title: "Cluster Management",
-    icon: Cpu,
-    desc: "Autoscaling active in 4 regions",
-    shortcut: "⌘+C",
-  },
-  {
-    title: "Security Logs",
-    icon: ShieldCheck,
-    desc: "Last audit performed 2m ago",
-    shortcut: "⌘+S",
-  },
-  {
-    title: "Real-time Telemetry",
-    icon: BarChart3,
-    desc: "Throughput 1.2M requests/min",
-    shortcut: "⌘+T",
-  },
+  { title: "Story workspace", icon: BookOpen, desc: "Outline scenes and keep every draft in one place", shortcut: "⌘+W" },
+  { title: "Character studio", icon: Users, desc: "Build a memorable cast with clear narrative arcs", shortcut: "⌘+C" },
+  { title: "Writing insights", icon: BarChart3, desc: "See your progress without interrupting your flow", shortcut: "⌘+I" },
+  { title: "Private by design", icon: ShieldCheck, desc: "Your stories stay organized and under your control", shortcut: "⌘+P" },
 ];
 
 export default function Home() {
@@ -70,7 +51,7 @@ export default function Home() {
           </Link>
           <Link
             className="transition hover:text-emerald-400"
-            href="/characters"
+            href="/documentation"
           >
             Docs
           </Link>
@@ -101,13 +82,13 @@ export default function Home() {
           <span>Global Dashboard v4.0</span>
         </div>
         <h1 className="relative z-20 max-w-4xl text-[clamp(2.25rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-tight">
-          The developer interface
+          Your writing workspace
           <br />
-          <span className="text-white/55">you&apos;ve been waiting for.</span>
+          <span className="text-white/55">for stories worth finishing.</span>
         </h1>
         <p className="relative z-20 mt-7 max-w-2xl text-[15px] leading-relaxed text-white/70 md:text-lg">
-          BL1NK aggregates your entire cloud infrastructure into a singular,
-          high-performance command layer. Zero friction, total control.
+          BL1NK gives writers one focused workspace for stories, characters,
+          drafts, and creative momentum. Less setup, more time on the page.
         </p>
         <div className="relative z-30 mt-9 flex w-full flex-col items-center gap-3 px-5 sm:w-auto sm:flex-row sm:px-0">
           <Link
@@ -118,7 +99,7 @@ export default function Home() {
             Get Started for Free
           </Link>
           <Link
-            href="/characters"
+            href="/documentation"
             className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-400/[.06] px-8 font-bold text-white/80 backdrop-blur-2xl transition hover:border-emerald-400/50 hover:text-white sm:w-auto"
           >
             Documentation <ArrowRight className="h-4 w-4" />

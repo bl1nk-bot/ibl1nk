@@ -122,6 +122,7 @@ export const characters = mysqlTable("characters", {
   traits: text("traits"), // JSON array of traits
   role: varchar("role", { length: 100 }), // protagonist, antagonist, supporting, etc.
   craftCollectionItemId: varchar("craftCollectionItemId", { length: 255 }),
+  imageUrl: text("imageUrl"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

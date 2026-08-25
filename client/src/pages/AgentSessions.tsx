@@ -131,7 +131,7 @@ export default function AgentSessions() {
               integrations
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-start gap-2">
             <Badge
               variant="outline"
               className="px-3 py-1 text-xs border-accent-gold/40 text-accent-gold"

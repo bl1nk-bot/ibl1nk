@@ -32,6 +32,7 @@ CREATE TABLE `characters` (
 	`traits` text,
 	`role` varchar(100),
 	`craftCollectionItemId` varchar(255),
+	`imageUrl` text,
 	`createdAt` timestamp NOT NULL DEFAULT (now()),
 	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `characters_id` PRIMARY KEY(`id`)
