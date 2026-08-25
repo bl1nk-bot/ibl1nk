@@ -49,6 +49,7 @@ export const charactersRouter = router({
         traits: z.string().optional(),
         role: z.string().optional(),
         craftCollectionItemId: z.string().optional(),
+        imageUrl: z.string().url().max(2000000).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -78,6 +79,7 @@ export const charactersRouter = router({
         description: z.string().optional(),
         traits: z.string().optional(),
         role: z.string().optional(),
+        imageUrl: z.string().url().max(2000000).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
