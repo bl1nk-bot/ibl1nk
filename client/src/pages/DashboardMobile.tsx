@@ -319,26 +319,13 @@ export default function DashboardMobile() {
 
       {/* Mobile Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-3 space-y-2">
-        <div className="grid grid-cols-3 gap-2">
-          <Link href="/outlines">
-            <Button variant="outline" size="sm" className="w-full text-xs">
-              <BookOpen className="w-3 h-3 mr-1" />
-              Stories
-            </Button>
-          </Link>
-          <Link href="/characters">
-            <Button variant="outline" size="sm" className="w-full text-xs">
-              <Users className="w-3 h-3 mr-1" />
-              Characters
-            </Button>
-          </Link>
-          <Link href="/outlines" className="w-full">
-            <Button variant="default" size="sm" className="w-full text-xs">
-              <Plus className="w-3 h-3 mr-1" />
-              New Story
-            </Button>
-          </Link>
-        </div>
+        <nav aria-label="Workspace navigation" className="grid grid-cols-5 gap-1">
+          <Link href="/dashboard"><Button variant="outline" size="sm" className="w-full px-1 text-[11px]">Home</Button></Link>
+          <Link href="/outlines"><Button variant="outline" size="sm" className="w-full px-1 text-[11px]"><BookOpen className="mr-1 h-3 w-3" />Stories</Button></Link>
+          <Link href="/characters"><Button variant="outline" size="sm" className="w-full px-1 text-[11px]"><Users className="mr-1 h-3 w-3" />Cast</Button></Link>
+          <Link href="/agents"><Button variant="outline" size="sm" className="w-full px-1 text-[11px]">Agents</Button></Link>
+          <Link href="/settings"><Button variant="outline" size="sm" className="w-full px-1 text-[11px]"><Settings className="mr-1 h-3 w-3" />Settings</Button></Link>
+        </nav>
       </div>
     </div>
   );
