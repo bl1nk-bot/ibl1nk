@@ -15,7 +15,7 @@ function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      <Route path="" component={Home} />
+      <Route path="/" component={Home} />
       <Route path="/dashboard" component={DashboardMobile} />
       <Route path="/outlines" component={Outlines} />
       <Route path="/characters" component={CharactersWithViews} />

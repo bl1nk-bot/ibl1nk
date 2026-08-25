@@ -99,7 +99,7 @@ export default function Settings() {
 
         {/* Tabs */}
         <Tabs defaultValue="mcp" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6">
+          <TabsList className="flex w-full min-w-0 justify-start gap-1 overflow-x-auto p-1 md:grid md:grid-cols-6">
             <TabsTrigger
               value="mcp"
               className="text-xs md:text-sm font-semibold text-accent-gold"

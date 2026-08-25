@@ -54,8 +54,11 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [sidebarWidth, setSidebarWidth] = useState(() => {
-    const saved = localStorage.getItem(SIDEBAR_WIDTH_KEY);
-    return saved ? parseInt(saved, 10) : DEFAULT_WIDTH;
+    if (typeof window === "undefined") return DEFAULT_WIDTH;
+    const saved = Number.parseInt(localStorage.getItem(SIDEBAR_WIDTH_KEY) ?? "", 10);
+    return Number.isFinite(saved)
+      ? Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, saved))
+      : DEFAULT_WIDTH;
   });
   const { loading, user } = useAuth();
 
@@ -269,7 +272,9 @@ function DashboardLayoutContent({
             </div>
           </div>
         )}
-        <main className="flex-1 p-4">{children}</main>
+        <main className="min-w-0 flex-1 p-3 pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:p-4 sm:pb-4">
+          <div className="mx-auto w-full min-w-0 max-w-screen-2xl">{children}</div>
+        </main>
       </SidebarInset>
     </>
   );
