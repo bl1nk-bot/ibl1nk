@@ -9,3 +9,7 @@
 ## 2026-05-15 - Top-Level Static Imports for Drizzle ORM
 **Learning:** Dynamic imports for `drizzle-orm` operators in frequently called database query functions cause performance bottlenecks and module resolution overhead.
 **Action:** Prefer top-level static imports instead of dynamically importing operators inside the query logic.
+
+## 2026-05-15 - Snyk Action Authentication Fix for Forks
+**Learning:** GitHub Actions do not allow the `secrets` context in job-level `if` conditionals, which causes failures when tokens are missing (e.g., SNYK-0005) on PRs from forks.
+**Action:** Map the required secret to a job-level `env` variable and use a step-level conditional like `if: ${{ env.SNYK_TOKEN != '' }}` instead of bypassing security checks with `|| true`.
