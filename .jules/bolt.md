@@ -5,3 +5,7 @@
 
 **Learning:** Calling `document.createElement('div')` repeatedly inside loop callbacks (like `.map`, `.filter`, or Fuse.js indexing `getFn`) is highly expensive and creates significant performance bottlenecks due to repeated DOM allocation. Furthermore, misusing the comma operator directly in `getFn` can result in empty strings.
 **Action:** When extracting plain text from HTML, allocate a single `document.createElement('div')` outside of loops and re-use it (e.g., modifying its `innerHTML` and reading `textContent`) rather than constantly instantiating new elements.
+## 2026-05-15 - Optimizing Drizzle ORM Imports
+
+**Learning:** Dynamic imports (e.g., `await import("drizzle-orm")`) inside frequently called database query functions cause unnecessary module resolution overhead and event-loop delays.
+**Action:** Hoist imports for simple utility functions (like `or`, `gte`, `and`) from `drizzle-orm` to static, top-level imports in `server/db.ts` to improve query execution time.
