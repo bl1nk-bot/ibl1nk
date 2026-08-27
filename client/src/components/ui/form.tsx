@@ -1,5 +1,7 @@
 "use client";
 
+// ponytail: UI primitive ไม่มี active import; upgrade: เก็บเมื่อหน้าที่ใช้งานจริง import มิฉะนั้นลบ
+
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";

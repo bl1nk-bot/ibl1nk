@@ -1,3 +1,4 @@
+// ponytail: template adapter ไม่มี runtime caller; upgrade: เก็บเมื่อ endpoint จริงเรียกใช้ มิฉะนั้นลบ
 /**
  * Quick example (matches curl usage):
  *   await callDataApi("Youtube/search", {

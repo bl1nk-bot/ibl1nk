@@ -1,3 +1,4 @@
+// ponytail: template storage helper ไม่มี runtime caller; upgrade: เก็บเมื่อฟีเจอร์จริงเรียกใช้ มิฉะนั้นลบ
 // Preconfigured storage helpers for Manus WebDev templates
 // Uses the Biz-provided storage proxy (Authorization: Bearer <token>)
 

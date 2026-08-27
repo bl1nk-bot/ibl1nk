@@ -1,3 +1,4 @@
+// ponytail: AI demo ไม่มี inbound import ใช้งานจริง; upgrade: เก็บเมื่อเชื่อมกับฟีเจอร์จริง มิฉะนั้นลบ
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";

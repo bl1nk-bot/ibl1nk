@@ -1,3 +1,4 @@
+// ponytail: UI primitive ไม่มี active import; upgrade: เก็บเมื่อหน้าที่ใช้งานจริง import มิฉะนั้นลบ
 import { Loader2Icon } from "lucide-react";
 
 import { cn } from "@/lib/utils";

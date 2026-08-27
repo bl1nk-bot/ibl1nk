@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "skill-governance": {
+        "type": "local",
+        "command": ["python3", "./mcp/server.py"],
+        "cwd": ".",
+        "disabled": false,
+        "codemode": false,
+        "timeout": 120000
+      }
+    }
+  }
+}

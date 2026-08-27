@@ -1,3 +1,4 @@
+// ponytail: notification wrapper ซ้ำทางเดินที่ใช้งานจริง; upgrade: เก็บเมื่อ router เลือกใช้โดยตรง มิฉะนั้นลบ
 import { sendTelegramNotification } from "./telegram";
 
 export async function sendNotification(

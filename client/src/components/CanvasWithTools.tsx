@@ -1,3 +1,4 @@
+// ponytail: client prototype ไม่มี inbound import; upgrade: เก็บเมื่อมี route/ฟีเจอร์ใช้งานจริง มิฉะนั้นลบ
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "skill-governance": {
+      "command": "python3",
+      "args": ["./mcp/server.py"],
+      "cwd": ".",
+      "env_vars": ["SKILL_GOVERNANCE_DB"]
+    }
+  }
+}
