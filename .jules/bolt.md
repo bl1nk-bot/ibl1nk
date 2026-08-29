@@ -8,3 +8,6 @@
 ## 2026-05-15 - Parallelize DB Queries in tRPC Handlers
 **Learning:** Sequential database queries after an authorization guard can introduce unnecessary latency. Running them concurrently with `Promise.all` is a safe, low-risk optimization.
 **Action:** Always check if multiple independent read queries in a route handler can be parallelized after authorization checks.
+## 2026-05-15 - Fixing CI Workflow Secrets on Forks
+**Learning:** GitHub Actions do not expose the `secrets` context in job-level `if` conditionals. Thus, if a workflow step relies on a missing token (like `SNYK_TOKEN` on forks), the pipeline fails.
+**Action:** Map the necessary secrets to a job-level `env` variable and use a step-level conditional like `if: ${{ env.SNYK_TOKEN != '' }}` to gracefully bypass the step when the token is missing.
