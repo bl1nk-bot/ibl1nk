@@ -238,8 +238,12 @@ export const outlinesRouter = router({
     .query(async ({ ctx, input }) => {
       const outline = await getOutlineByIdForUser(input.outlineId, ctx.user.id);
       if (!outline) throw new Error("Outline not found");
-      const chapters = await getChaptersByOutlineId(input.outlineId);
-      const characters = await getCharactersByOutlineId(input.outlineId);
+      // ⚡ Bolt Optimization: Parallelized independent chapter and character queries
+      // Impact: Reduces overall query latency for story overview by executing them concurrently.
+      const [chapters, characters] = await Promise.all([
+        getChaptersByOutlineId(input.outlineId),
+        getCharactersByOutlineId(input.outlineId),
+      ]);
 
       return {
         outline,
