@@ -5,3 +5,7 @@
 
 **Learning:** Calling `document.createElement('div')` repeatedly inside loop callbacks (like `.map`, `.filter`, or Fuse.js indexing `getFn`) is highly expensive and creates significant performance bottlenecks due to repeated DOM allocation. Furthermore, misusing the comma operator directly in `getFn` can result in empty strings.
 **Action:** When extracting plain text from HTML, allocate a single `document.createElement('div')` outside of loops and re-use it (e.g., modifying its `innerHTML` and reading `textContent`) rather than constantly instantiating new elements.
+
+## 2026-05-15 - Top-Level Static Imports for Drizzle ORM Operators
+**Learning:** Dynamic imports of `drizzle-orm` operators (e.g., `const { or } = await import("drizzle-orm")`) inside frequently called database query functions cause performance bottlenecks and module resolution overhead on every query.
+**Action:** Use top-level static imports for `drizzle-orm` operators (e.g., `import { and, eq, or, gte } from "drizzle-orm"`) to prevent unnecessary module resolution overhead and improve database query performance.
