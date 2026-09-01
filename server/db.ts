@@ -1,4 +1,5 @@
-import { and, eq } from "drizzle-orm";
+// ⚡ Bolt Optimization: Use top-level static imports for drizzle-orm operators instead of dynamic imports in query functions to prevent module resolution overhead on every query.
+import { and, eq, or, gte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser,
@@ -731,7 +732,6 @@ export async function getCharacterRelationships(characterId: number) {
       r => r.character1Id === characterId || r.character2Id === characterId
     );
   }
-  const { or } = await import("drizzle-orm");
   return db
     .select()
     .from(characterRelationships)
@@ -853,7 +853,6 @@ export async function getWritingProgressForUser(
   startDate.setDate(startDate.getDate() - days);
   const dateStr = startDate.toISOString().split("T")[0];
 
-  const { gte, and } = await import("drizzle-orm");
   return db
     .select()
     .from(writingProgress)
@@ -935,7 +934,6 @@ export async function getObsidianSyncStatus(userId: number, filePath: string) {
     return memoryStore.obsidianSync.find(
       s => s.userId === userId && s.filePath === filePath
     );
-  const { and } = await import("drizzle-orm");
   const result = await db
     .select()
     .from(obsidianSync)
