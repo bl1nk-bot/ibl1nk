@@ -5,3 +5,8 @@
 
 **Learning:** Calling `document.createElement('div')` repeatedly inside loop callbacks (like `.map`, `.filter`, or Fuse.js indexing `getFn`) is highly expensive and creates significant performance bottlenecks due to repeated DOM allocation. Furthermore, misusing the comma operator directly in `getFn` can result in empty strings.
 **Action:** When extracting plain text from HTML, allocate a single `document.createElement('div')` outside of loops and re-use it (e.g., modifying its `innerHTML` and reading `textContent`) rather than constantly instantiating new elements.
+
+## 2024-05-16 - Dynamic Imports in Hot Paths
+
+**Learning:** Dynamic imports of small utility operators (like `drizzle-orm` operators) inside frequently called database query functions cause severe performance bottlenecks due to repeated module resolution overhead.
+**Action:** Use top-level static imports for frequently used operators instead of dynamically importing them inside query functions.
