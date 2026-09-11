@@ -68,6 +68,7 @@ jobs:
 
         # Build the docker image for testing
       - name: Build a Docker image
+        if: ${{ env.SNYK_TOKEN != '' }}
         run: docker build -t your/image-to-test .
         # Runs Snyk Container (Container and SCA) analysis and uploads result to Snyk.
       - name: Snyk Container monitor
