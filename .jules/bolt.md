@@ -5,3 +5,6 @@
 
 **Learning:** Calling `document.createElement('div')` repeatedly inside loop callbacks (like `.map`, `.filter`, or Fuse.js indexing `getFn`) is highly expensive and creates significant performance bottlenecks due to repeated DOM allocation. Furthermore, misusing the comma operator directly in `getFn` can result in empty strings.
 **Action:** When extracting plain text from HTML, allocate a single `document.createElement('div')` outside of loops and re-use it (e.g., modifying its `innerHTML` and reading `textContent`) rather than constantly instantiating new elements.
+## 2026-05-15 - Dynamic Imports of Core Database Utilities
+**Learning:** Using inline dynamic imports (`await import("drizzle-orm")`) inside frequently called database utility functions introduces unnecessary asynchronous module resolution overhead on every call. In this codebase, it added a noticeable ~300ms overhead on initial load and minor latency on subsequent calls.
+**Action:** Always hoist core static utilities (like Drizzle operators) to top-level static imports rather than dynamically importing them inline to completely eliminate module resolution latency per query.
