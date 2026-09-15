@@ -68,11 +68,7 @@ export function createStoryMcpServer() {
       storyId: z.number().describe("The ID of the story outline"),
     },
     async ({ storyId }) => {
-      const [story, chapters] = await Promise.all([
-        getOutlineById(storyId),
-        getChaptersByOutlineId(storyId),
-      ]);
-
+      const story = await getOutlineById(storyId);
       if (!story) {
         return {
           isError: true,
@@ -81,6 +77,10 @@ export function createStoryMcpServer() {
           ],
         };
       }
+
+      // ⚡ Bolt: Avoid fetching chapters if story doesn't exist.
+      // Impact: Saves an unnecessary database query for invalid IDs.
+      const chapters = await getChaptersByOutlineId(storyId);
 
       const result = {
         story: {
@@ -205,12 +205,7 @@ export function createStoryMcpServer() {
       characterId: z.number().describe("The ID of the character"),
     },
     async ({ characterId }) => {
-      const [character, relationships, allCharacters] = await Promise.all([
-        getCharacterByIdForUser(characterId, DEFAULT_WRITER_USER_ID),
-        getCharacterRelationships(characterId),
-        getCharactersByUserId(DEFAULT_WRITER_USER_ID),
-      ]);
-
+      const character = await getCharacterByIdForUser(characterId, DEFAULT_WRITER_USER_ID);
       if (!character) {
         return {
           isError: true,
@@ -219,6 +214,13 @@ export function createStoryMcpServer() {
           ],
         };
       }
+
+      // ⚡ Bolt: Ensure character exists before running parallel fetching of relationships/cast
+      // Impact: Prevents unnecessary database queries on invalid requests.
+      const [relationships, allCharacters] = await Promise.all([
+        getCharacterRelationships(characterId),
+        getCharactersByUserId(DEFAULT_WRITER_USER_ID)
+      ]);
 
       const mappedRelationships = relationships.map(r => {
         const otherId =
