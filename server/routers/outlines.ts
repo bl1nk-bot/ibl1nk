@@ -236,10 +236,15 @@ export const outlinesRouter = router({
   storyOverview: protectedProcedure
     .input(z.object({ outlineId: z.number() }))
     .query(async ({ ctx, input }) => {
+      // Authorization/Ownership check runs first
       const outline = await getOutlineByIdForUser(input.outlineId, ctx.user.id);
       if (!outline) throw new Error("Outline not found");
-      const chapters = await getChaptersByOutlineId(input.outlineId);
-      const characters = await getCharactersByOutlineId(input.outlineId);
+
+      // Parallelize subsequent independent queries to improve performance
+      const [chapters, characters] = await Promise.all([
+        getChaptersByOutlineId(input.outlineId),
+        getCharactersByOutlineId(input.outlineId),
+      ]);
 
       return {
         outline,
