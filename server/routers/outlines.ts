@@ -236,10 +236,15 @@ export const outlinesRouter = router({
   storyOverview: protectedProcedure
     .input(z.object({ outlineId: z.number() }))
     .query(async ({ ctx, input }) => {
+      // ⚡ Bolt: Await auth-gated query first to prevent security bypasses and unnecessary database load
       const outline = await getOutlineByIdForUser(input.outlineId, ctx.user.id);
       if (!outline) throw new Error("Outline not found");
-      const chapters = await getChaptersByOutlineId(input.outlineId);
-      const characters = await getCharactersByOutlineId(input.outlineId);
+
+      // ⚡ Bolt: Parallelize independent database queries to reduce total wait time
+      const [chapters, characters] = await Promise.all([
+        getChaptersByOutlineId(input.outlineId),
+        getCharactersByOutlineId(input.outlineId)
+      ]);
 
       return {
         outline,
