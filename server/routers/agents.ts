@@ -1,3 +1,5 @@
+import axios from "axios";
+// ⚡ Bolt: Use top-level static imports instead of dynamic imports inside route handlers to prevent module resolution overhead
 import { z } from "zod";
 import { publicProcedure, protectedProcedure, router } from "../_core/trpc";
 import { IBL1NK_STORY_AGENTS } from "../agents/ibl1nkAgents";
@@ -89,7 +91,6 @@ Cast of Characters: ${characters.map(c => `${c.name} (${c.role})`).join(", ")}
       if (input.apiKey && input.apiKey.trim()) {
         try {
           if (input.provider === "openai") {
-            const { default: axios } = await import("axios");
             const res = await axios.post(
               "https://api.openai.com/v1/chat/completions",
               {
