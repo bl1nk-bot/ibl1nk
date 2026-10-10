@@ -1,4 +1,5 @@
 import { z } from "zod";
+import axios from "axios";
 import { publicProcedure, protectedProcedure, router } from "../_core/trpc";
 import { IBL1NK_STORY_AGENTS } from "../agents/ibl1nkAgents";
 import {
@@ -89,7 +90,7 @@ Cast of Characters: ${characters.map(c => `${c.name} (${c.role})`).join(", ")}
       if (input.apiKey && input.apiKey.trim()) {
         try {
           if (input.provider === "openai") {
-            const { default: axios } = await import("axios");
+            // ⚡ Bolt: Use top-level static import of axios to remove module resolution overhead and speed up LLM calls
             const res = await axios.post(
               "https://api.openai.com/v1/chat/completions",
               {
