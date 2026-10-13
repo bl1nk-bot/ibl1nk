@@ -3,7 +3,9 @@
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist/public",
   "framework": "vite",
-  "rewrites": [{ "source": "/((?!assets/|__manus__/).*)", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/((?!assets/|__manus__/).*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

@@ -55,7 +55,10 @@ export default function DashboardLayout({
 }) {
   const [sidebarWidth, setSidebarWidth] = useState(() => {
     if (typeof window === "undefined") return DEFAULT_WIDTH;
-    const saved = Number.parseInt(localStorage.getItem(SIDEBAR_WIDTH_KEY) ?? "", 10);
+    const saved = Number.parseInt(
+      localStorage.getItem(SIDEBAR_WIDTH_KEY) ?? "",
+      10
+    );
     return Number.isFinite(saved)
       ? Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, saved))
       : DEFAULT_WIDTH;
@@ -273,7 +276,9 @@ function DashboardLayoutContent({
           </div>
         )}
         <main className="min-w-0 flex-1 p-3 pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:p-4 sm:pb-4">
-          <div className="mx-auto w-full min-w-0 max-w-screen-2xl">{children}</div>
+          <div className="mx-auto w-full min-w-0 max-w-screen-2xl">
+            {children}
+          </div>
         </main>
       </SidebarInset>
     </>

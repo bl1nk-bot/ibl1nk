@@ -420,12 +420,17 @@ export default function CharactersWithViews() {
                         reader.onload = () =>
                           setNewCharacter(current => ({
                             ...current,
-                            imageUrl: typeof reader.result === "string" ? reader.result : "",
+                            imageUrl:
+                              typeof reader.result === "string"
+                                ? reader.result
+                                : "",
                           }));
                         reader.readAsDataURL(file);
                       }}
                     />
-                    <p className="text-xs text-muted-foreground">PNG, JPG, or WebP up to 2 MB.</p>
+                    <p className="text-xs text-muted-foreground">
+                      PNG, JPG, or WebP up to 2 MB.
+                    </p>
                   </div>
                   <div>
                     <Label htmlFor="traits">Traits (comma-separated)</Label>
