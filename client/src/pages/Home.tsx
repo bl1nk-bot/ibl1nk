@@ -12,10 +12,30 @@ import {
 import { Link } from "wouter";
 
 const cards = [
-  { title: "Story workspace", icon: BookOpen, desc: "Outline scenes and keep every draft in one place", shortcut: "⌘+W" },
-  { title: "Character studio", icon: Users, desc: "Build a memorable cast with clear narrative arcs", shortcut: "⌘+C" },
-  { title: "Writing insights", icon: BarChart3, desc: "See your progress without interrupting your flow", shortcut: "⌘+I" },
-  { title: "Private by design", icon: ShieldCheck, desc: "Your stories stay organized and under your control", shortcut: "⌘+P" },
+  {
+    title: "Story workspace",
+    icon: BookOpen,
+    desc: "Outline scenes and keep every draft in one place",
+    shortcut: "⌘+W",
+  },
+  {
+    title: "Character studio",
+    icon: Users,
+    desc: "Build a memorable cast with clear narrative arcs",
+    shortcut: "⌘+C",
+  },
+  {
+    title: "Writing insights",
+    icon: BarChart3,
+    desc: "See your progress without interrupting your flow",
+    shortcut: "⌘+I",
+  },
+  {
+    title: "Private by design",
+    icon: ShieldCheck,
+    desc: "Your stories stay organized and under your control",
+    shortcut: "⌘+P",
+  },
 ];
 
 export default function Home() {
