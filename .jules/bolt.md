@@ -5,3 +5,8 @@
 
 **Learning:** Calling `document.createElement('div')` repeatedly inside loop callbacks (like `.map`, `.filter`, or Fuse.js indexing `getFn`) is highly expensive and creates significant performance bottlenecks due to repeated DOM allocation. Furthermore, misusing the comma operator directly in `getFn` can result in empty strings.
 **Action:** When extracting plain text from HTML, allocate a single `document.createElement('div')` outside of loops and re-use it (e.g., modifying its `innerHTML` and reading `textContent`) rather than constantly instantiating new elements.
+
+## 2026-05-15 - Parallelizing Independent Database Queries
+
+**Learning:** When writing tRPC route handlers (like `storyOverview`) that fetch multiple disparate pieces of data (e.g., chapters and characters for an outline), awaiting each query sequentially unnecessarily delays the response.
+**Action:** Use `Promise.all` to fetch independent queries concurrently after confirming authorization (e.g., after the initial `getOutlineByIdForUser` ownership check). This ensures security is maintained while significantly improving TTFB and overall latency.
