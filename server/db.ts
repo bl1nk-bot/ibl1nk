@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, or, gte } from "drizzle-orm"; // ⚡ Bolt: removed expensive dynamic imports of drizzle-orm for performance
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser,
@@ -731,7 +731,6 @@ export async function getCharacterRelationships(characterId: number) {
       r => r.character1Id === characterId || r.character2Id === characterId
     );
   }
-  const { or } = await import("drizzle-orm");
   return db
     .select()
     .from(characterRelationships)
@@ -853,7 +852,6 @@ export async function getWritingProgressForUser(
   startDate.setDate(startDate.getDate() - days);
   const dateStr = startDate.toISOString().split("T")[0];
 
-  const { gte, and } = await import("drizzle-orm");
   return db
     .select()
     .from(writingProgress)
@@ -935,7 +933,6 @@ export async function getObsidianSyncStatus(userId: number, filePath: string) {
     return memoryStore.obsidianSync.find(
       s => s.userId === userId && s.filePath === filePath
     );
-  const { and } = await import("drizzle-orm");
   const result = await db
     .select()
     .from(obsidianSync)
