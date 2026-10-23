@@ -5,3 +5,6 @@
 
 **Learning:** Calling `document.createElement('div')` repeatedly inside loop callbacks (like `.map`, `.filter`, or Fuse.js indexing `getFn`) is highly expensive and creates significant performance bottlenecks due to repeated DOM allocation. Furthermore, misusing the comma operator directly in `getFn` can result in empty strings.
 **Action:** When extracting plain text from HTML, allocate a single `document.createElement('div')` outside of loops and re-use it (e.g., modifying its `innerHTML` and reading `textContent`) rather than constantly instantiating new elements.
+## 2026-05-15 - Replace Dynamic Imports with Static Top-level Imports
+**Learning:** Dynamic imports (e.g., `await import('drizzle-orm')` or `await import('axios')`) inside frequently called database query functions or route handlers cause performance bottlenecks and module resolution overhead.
+**Action:** Use top-level static imports instead to eliminate runtime module resolution latency on hot paths.
