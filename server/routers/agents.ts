@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { publicProcedure, protectedProcedure, router } from "../_core/trpc";
+import axios from "axios";
 import { IBL1NK_STORY_AGENTS } from "../agents/ibl1nkAgents";
 import {
   getUserOutlines,
@@ -89,7 +90,7 @@ Cast of Characters: ${characters.map(c => `${c.name} (${c.role})`).join(", ")}
       if (input.apiKey && input.apiKey.trim()) {
         try {
           if (input.provider === "openai") {
-            const { default: axios } = await import("axios");
+            // Optimization: Replaced dynamic import with top-level static import to eliminate module resolution overhead
             const res = await axios.post(
               "https://api.openai.com/v1/chat/completions",
               {
