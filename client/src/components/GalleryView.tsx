@@ -70,7 +70,10 @@ export function GalleryView({
                     <MoreVertical className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" onClick={e => e.stopPropagation()}>
+                <DropdownMenuContent
+                  align="end"
+                  onClick={e => e.stopPropagation()}
+                >
                   {item.onEdit && (
                     <DropdownMenuItem onSelect={() => item.onEdit?.()}>
                       <Edit2 className="mr-2 h-4 w-4" />
