@@ -83,9 +83,22 @@ export function GridView({ items, columns = 3, onItemClick }: GridViewProps) {
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" onClick={e => e.stopPropagation()}>
-                    {item.onEdit && <DropdownMenuItem onSelect={() => item.onEdit?.()}><Edit2 className="mr-2 h-4 w-4" />Edit</DropdownMenuItem>}
-                    {item.onDelete && <DropdownMenuItem onSelect={() => item.onDelete?.()}><Trash2 className="mr-2 h-4 w-4" />Delete</DropdownMenuItem>}
+                  <DropdownMenuContent
+                    align="end"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    {item.onEdit && (
+                      <DropdownMenuItem onSelect={() => item.onEdit?.()}>
+                        <Edit2 className="mr-2 h-4 w-4" />
+                        Edit
+                      </DropdownMenuItem>
+                    )}
+                    {item.onDelete && (
+                      <DropdownMenuItem onSelect={() => item.onDelete?.()}>
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               )}
