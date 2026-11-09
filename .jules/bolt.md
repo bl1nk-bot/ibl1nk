@@ -5,3 +5,7 @@
 
 **Learning:** Calling `document.createElement('div')` repeatedly inside loop callbacks (like `.map`, `.filter`, or Fuse.js indexing `getFn`) is highly expensive and creates significant performance bottlenecks due to repeated DOM allocation. Furthermore, misusing the comma operator directly in `getFn` can result in empty strings.
 **Action:** When extracting plain text from HTML, allocate a single `document.createElement('div')` outside of loops and re-use it (e.g., modifying its `innerHTML` and reading `textContent`) rather than constantly instantiating new elements.
+
+## 2026-05-15 - Parallelizing DB Queries with Promise.all in Route Handlers
+**Learning:** Sequential `await` statements for independent database queries unnecessarily block the event loop and increase endpoint latency. However, authorization-gated queries (like verifying resource ownership via `getOutlineByIdForUser`) MUST remain sequentially executed *before* any subsequent parallelized queries to prevent unauthorized data access and unnecessary DB load in the event of an auth failure.
+**Action:** Use `Promise.all` to execute independent queries concurrently, but strictly ensure any necessary authorization checks are `await`ed beforehand.
